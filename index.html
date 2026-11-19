@@ -63,9 +63,9 @@ main.wrap{padding-top:16px;padding-bottom:44px}
 .views button[aria-selected="true"]{background:var(--accent);color:#fff}
 
 /* 車種 */
-.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.seg button{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 4px;display:grid;gap:2px;justify-items:center;cursor:pointer;line-height:1.35;color:var(--muted)}
-.seg .t{font-weight:700;font-size:14px;color:var(--ink)}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.seg button{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 2px;align-content:center;min-height:58px;display:grid;gap:2px;justify-items:center;cursor:pointer;line-height:1.35;color:var(--muted)}
+.seg .t{font-weight:700;font-size:13px;color:var(--ink);text-align:center;word-break:keep-all}
 .seg .n{font-size:12px;font-variant-numeric:tabular-nums;min-height:1.35em}
 .seg button[aria-selected="true"]{border-color:var(--accent);background:var(--accent-soft)}
 .seg button[aria-selected="true"] .n{color:#ffb3bf}
@@ -135,6 +135,8 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
 .auc-office{font-weight:700}
 .auc-region{font-size:13px;color:var(--muted)}
 .auc-range{font-family:var(--font-plate);font-weight:700;font-size:28px;letter-spacing:.04em;line-height:1.1;word-break:break-word}
+.auc-range.list{font-size:19px;line-height:1.4;letter-spacing:.02em}
+.auc-range .nw{white-space:nowrap}
 .auc-time{font-size:14px;font-variant-numeric:tabular-nums;color:#d4d8de}
 .auc-time span{display:block;font-size:12px;color:var(--muted);margin-bottom:2px}
 
@@ -161,7 +163,8 @@ footer a{color:inherit}
   .pcard{padding:6px 8px 10px}
   .plate{padding:4px 6px 6px}
   .plate span{font-size:clamp(20px,6.4vw,27px)}
-  .seg .t{font-size:13px}
+  .seg .t{font-size:12px}
+  .seg .n{font-size:11px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -197,7 +200,12 @@ footer a{color:inherit}
   <div class="seg" role="tablist" aria-label="車種" id="typeTabs">
     <button role="tab" data-type="電動自小客" aria-selected="true"><span class="t">電動自小客</span><span class="n"></span></button>
     <button role="tab" data-type="電動租賃車" aria-selected="false"><span class="t">電動租賃車</span><span class="n"></span></button>
+    <button role="tab" data-type="自用小客貨車" aria-selected="false"><span class="t">自用小客貨車</span><span class="n"></span></button>
     <button role="tab" data-type="租賃小客貨車" aria-selected="false"><span class="t">租賃小客貨車</span><span class="n"></span></button>
+    <button role="tab" data-type="營業小客車" aria-selected="false"><span class="t">營業小客車</span><span class="n"></span></button>
+    <button role="tab" data-type="營業小貨車" aria-selected="false"><span class="t">營業小貨車</span><span class="n"></span></button>
+    <button role="tab" data-type="自用大貨車" aria-selected="false"><span class="t">自用大貨車</span><span class="n"></span></button>
+    <button role="tab" data-type="營業大貨車" aria-selected="false"><span class="t">營業大貨車</span><span class="n"></span></button>
   </div>
 
   <!-- 選牌 -->
@@ -253,6 +261,7 @@ footer a{color:inherit}
     </div>
     <div class="empty" id="empty" hidden>沒有符合條件的號碼，試著放寬篩選。</div>
     <ul class="grid" id="grid"></ul>
+    <div id="moreSentinel" aria-hidden="true" style="height:1px"></div>
 
     <section class="panel favs" aria-labelledby="favTitle">
       <h2 id="favTitle">我的收藏 <span id="favCount" class="muted"></span></h2>
@@ -279,7 +288,7 @@ footer a{color:inherit}
 </main>
 
 <script>
-const TYPES = ["電動自小客", "電動租賃車", "租賃小客貨車"];
+const TYPES = ["電動自小客", "電動租賃車", "自用小客貨車", "租賃小客貨車", "營業小客車", "營業小貨車", "自用大貨車", "營業大貨車"];
 const EV_TYPES = new Set(["電動自小客", "電動租賃車"]);
 const REGIONS = [
   ["臺北市區", ["臺北市區監理所","士林監理站","基隆監理站","金門監理站","連江監理站"]],
@@ -470,7 +479,9 @@ function renderPick() {
   const list = sorted(base.filter(it => !state.pattern || PATTERNS[state.pattern](it)));
   const ofType = items.filter(it => it.type === state.type);
   const newCount = ofType.filter(it => it.isNew).length;
-  $("grid").innerHTML = list.map(cardHTML).join("");
+  currentList = list;
+  shown = Math.min(CHUNK, list.length);
+  $("grid").innerHTML = list.slice(0, shown).map(cardHTML).join("");
   $("noData").hidden = !(loaded && items.length === 0);
   $("empty").hidden = !(items.length > 0 && list.length === 0);
   $("summaryText").innerHTML = items.length
@@ -512,7 +523,15 @@ function toggleFav(plate) {
   const i = favs.indexOf(plate);
   if (i >= 0) favs.splice(i, 1); else favs.push(plate);
   saveFavs();
-  render();
+  if (state.favOnly) return render();
+  // 只更新愛心和收藏清單，不重畫整個列表，捲動位置才不會跳掉
+  const on = favs.includes(plate);
+  document.querySelectorAll("#grid .fav").forEach(b => {
+    if (b.dataset.plate !== plate) return;
+    b.setAttribute("aria-pressed", String(on));
+    b.setAttribute("aria-label", `${on ? "取消收藏" : "收藏"} ${plate}`);
+  });
+  renderFavs();
 }
 
 // ---------- 標牌 ----------
@@ -548,7 +567,7 @@ function renderBid() {
         <span class="auc-office">${esc(a.office)}</span>
         <span class="auc-region">${esc(regionOf(a.office))}</span>
       </div>
-      <div class="auc-range">${esc(a.plates.replace(/~/g, " ～ "))}</div>
+      <div class="auc-range${/[,、]/.test(a.plates) ? " list" : ""}">${a.plates.split(/\s*[,、]\s*/).map(x => `<span class="nw">${esc(x.replace(/~/g, " ～ "))}</span>`).join("、")}</div>
       <div class="auc-time"><span>競標期間</span>${fmtTime(a.start)} → ${fmtTime(a.end)}</div>
     </li>`).join("");
 }
@@ -577,6 +596,21 @@ function render() {
   document.querySelectorAll("#typeTabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.type === state.type)));
   updateTabCounts();
   if (state.view === "bid") renderBid(); else renderPick();
+}
+
+// 號碼很多時（自用小客貨車兩萬多面）先畫前一段，捲到底再自動接著畫，不用按按鈕
+const CHUNK = 300;
+let currentList = [], shown = 0;
+function appendMore() {
+  if (state.view !== "pick" || shown >= currentList.length) return;
+  const next = currentList.slice(shown, shown + CHUNK);
+  $("grid").insertAdjacentHTML("beforeend", next.map(cardHTML).join(""));
+  shown += next.length;
+}
+if ("IntersectionObserver" in window) {
+  new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) appendMore(); }, { rootMargin: "1200px 0px" }).observe($("moreSentinel"));
+} else {
+  window.addEventListener("scroll", () => { if (window.innerHeight + window.scrollY > document.body.offsetHeight - 1500) appendMore(); }, { passive: true });
 }
 
 function setType(t) {
