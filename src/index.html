@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>選牌標牌</title>
-<meta name="description" content="全台監理所站可選車牌號碼與標牌公告，每 15 分鐘同步更新。">
+<meta name="description" content="全台監理所站可選車牌號碼與標牌公告。">
 <meta name="theme-color" content="#0a0b0d">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="選牌標牌">
@@ -745,7 +745,7 @@ footer a {
         </div>
       </div>
     </div>
-    <p class="upd" id="upd"><span class="live-dot" aria-hidden="true"></span><span>每 <b>15</b> 分鐘自動同步</span><span class="sep" aria-hidden="true">｜</span><span id="dataTime">資料時間：—</span><span class="sep" aria-hidden="true">｜</span><span id="siteTime">網站更新：—</span></p>
+    <p class="upd" id="upd"><span class="live-dot" aria-hidden="true"></span><span id="dataTime">更新時間：—</span></p>
   </div>
 </header>
 
@@ -1018,9 +1018,7 @@ function applyData(data) {
     auctions = normalizeAuctions(data);
     byPlate = new Map(items.map(it => [ it.plate, it ]));
     loaded = true;
-    $("dataTime").textContent = "資料時間：" + (meta.sourceUpdated ? fmtTime(meta.sourceUpdated) : "—");
-    const site = data && Date.parse(data.updatedAt);
-    $("siteTime").textContent = "網站更新：" + (site && !isNaN(site) ? fmtTime(site) : "—");
+    $("dataTime").innerHTML = "更新時間：<b>" + (meta.sourceUpdated ? fmtTime(meta.sourceUpdated) : "—") + "</b>";
     buildPlaceSelect();
     buildBidPlaceSelect();
     render();
