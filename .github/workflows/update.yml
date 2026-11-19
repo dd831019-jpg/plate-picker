@@ -1,0 +1,40 @@
+name: 每日更新車牌資料
+
+on:
+  schedule:
+    - cron: "17 * * * *"   # 每小時第 17 分檢查一次；car16 沒更新時不會提交
+  workflow_dispatch:         # 也可以在 Actions 頁面手動執行
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-plates
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 從 car16 抓取選牌與標牌資料
+        run: |
+          cp plates.json "$RUNNER_TEMP/prev.json"
+          python3 scripts/update_plates.py "$PWD/plates.json" "$RUNNER_TEMP/prev.json"
+
+      - name: 有變動才提交
+        run: |
+          git config user.name "plates-bot"
+          git config user.email "plates-bot@users.noreply.github.com"
+          git add plates.json
+          if git diff --cached --quiet; then
+            echo "資料沒有變動"
+          else
+            git commit -m "每日更新 $(TZ=Asia/Taipei date +%F)"
+            git push
+          fi
