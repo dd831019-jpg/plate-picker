@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>選牌標牌</title>
-<meta name="description" content="全台監理所站可選車牌號碼與標牌公告，每小時更新。">
+<meta name="description" content="全台監理所站可選車牌號碼與標牌公告，每 15 分鐘同步更新。">
 <meta name="theme-color" content="#0a0b0d">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="選牌標牌">
 <meta property="og:title" content="選牌標牌">
-<meta property="og:description" content="全台可選車牌與標牌公告・每小時更新">
+<meta property="og:description" content="全台可選車牌與標牌公告">
 <meta property="og:url" content="https://dd831019-jpg.github.io/plate-picker/">
 <meta property="og:image" content="https://dd831019-jpg.github.io/plate-picker/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -744,13 +744,8 @@ footer a {
           <p class="sub">全台可選號碼與標牌公告</p>
         </div>
       </div>
-      <button class="refresh" id="refresh" aria-describedby="refreshStatus">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/></svg>
-        <span>更新資料</span>
-      </button>
     </div>
-    <p class="upd" id="upd"><span class="live-dot" aria-hidden="true"></span><span><b>每小時</b>自動更新</span><span class="sep" aria-hidden="true">｜</span><span id="dataTime">資料時間：—</span><span class="sep" aria-hidden="true">｜</span><span id="siteTime">網站更新：—</span></p>
-    <p class="refresh-status" id="refreshStatus" role="status"></p>
+    <p class="upd" id="upd"><span class="live-dot" aria-hidden="true"></span><span>每 <b>15</b> 分鐘自動同步</span><span class="sep" aria-hidden="true">｜</span><span id="dataTime">資料時間：—</span><span class="sep" aria-hidden="true">｜</span><span id="siteTime">網站更新：—</span></p>
   </div>
 </header>
 
@@ -820,7 +815,7 @@ footer a {
 
     <div class="notice" id="noData" hidden>
       <h2>還沒有車牌資料</h2>
-      <p>資料讀取失敗，請按右上角「更新資料」再試一次。</p>
+      <p>資料讀取失敗，請稍後重新整理網頁。</p>
     </div>
     <div class="empty" id="empty" hidden>沒有符合條件的號碼，試著放寬篩選。</div>
     <ul class="grid" id="grid"></ul>
@@ -1181,7 +1176,7 @@ function renderBid() {
     const live = list.filter(a => a.live).length;
     $("bidSummary").innerHTML = loaded ? `競標中 <b>${live}</b> 筆　·　即將開始 <b>${list.length - live}</b> 筆` : "讀取中…";
     $("bidEmpty").hidden = !loaded || list.length > 0;
-    $("bidEmpty").textContent = !items.length ? "還沒有資料，請按右上角「更新資料」再試一次。" : `目前沒有${state.type}的標牌公告。`;
+    $("bidEmpty").textContent = !items.length ? "還沒有資料，請稍後重新整理網頁。" : `目前沒有${state.type}的標牌公告。`;
     $("aucList").innerHTML = list.map(a => `<li class="auc${a.live ? " live" : ""}">\n      <div class="auc-head">\n        <span class="pill">${a.live ? "競標中" : "即將開始"}</span>\n        <span class="auc-office">${esc(a.office)}</span>\n        <span class="auc-region">${esc(regionOf(a.office))}</span>\n      </div>\n      <div class="auc-range${/[,、]/.test(a.plates) ? " list" : ""}">${a.plates.split(/\s*[,、]\s*/).map(x => `<span class="nw">${esc(x.replace(/~/g, " ～ "))}</span>`).join("、")}</div>\n      <div class="auc-time"><span>競標期間</span>${fmtTime(a.start)} → ${fmtTime(a.end)}</div>\n    </li>`).join("");
 }
 
@@ -1267,31 +1262,7 @@ function resetFilters() {
     render();
 }
 
-let statusTimer = null;
 
-async function refreshData() {
-    const btn = $("refresh");
-    const before = meta.sourceUpdated;
-    btn.disabled = true;
-    btn.querySelector("span").textContent = "更新中…";
-    const data = await loadData();
-    btn.disabled = false;
-    btn.querySelector("span").textContent = "更新資料";
-    let msg;
-    if (!data) {
-        msg = "讀取失敗，請稍後再試。";
-    } else {
-        applyData(data);
-        msg = meta.sourceUpdated && meta.sourceUpdated !== before ? `已更新到 ${fmtTime(meta.sourceUpdated)} 的資料。` : "已經是最新資料，每小時會自動檢查一次。";
-    }
-    $("refreshStatus").textContent = msg;
-    clearTimeout(statusTimer);
-    statusTimer = setTimeout(() => {
-        $("refreshStatus").textContent = "";
-    }, 6e3);
-}
-
-$("refresh").addEventListener("click", refreshData);
 
 document.querySelectorAll(".views button").forEach(b => b.addEventListener("click", () => {
     const h = b.dataset.view === "bid" ? "#bid" : "#pick";

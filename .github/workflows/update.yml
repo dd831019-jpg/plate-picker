@@ -2,7 +2,7 @@ name: 每日更新車牌資料
 
 on:
   schedule:
-    - cron: "17 * * * *"   # 每小時第 17 分檢查一次；car16 沒更新時不會提交
+    - cron: "7,22,37,52 * * * *"   # 每 15 分鐘檢查一次；car16 沒更新時不會提交
   workflow_dispatch:         # 也可以在 Actions 頁面手動執行
 
 permissions:
