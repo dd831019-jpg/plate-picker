@@ -149,39 +149,27 @@ a { color: inherit }
 .seg2 .g { padding-left: .14em }
 .seg2 .gn { display: none; font-family: var(--num); font-size: 14px; font-weight: 600; letter-spacing: .02em; opacity: .6 }
 
-.types {
-  position: relative;
-  display: flex;
-  gap: 8px;
-  margin: 0 calc(-1 * var(--pad));
-  padding: 0 var(--pad) 2px;
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
-  scroll-padding: 0 var(--pad);
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-.types::-webkit-scrollbar { display: none }
+.types { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px }
+.types[data-n="6"] { grid-template-columns: repeat(3, minmax(0, 1fr)) }
 .types button {
-  flex: none;
-  display: grid;
-  grid-template-columns: auto auto;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: start;
-  column-gap: 8px;
-  row-gap: 2px;
-  padding: 9px 14px 8px 11px;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+  padding: 9px 3px 8px;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 11px;
   background: var(--s1);
-  text-align: left;
-  scroll-snap-align: start;
+  text-align: center;
 }
 .types button:hover { border-color: var(--line2) }
-.types .t { font-size: 14px; font-weight: 700; letter-spacing: .02em; white-space: nowrap }
-.types .n { grid-column: 1 / -1; min-height: 20px; font-size: 12px; color: var(--muted); white-space: nowrap }
-.types .n b { margin-right: 2px; font-family: var(--num); font-size: 16px; font-weight: 600; color: var(--text) }
-.types .n i { margin-left: 8px; font-style: normal; color: var(--green) }
+.types .sw { width: 24px; height: 10px; margin-bottom: 5px }
+.types .t { max-width: 100%; font-size: clamp(11px, 3.1vw, 14px); font-weight: 700; line-height: 1.3; letter-spacing: 0; text-wrap: balance; word-break: keep-all }
+.types .n { min-height: 18px; font-size: 11px; line-height: 1.4; color: var(--muted); white-space: nowrap }
+.types .n b { margin-right: 2px; font-family: var(--num); font-size: 15px; font-weight: 600; color: var(--text) }
+.types .n i { display: block; font-style: normal; color: var(--green) }
 .types button[aria-selected=true] { border-color: var(--white); background: var(--white); color: var(--ink) }
 .types button[aria-selected=true] .n, .types button[aria-selected=true] .n b { color: var(--ink) }
 .types button[aria-selected=true] .n i { color: var(--green-ink) }
@@ -510,6 +498,11 @@ a { color: inherit }
 }
 @media (min-width: 800px) {
   :root { --pad: 24px }
+  .types { grid-template-columns: repeat(8, minmax(0, 1fr)) }
+  .types[data-n="6"] { grid-template-columns: repeat(6, minmax(0, 1fr)) }
+  .types .t { font-size: 14px }
+  .seg2 .gn { display: inline }
+  .bar { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0 }
   .wall { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px 18px }
   .aucs { grid-template-columns: repeat(2, minmax(0, 1fr)) }
 }
@@ -518,15 +511,11 @@ a { color: inherit }
   .top-in { min-height: 78px }
   .mark { width: 44px; height: 44px }
   .brand-name { font-size: 21px }
-  .layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); align-items: start; gap: 40px; padding-top: 28px }
-  .side { position: sticky; top: 20px; max-height: calc(100vh - 40px); margin: -4px -8px 0 -4px; padding: 4px 8px 24px 4px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--line2) transparent }
-  .switches { grid-template-columns: 1fr }
-  .seg2 .gn { display: inline }
-  .types { flex-direction: column; gap: 6px; margin: 0; padding: 0; overflow: visible }
-  .types button { grid-template-columns: 28px minmax(0, 1fr) auto; justify-content: stretch; column-gap: 12px; width: 100%; padding: 10px 13px 10px 12px }
-  .types .n { grid-column: auto; min-height: 0; text-align: right }
-  .bar { margin: 0; padding: 4px 0 14px }
-  .wall { grid-template-columns: repeat(auto-fill, minmax(156px, 1fr)) }
+  .layout { padding-top: 24px }
+  .wrap { max-width: 1240px }
+  #pickFilters { grid-template-columns: minmax(0, 1.25fr) minmax(0, 2.75fr) }
+  #pickFilters .chips { grid-column: 1 / -1 }
+  .wall { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) }
   .sheet { width: 440px; max-width: 440px; height: 100vh; max-height: 100vh; margin: 0 0 0 auto; border-radius: 0; box-shadow: -24px 0 60px rgba(0, 0, 0, .6) }
   .sheet[open] { animation-name: sheet-in }
   .sheet-in { height: 100%; padding: 22px 26px 26px }
@@ -558,7 +547,7 @@ a { color: inherit }
 </header>
 
 <div class="wrap layout">
-  <aside class="side" aria-label="車種與篩選">
+  <section class="side" aria-label="車種與篩選">
     <div class="switches">
       <nav class="seg2 views" role="tablist" aria-label="頁面">
         <button role="tab" id="view-pick" data-view="pick" aria-selected="true">選牌</button>
@@ -596,7 +585,7 @@ a { color: inherit }
     <section class="filters" id="bidFilters" aria-label="篩選標牌" hidden>
       <label class="field sel"><span class="fl">監理所／站</span><select id="bidPlace"></select></label>
     </section>
-  </aside>
+  </section>
 
   <main class="main">
     <section id="pickView" aria-label="選牌">
@@ -943,7 +932,6 @@ async function ensureGroup(group) {
   lastCheck = Date.now();
   if (state.group === group) {
     useGroup();
-    showSelectedType();
   } else {
     rebuildIndex();
     renderGroupTabs();
@@ -1179,6 +1167,7 @@ function updateTabCounts() {
   const types = GROUPS[state.group];
   if (box.dataset.group !== state.group) {
     box.dataset.group = state.group;
+    box.dataset.n = String(types.length);
     box.innerHTML = types.map(t => `<button role="tab" type="button" data-type="${esc(t)}" aria-selected="false">${swatchHTML(t)}<span class="t">${esc(t)}</span><span class="n"></span></button>`).join("");
   }
   const act = state.view === "bid" ? activeAuctions() : [];
@@ -1194,14 +1183,6 @@ function updateTabCounts() {
     }
     b.querySelector(".n").innerHTML = label;
   });
-}
-
-function showSelectedType() {
-  const rail = $("typeTabs");
-  const b = rail.querySelector('[aria-selected="true"]');
-  if (!b || rail.scrollWidth <= rail.clientWidth) return;
-  const l = b.offsetLeft, r = l + b.offsetWidth;
-  if (l < rail.scrollLeft + 8 || r > rail.scrollLeft + rail.clientWidth - 8) rail.scrollLeft = Math.max(0, l - 16);
 }
 
 function render() {
@@ -1247,7 +1228,6 @@ function setType(t) {
   buildPlaceSelect();
   buildBidPlaceSelect();
   render();
-  showSelectedType();
 }
 
 function setGroup(g) {
@@ -1256,7 +1236,6 @@ function setGroup(g) {
   if (!GROUPS[g].includes(state.type)) state.type = GROUPS[g][0];
   rememberType();
   useGroup();
-  showSelectedType();
   ensureGroup(g);
 }
 
