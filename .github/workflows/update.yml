@@ -29,12 +29,13 @@ jobs:
 
       - name: 有變動才提交
         run: |
+          # 只比較號碼與公告；抓取時間 updatedAt 每次都會變，不算變動
+          if python3 -I -c 'import json,sys; a=json.load(open(sys.argv[1])); b=json.load(open(sys.argv[2])); [x.pop("updatedAt",None) for x in (a,b)]; sys.exit(0 if a==b else 1)' "$RUNNER_TEMP/prev.json" plates.json; then
+            echo "car16 資料沒有變動，不提交"
+            exit 0
+          fi
           git config user.name "plates-bot"
           git config user.email "plates-bot@users.noreply.github.com"
           git add plates.json
-          if git diff --cached --quiet; then
-            echo "資料沒有變動"
-          else
-            git commit -m "每日更新 $(TZ=Asia/Taipei date +%F)"
-            git push
-          fi
+          git commit -m "資料更新 $(TZ=Asia/Taipei date '+%F %H:%M')"
+          git push
