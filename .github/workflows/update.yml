@@ -3,7 +3,7 @@ name: 每日更新車牌資料
 on:
   schedule:
     - cron: "7,22,37,52 * * * *"   # 每 15 分鐘檢查一次；car16 沒更新時不會提交
-  workflow_dispatch:         # 也可以在 Actions 頁面手動執行
+  workflow_dispatch:                 # 也可以在 Actions 頁面手動執行
 
 permissions:
   contents: write
@@ -24,18 +24,27 @@ jobs:
 
       - name: 從 car16 抓取選牌與標牌資料
         run: |
-          cp plates.json "$RUNNER_TEMP/prev.json"
-          python3 scripts/update_plates.py "$PWD/plates.json" "$RUNNER_TEMP/prev.json"
+          cp -r data "$RUNNER_TEMP/prev"
+          python3 scripts/update_plates.py "$PWD/data" "$RUNNER_TEMP/prev"
 
       - name: 有變動才提交
         run: |
           # 只比較號碼與公告；抓取時間 updatedAt 每次都會變，不算變動
-          if python3 -I -c 'import json,sys; a=json.load(open(sys.argv[1])); b=json.load(open(sys.argv[2])); [x.pop("updatedAt",None) for x in (a,b)]; sys.exit(0 if a==b else 1)' "$RUNNER_TEMP/prev.json" plates.json; then
+          if python3 -I - "$RUNNER_TEMP/prev" data <<'EOF'
+          import json, sys
+          for g in ("car", "moto"):
+              a = json.load(open(f"{sys.argv[1]}/{g}.json", encoding="utf-8"))
+              b = json.load(open(f"{sys.argv[2]}/{g}.json", encoding="utf-8"))
+              a.pop("updatedAt", None); b.pop("updatedAt", None)
+              if a != b:
+                  sys.exit(1)
+          EOF
+          then
             echo "car16 資料沒有變動，不提交"
             exit 0
           fi
           git config user.name "plates-bot"
           git config user.email "plates-bot@users.noreply.github.com"
-          git add plates.json
+          git add data
           git commit -m "資料更新 $(TZ=Asia/Taipei date '+%F %H:%M')"
           git push

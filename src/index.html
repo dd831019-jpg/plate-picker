@@ -203,6 +203,39 @@ main.wrap {
   background: var(--accent);
   color: #fff
 }
+.groups {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin: 4px 0 10px;
+  border-bottom: 1px solid var(--line)
+}
+.groups button {
+  background: none;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+  padding: 10px 4px 9px;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 8px
+}
+.groups .g {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: .2em
+}
+.groups .gn {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums
+}
+.groups button[aria-selected=true] {
+  color: var(--ink);
+  border-bottom-color: var(--ink)
+}
 .seg {
   display: grid;
   grid-template-columns: repeat(4,1fr);
@@ -229,6 +262,9 @@ main.wrap {
   color: var(--ink);
   text-align: center;
   word-break: keep-all
+}
+.seg.cols-3 {
+  grid-template-columns: repeat(3,1fr)
 }
 .seg .n {
   font-size: 12px;
@@ -755,16 +791,12 @@ footer a {
     <button role="tab" id="view-bid" data-view="bid" aria-selected="false">標牌</button>
   </nav>
 
-  <div class="seg" role="tablist" aria-label="車種" id="typeTabs">
-    <button role="tab" data-type="電動自小客" aria-selected="true"><span class="t">電動自小客</span><span class="n"></span></button>
-    <button role="tab" data-type="電動租賃車" aria-selected="false"><span class="t">電動租賃車</span><span class="n"></span></button>
-    <button role="tab" data-type="自用小客貨車" aria-selected="false"><span class="t">自用小客貨車</span><span class="n"></span></button>
-    <button role="tab" data-type="租賃小客貨車" aria-selected="false"><span class="t">租賃小客貨車</span><span class="n"></span></button>
-    <button role="tab" data-type="營業小客車" aria-selected="false"><span class="t">營業小客車</span><span class="n"></span></button>
-    <button role="tab" data-type="營業小貨車" aria-selected="false"><span class="t">營業小貨車</span><span class="n"></span></button>
-    <button role="tab" data-type="自用大貨車" aria-selected="false"><span class="t">自用大貨車</span><span class="n"></span></button>
-    <button role="tab" data-type="營業大貨車" aria-selected="false"><span class="t">營業大貨車</span><span class="n"></span></button>
+  <div class="groups" role="tablist" aria-label="汽車或機車" id="groupTabs">
+    <button role="tab" data-group="car" aria-selected="true"><span class="g">汽車</span><span class="gn"></span></button>
+    <button role="tab" data-group="moto" aria-selected="false"><span class="g">機車</span><span class="gn"></span></button>
   </div>
+
+  <div class="seg" role="tablist" aria-label="車種" id="typeTabs"></div>
 
   
   <section id="pickView" aria-label="選牌">
@@ -776,8 +808,8 @@ footer a {
 
       <div class="row3">
         <div><label class="label" for="q">號碼包含</label><input type="text" id="q" placeholder="EBQ、88" autocomplete="off"></div>
-        <div><label class="label" for="starts">開頭數字</label><input type="text" id="starts" inputmode="numeric" maxlength="4" placeholder="例 6" autocomplete="off"></div>
-        <div><label class="label" for="ends">結尾數字</label><input type="text" id="ends" inputmode="numeric" maxlength="4" placeholder="例 88" autocomplete="off"></div>
+        <div><label class="label" for="starts">開頭數字</label><input type="text" id="starts" inputmode="numeric" maxlength="5" placeholder="例 6" autocomplete="off"></div>
+        <div><label class="label" for="ends">結尾數字</label><input type="text" id="ends" inputmode="numeric" maxlength="5" placeholder="例 88" autocomplete="off"></div>
       </div>
 
       <div>
@@ -847,9 +879,18 @@ footer a {
   </section>
 </main>
 
-<script>const TYPES = [ "電動自小客", "電動租賃車", "自用小客貨車", "租賃小客貨車", "營業小客車", "營業小貨車", "自用大貨車", "營業大貨車" ];
+<script>const GROUPS = {
+    car: [ "電動自小客", "電動租賃車", "自用小客貨車", "租賃小客貨車", "營業小客車", "營業小貨車", "自用大貨車", "營業大貨車" ],
+    moto: [ "普通重型機車", "550cc以下重機", "550cc以上重機", "電動普通重型機車", "電動普通輕型機車", "微型電動二輪車" ]
+};
 
-const EV_TYPES = new Set([ "電動自小客", "電動租賃車" ]);
+const TYPES = [ ...GROUPS.car, ...GROUPS.moto ];
+
+const groupOf = t => GROUPS.moto.includes(t) ? "moto" : "car";
+
+const PLATE_RE = /^(?:[A-Z]{3}-\d{4}|[A-Z]{2}\d{5})$/;
+
+const EV_TYPES = new Set([ "電動自小客", "電動租賃車", "電動普通重型機車", "電動普通輕型機車" ]);
 
 const REGIONS = [ [ "臺北市區", [ "臺北市區監理所", "士林監理站", "基隆監理站", "金門監理站", "連江監理站" ] ], [ "臺北區", [ "臺北區監理所", "板橋監理站", "蘆洲監理站", "宜蘭監理站", "花蓮監理站", "玉里監理分站" ] ], [ "新竹區", [ "新竹區監理所", "新竹市監理站", "桃園監理站", "中壢監理站", "苗栗監理站" ] ], [ "臺中區", [ "臺中區監理所", "臺中市監理站", "豐原監理站", "彰化監理站", "南投監理站", "埔里監理分站" ] ], [ "嘉義區", [ "嘉義區監理所", "嘉義市監理站", "雲林監理站", "東勢監理分站", "新營監理站", "臺南監理站", "麻豆監理站" ] ], [ "高雄市區", [ "高雄市區監理所", "苓雅監理站", "旗山監理站" ] ], [ "高雄區", [ "高雄區監理所", "屏東監理站", "恆春監理分站", "臺東監理站", "澎湖監理站" ] ] ];
 
@@ -867,9 +908,9 @@ const regionOf = o => OFFICE_REGION.get(o) || OFFICE_REGION.get(baseOffice(o)) |
 const orderOf = o => OFFICE_ORDER.get(o) ?? OFFICE_ORDER.get(baseOffice(o)) ?? 999;
 
 function kindOf(d) {
-    if (/^(\d)\1{3}$/.test(d)) return "鐵支";
+    if (/^(\d)\1+$/.test(d)) return "鐵支";
     if (/(\d)\1\1/.test(d)) return "三條";
-    if (d[0] === d[1] && d[2] === d[3] && d[0] !== d[2]) return "2Pair";
+    if (/(\d)\1(?!\1)(\d)\2/.test(d)) return "2Pair";
     if (/(\d)\1/.test(d)) return "一對";
     return "";
 }
@@ -889,6 +930,7 @@ const TYPE_KEY = "ev-plates-type";
 
 const state = {
     view: "pick",
+    group: "car",
     type: TYPES[0],
     place: "",
     q: "",
@@ -915,6 +957,13 @@ let byPlate = new Map;
 
 let loaded = false;
 
+const store = {
+    car: null,
+    moto: null
+};
+
+const loading = {};
+
 let favs = [];
 
 try {
@@ -925,7 +974,10 @@ try {
 
 try {
     const t = localStorage.getItem(TYPE_KEY);
-    if (TYPES.includes(t)) state.type = t;
+    if (TYPES.includes(t)) {
+        state.type = t;
+        state.group = groupOf(t);
+    }
 } catch (e) {}
 
 const saveFavs = () => {
@@ -961,9 +1013,9 @@ function fmtTime(ms) {
     return `${p.month}/${p.day}（${String(p.weekday).slice(-1)}）${p.hour}:${p.minute}`;
 }
 
-async function loadData() {
+async function loadData(group) {
     try {
-        const r = await fetch("plates.json", {
+        const r = await fetch(`data/${group}.json`, {
             cache: "no-store"
         });
         if (!r.ok) return null;
@@ -979,9 +1031,9 @@ function normalize(data) {
     const out = [];
     for (const it of data.items) {
         const plate = String(it.plate || "").toUpperCase().trim();
-        if (!/^[A-Z]{3}-\d{4}$/.test(plate) || !TYPES.includes(it.type) || !it.office || seen.has(plate)) continue;
+        if (!PLATE_RE.test(plate) || !TYPES.includes(it.type) || !it.office || seen.has(plate)) continue;
         seen.add(plate);
-        const digits = plate.slice(4);
+        const digits = plate.match(/(\d+)$/)[1];
         const isNew = !!(meta.prevDate && meta.sourceDate && it.firstSeen === meta.sourceDate);
         out.push({
             plate: plate,
@@ -1008,20 +1060,48 @@ function normalizeAuctions(data) {
     }));
 }
 
-function applyData(data) {
+function prepare(data) {
     const isDate = s => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s);
-    meta.sourceDate = data && isDate(data.sourceDate) ? data.sourceDate : null;
-    meta.prevDate = data && isDate(data.previousSourceDate) ? data.previousSourceDate : null;
+    const m = {
+        sourceDate: data && isDate(data.sourceDate) ? data.sourceDate : null,
+        prevDate: data && isDate(data.previousSourceDate) ? data.previousSourceDate : null,
+        sourceUpdated: null
+    };
     const t = data && Date.parse(data.sourceUpdatedAt || data.updatedAt);
-    meta.sourceUpdated = t && !isNaN(t) ? t : null;
-    items = normalize(data);
-    auctions = normalizeAuctions(data);
-    byPlate = new Map(items.map(it => [ it.plate, it ]));
-    loaded = true;
-    $("dataTime").innerHTML = "更新時間：<b>" + (meta.sourceUpdated ? fmtTime(meta.sourceUpdated) : "—") + "</b>";
+    m.sourceUpdated = t && !isNaN(t) ? t : null;
+    Object.assign(meta, m);
+    return {
+        meta: m,
+        items: normalize(data),
+        auctions: normalizeAuctions(data)
+    };
+}
+
+function useGroup() {
+    const d = store[state.group];
+    loaded = !!d;
+    items = d ? d.items : [];
+    auctions = d ? d.auctions : [];
+    if (d) Object.assign(meta, d.meta);
+    byPlate = new Map;
+    Object.values(store).forEach(x => x && x.items.forEach(it => byPlate.set(it.plate, it)));
+    if (meta.sourceUpdated) $("dataTime").innerHTML = "更新時間：<b>" + fmtTime(meta.sourceUpdated) + "</b>";
     buildPlaceSelect();
     buildBidPlaceSelect();
     render();
+}
+
+async function ensureGroup(group) {
+    if (store[group] || loading[group]) return;
+    loading[group] = true;
+    const data = await loadData(group);
+    loading[group] = false;
+    store[group] = data ? prepare(data) : {
+        meta: {},
+        items: [],
+        auctions: []
+    };
+    if (state.group === group) useGroup(); else renderGroupTabs();
 }
 
 function matchesBase(it) {
@@ -1122,7 +1202,8 @@ function renderFavs() {
     } else {
         ul.innerHTML = favs.map(p => {
             const it = byPlate.get(p);
-            const s = it ? `${esc(it.office)} · ${esc(it.type)}` : items.length ? `<span class="gone">今天的清單裡沒有這個號碼，可能已被選走</span>` : "";
+            const allLoaded = store.car && store.moto && store.car.items.length && store.moto.items.length;
+            const s = it ? `${esc(it.office)} · ${esc(it.type)}` : allLoaded ? `<span class="gone">今天的清單裡沒有這個號碼，可能已被選走</span>` : "";
             return `<li><span class="p">${esc(p)}</span><span class="s">${s}</span><button data-remove="${esc(p)}">移除</button></li>`;
         }).join("");
     }
@@ -1178,10 +1259,31 @@ function renderBid() {
     $("aucList").innerHTML = list.map(a => `<li class="auc${a.live ? " live" : ""}">\n      <div class="auc-head">\n        <span class="pill">${a.live ? "競標中" : "即將開始"}</span>\n        <span class="auc-office">${esc(a.office)}</span>\n        <span class="auc-region">${esc(regionOf(a.office))}</span>\n      </div>\n      <div class="auc-range${/[,、]/.test(a.plates) ? " list" : ""}">${a.plates.split(/\s*[,、]\s*/).map(x => `<span class="nw">${esc(x.replace(/~/g, " ～ "))}</span>`).join("、")}</div>\n      <div class="auc-time"><span>競標期間</span>${fmtTime(a.start)} → ${fmtTime(a.end)}</div>\n    </li>`).join("");
 }
 
+function renderGroupTabs() {
+    document.querySelectorAll("#groupTabs button").forEach(b => {
+        const g = b.dataset.group;
+        b.setAttribute("aria-selected", String(g === state.group));
+        const d = store[g];
+        let label = "";
+        if (d && d.items.length) {
+            label = state.view === "bid" ? `${d.auctions.filter(a => a.end > Date.now()).length} 筆公告` : `${d.items.length.toLocaleString("en-US")} 面`;
+        }
+        b.querySelector(".gn").textContent = label;
+    });
+}
+
 function updateTabCounts() {
+    const box = $("typeTabs");
+    const types = GROUPS[state.group];
+    if (box.dataset.group !== state.group) {
+        box.dataset.group = state.group;
+        box.classList.toggle("cols-3", types.length % 3 === 0 && types.length % 4 !== 0);
+        box.innerHTML = types.map(t => `<button role="tab" data-type="${esc(t)}" aria-selected="false"><span class="t">${esc(t)}</span><span class="n"></span></button>`).join("");
+    }
     const act = activeAuctions();
-    document.querySelectorAll("#typeTabs button").forEach(b => {
+    box.querySelectorAll("button").forEach(b => {
         const t = b.dataset.type;
+        b.setAttribute("aria-selected", String(t === state.type));
         let label = "";
         if (state.view === "bid") {
             label = loaded ? `${act.filter(a => a.type === t).length} 筆公告` : "";
@@ -1198,7 +1300,7 @@ function render() {
     $("pickView").hidden = state.view !== "pick";
     $("bidView").hidden = state.view !== "bid";
     document.querySelectorAll(".views button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.view === state.view)));
-    document.querySelectorAll("#typeTabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.type === state.type)));
+    renderGroupTabs();
     updateTabCounts();
     if (state.view === "bid") renderBid(); else renderPick();
 }
@@ -1238,6 +1340,17 @@ function setType(t) {
     render();
 }
 
+function setGroup(g) {
+    if (g === state.group) return;
+    state.group = g;
+    if (!GROUPS[g].includes(state.type)) state.type = GROUPS[g][0];
+    try {
+        localStorage.setItem(TYPE_KEY, state.type);
+    } catch (e) {}
+    useGroup();
+    ensureGroup(g);
+}
+
 function applyHash() {
     state.view = location.hash === "#bid" ? "bid" : "pick";
     render();
@@ -1269,7 +1382,12 @@ document.querySelectorAll(".views button").forEach(b => b.addEventListener("clic
 
 window.addEventListener("hashchange", applyHash);
 
-document.querySelectorAll("#typeTabs button").forEach(b => b.addEventListener("click", () => setType(b.dataset.type)));
+$("typeTabs").addEventListener("click", e => {
+    const b = e.target.closest("[data-type]");
+    if (b) setType(b.dataset.type);
+});
+
+document.querySelectorAll("#groupTabs button").forEach(b => b.addEventListener("click", () => setGroup(b.dataset.group)));
 
 $("place").addEventListener("change", e => {
     state.place = e.target.value;
@@ -1287,7 +1405,7 @@ $("q").addEventListener("input", e => {
 });
 
 [ "starts", "ends" ].forEach(id => $(id).addEventListener("input", e => {
-    e.target.value = e.target.value.replace(/\D/g, "").slice(0, 4);
+    e.target.value = e.target.value.replace(/\D/g, "").slice(0, 5);
     state[id] = e.target.value;
     render();
 }));
@@ -1342,11 +1460,6 @@ state.view = location.hash === "#bid" ? "bid" : "pick";
 
 render();
 
-loadData().then(data => {
-    if (data) applyData(data); else {
-        loaded = true;
-        render();
-    }
-})</script>
+ensureGroup(state.group)</script>
 </body>
 </html>
