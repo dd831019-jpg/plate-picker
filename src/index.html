@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>選牌標牌</title>
+<meta name="description" content="全台監理所站可選車牌號碼與標牌公告，每小時更新。">
+<meta name="theme-color" content="#0a0b0d">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="選牌標牌">
+<meta property="og:title" content="選牌標牌">
+<meta property="og:description" content="全台可選車牌與標牌公告・每小時更新">
+<meta property="og:url" content="https://dd831019-jpg.github.io/plate-picker/">
+<meta property="og:image" content="https://dd831019-jpg.github.io/plate-picker/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>:root {
+  --bg: #0a0b0d;
+  --surface: #141619;
+  --surface-2: #1b1e22;
+  --line: #272b31;
+  --line-strong: #3a3f47;
+  --ink: #f3f4f6;
+  --muted: #99a1ad;
+  --accent: #e31937;
+  --accent-soft: rgba(227,25,55,.12);
+  --new: #34d399;
+  --new-ink: #052e1f;
+  --live: #f5a524;
+  --soon: #6ea8fe;
+  --heart: #ff4d5e;
+  --font-body: "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --font-plate: "Barlow Condensed","Arial Narrow","Roboto Condensed",sans-serif;
+  color-scheme: dark
+}
+* {
+  box-sizing: border-box
+}
+body,
+html {
+  margin: 0
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased
+}
+.wrap {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 16px
+}
+button,
+input,
+select {
+  font: inherit;
+  color: inherit
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px
+}
+[hidden] {
+  display: none!important
+}
+.top {
+  padding: 22px 0 6px;
+  background: radial-gradient(120% 140% at 0 0,rgba(227,25,55,.16),transparent 55%),var(--bg);
+  border-bottom: 1px solid var(--line)
+}
+.brandrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0
+}
+.mark {
+  flex: none;
+  width: 40px;
+  height: 26px;
+  border-radius: 6px;
+  background: #fff;
+  border: 2px solid #fff;
+  box-shadow: inset 0 0 0 2px #111;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-plate);
+  font-weight: 700;
+  font-size: 15px;
+  color: #111;
+  letter-spacing: .02em
+}
+h1 {
+  font-size: 24px;
+  line-height: 1.2;
+  margin: 0;
+  letter-spacing: .08em;
+  font-weight: 700;
+  text-wrap: balance
+}
+.sub {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--muted)
+}
+.refresh {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0 14px;
+  font-size: 14px;
+  cursor: pointer
+}
+.refresh:hover {
+  border-color: var(--muted)
+}
+.refresh:disabled {
+  opacity: .6;
+  cursor: default
+}
+.refresh svg {
+  width: 15px;
+  height: 15px
+}
+.upd {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 16px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums
+}
+.upd b {
+  color: var(--ink);
+  font-weight: 700
+}
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--new);
+  box-shadow: 0 0 0 3px rgba(52,211,153,.18)
+}
+.sep {
+  color: var(--line-strong)
+}
+.refresh-status {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--live);
+  min-height: 1.3em
+}
+main.wrap {
+  padding-top: 16px;
+  padding-bottom: 44px
+}
+.views {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 4px;
+  margin-bottom: 12px
+}
+.views button {
+  height: 42px;
+  border: 0;
+  border-radius: 10px;
+  background: 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  cursor: pointer
+}
+.views button[aria-selected=true] {
+  background: var(--accent);
+  color: #fff
+}
+.seg {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 6px;
+  margin-bottom: 12px
+}
+.seg button {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 8px 2px;
+  align-content: center;
+  min-height: 58px;
+  display: grid;
+  gap: 2px;
+  justify-items: center;
+  cursor: pointer;
+  line-height: 1.35;
+  color: var(--muted)
+}
+.seg .t {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--ink);
+  text-align: center;
+  word-break: keep-all
+}
+.seg .n {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  min-height: 1.35em
+}
+.seg button[aria-selected=true] {
+  border-color: var(--accent);
+  background: var(--accent-soft)
+}
+.seg button[aria-selected=true] .n {
+  color: #ffb3bf
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px
+}
+.filters {
+  display: grid;
+  gap: 16px
+}
+.label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  margin: 0 0 6px;
+  letter-spacing: .04em
+}
+input[type=text],
+select {
+  width: 100%;
+  min-width: 0;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--ink)
+}
+input[type=text]:focus,
+select:focus {
+  border-color: var(--accent);
+  outline: 0;
+  box-shadow: 0 0 0 3px var(--accent-soft)
+}
+input::placeholder {
+  color: #5f6772
+}
+.row3 {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 8px
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  border-radius: 999px;
+  padding: 0 12px;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--ink)
+}
+.chip small {
+  font-family: var(--font-plate);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: .06em
+}
+.chip .cnt {
+  min-width: 22px;
+  text-align: center;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  background: var(--bg);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 1px 7px
+}
+.chip.zero {
+  opacity: .45
+}
+.chip:hover {
+  border-color: var(--line-strong)
+}
+.chip[aria-pressed=true] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff
+}
+.chip[aria-pressed=true] .cnt,
+.chip[aria-pressed=true] small {
+  color: #fff;
+  background: rgba(0,0,0,.22)
+}
+.chip.new-chip {
+  border-color: rgba(52,211,153,.5);
+  color: var(--new)
+}
+.chip.new-chip[aria-pressed=true] {
+  background: var(--new);
+  border-color: var(--new);
+  color: var(--new-ink)
+}
+.tools {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: end
+}
+.btn {
+  height: 42px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  border-radius: 10px;
+  padding: 0 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  color: var(--ink)
+}
+.btn:hover {
+  border-color: var(--line-strong)
+}
+.btn[aria-pressed=true] {
+  border-color: var(--heart);
+  color: var(--heart);
+  background: rgba(255,77,94,.1)
+}
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 500
+}
+a.btn {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none
+}
+.summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 22px 2px 12px;
+  font-size: 14px;
+  color: var(--muted)
+}
+.summary b {
+  font-family: var(--font-plate);
+  font-size: 30px;
+  line-height: 1;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  margin-right: 4px
+}
+.summary .plus {
+  color: var(--new);
+  font-weight: 500
+}
+.reset {
+  border: 0;
+  background: 0 0;
+  color: #ff8a9a;
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px
+}
+.note {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px
+}
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(156px,1fr));
+  gap: 10px
+}
+.pcard {
+  background: linear-gradient(180deg,#181a1e,#131518);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 6px 12px 12px;
+  display: grid;
+  grid-template-rows: 30px auto 22px 22px;
+  justify-items: center;
+  align-items: center;
+  row-gap: 4px;
+  transition: border-color .15s
+}
+.pcard:hover {
+  border-color: var(--line-strong)
+}
+.pcard.is-new {
+  border-color: rgba(52,211,153,.7);
+  box-shadow: 0 0 0 1px rgba(52,211,153,.35),0 6px 20px rgba(52,211,153,.08)
+}
+.pcard-top {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center
+}
+.badge-new {
+  background: var(--new);
+  color: var(--new-ink);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 999px
+}
+.fav {
+  margin-left: auto;
+  width: 32px;
+  height: 30px;
+  border: 0;
+  background: 0 0;
+  cursor: pointer;
+  color: #4a5059;
+  display: grid;
+  place-items: center;
+  border-radius: 8px
+}
+.fav svg {
+  width: 20px;
+  height: 20px
+}
+.fav[aria-pressed=true] {
+  color: var(--heart)
+}
+.fav:hover {
+  color: var(--heart)
+}
+.plate {
+  background: #fdfdfd;
+  color: #111;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 2px #111,0 2px 0 rgba(0,0,0,.4);
+  padding: 4px 10px 6px;
+  display: grid;
+  justify-items: center;
+  line-height: 1;
+  width: 100%;
+  max-width: 152px
+}
+.plate small {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .35em;
+  padding-left: .35em;
+  min-height: 10px;
+  color: #222
+}
+.plate span {
+  font-family: var(--font-plate);
+  font-weight: 700;
+  font-size: 30px;
+  letter-spacing: .03em;
+  white-space: nowrap;
+  font-stretch: condensed
+}
+.office {
+  font-size: 13px;
+  color: #d4d8de;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%
+}
+.meta {
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  gap: 4px
+}
+.tag {
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 0 6px;
+  line-height: 18px
+}
+.tag.kind {
+  border-color: rgba(227,25,55,.55);
+  color: #ff9aa8
+}
+.empty,
+.notice {
+  background: var(--surface);
+  border: 1px dashed var(--line-strong);
+  border-radius: 16px;
+  padding: 28px 18px;
+  text-align: center;
+  color: var(--muted)
+}
+.notice h2 {
+  color: var(--ink);
+  font-size: 18px;
+  margin: 0 0 6px
+}
+.auc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px
+}
+.auc {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: grid;
+  gap: 8px;
+  position: relative;
+  overflow: hidden
+}
+.auc::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--soon)
+}
+.auc.live::before {
+  background: var(--live)
+}
+.auc-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap
+}
+.pill {
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 1px 10px;
+  color: var(--soon);
+  background: rgba(110,168,254,.12)
+}
+.auc.live .pill {
+  color: var(--live);
+  background: rgba(245,165,36,.14)
+}
+.auc-office {
+  font-weight: 700
+}
+.auc-region {
+  font-size: 13px;
+  color: var(--muted)
+}
+.auc-range {
+  font-family: var(--font-plate);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: .04em;
+  line-height: 1.1;
+  word-break: break-word
+}
+.auc-range.list {
+  font-size: 19px;
+  line-height: 1.4;
+  letter-spacing: .02em
+}
+.auc-range .nw {
+  white-space: nowrap
+}
+.auc-time {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  color: #d4d8de
+}
+.auc-time span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 2px
+}
+.favs {
+  margin-top: 28px
+}
+.favs h2 {
+  font-size: 16px;
+  margin: 0 0 8px
+}
+.favlist {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0
+}
+.favlist li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  padding: 9px 0
+}
+.favlist .p {
+  font-family: var(--font-plate);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: .03em
+}
+.favlist .s {
+  font-size: 13px;
+  color: var(--muted)
+}
+.favlist .gone {
+  color: var(--heart)
+}
+.favlist button {
+  border: 0;
+  background: 0 0;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px
+}
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center
+}
+.status {
+  font-size: 13px;
+  color: var(--new);
+  min-height: 1em
+}
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 400
+}
+footer {
+  color: #6f7782;
+  font-size: 12px;
+  line-height: 1.8;
+  padding: 32px 0 44px;
+  text-align: center
+}
+footer a {
+  color: inherit
+}
+@media (max-width:420px) {
+  h1 {
+    font-size: 22px
+  }
+  .row3 {
+    gap: 6px
+  }
+  .grid {
+    grid-template-columns: repeat(2,1fr);
+    gap: 8px
+  }
+  .pcard {
+    padding: 6px 8px 10px
+  }
+  .plate {
+    padding: 4px 6px 6px
+  }
+  .plate span {
+    font-size: clamp(20px,6.4vw,27px)
+  }
+  .seg .t {
+    font-size: 12px
+  }
+  .seg .n {
+    font-size: 11px
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  * {
+    transition: none!important
+  }
+}</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brandrow">
+      <div class="brand">
+        <span class="mark" aria-hidden="true">EV</span>
+        <div>
+          <h1>選牌標牌</h1>
+          <p class="sub">全台可選號碼與標牌公告</p>
+        </div>
+      </div>
+      <button class="refresh" id="refresh" aria-describedby="refreshStatus">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/></svg>
+        <span>更新資料</span>
+      </button>
+    </div>
+    <p class="upd" id="upd"><span class="live-dot" aria-hidden="true"></span><span><b>每小時</b>自動更新</span><span class="sep" aria-hidden="true">｜</span><span id="dataTime">資料時間：—</span><span class="sep" aria-hidden="true">｜</span><span id="siteTime">網站更新：—</span></p>
+    <p class="refresh-status" id="refreshStatus" role="status"></p>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="views" role="tablist" aria-label="頁面">
+    <button role="tab" id="view-pick" data-view="pick" aria-selected="true">選牌</button>
+    <button role="tab" id="view-bid" data-view="bid" aria-selected="false">標牌</button>
+  </nav>
+
+  <div class="seg" role="tablist" aria-label="車種" id="typeTabs">
+    <button role="tab" data-type="電動自小客" aria-selected="true"><span class="t">電動自小客</span><span class="n"></span></button>
+    <button role="tab" data-type="電動租賃車" aria-selected="false"><span class="t">電動租賃車</span><span class="n"></span></button>
+    <button role="tab" data-type="自用小客貨車" aria-selected="false"><span class="t">自用小客貨車</span><span class="n"></span></button>
+    <button role="tab" data-type="租賃小客貨車" aria-selected="false"><span class="t">租賃小客貨車</span><span class="n"></span></button>
+    <button role="tab" data-type="營業小客車" aria-selected="false"><span class="t">營業小客車</span><span class="n"></span></button>
+    <button role="tab" data-type="營業小貨車" aria-selected="false"><span class="t">營業小貨車</span><span class="n"></span></button>
+    <button role="tab" data-type="自用大貨車" aria-selected="false"><span class="t">自用大貨車</span><span class="n"></span></button>
+    <button role="tab" data-type="營業大貨車" aria-selected="false"><span class="t">營業大貨車</span><span class="n"></span></button>
+  </div>
+
+  
+  <section id="pickView" aria-label="選牌">
+    <section class="panel filters" aria-label="篩選">
+      <div>
+        <label class="label" for="place">監理所／站</label>
+        <select id="place"></select>
+      </div>
+
+      <div class="row3">
+        <div><label class="label" for="q">號碼包含</label><input type="text" id="q" placeholder="EBQ、88" autocomplete="off"></div>
+        <div><label class="label" for="starts">開頭數字</label><input type="text" id="starts" inputmode="numeric" maxlength="4" placeholder="例 6" autocomplete="off"></div>
+        <div><label class="label" for="ends">結尾數字</label><input type="text" id="ends" inputmode="numeric" maxlength="4" placeholder="例 88" autocomplete="off"></div>
+      </div>
+
+      <div>
+        <span class="label" id="chipsLabel">號碼組合</span>
+        <div class="chips" id="chips" aria-labelledby="chipsLabel">
+          <button class="chip new-chip" id="newOnly" aria-pressed="false" hidden>新增</button>
+          <button class="chip" data-pattern="鐵支" aria-pressed="false">鐵支 <small>AAAA</small><span class="cnt"></span></button>
+          <button class="chip" data-pattern="三條" aria-pressed="false">三條 <small>AAA</small><span class="cnt"></span></button>
+          <button class="chip" data-pattern="2Pair" aria-pressed="false">2Pair <small>AABB</small><span class="cnt"></span></button>
+          <button class="chip" data-pattern="一對" aria-pressed="false">一對 <small>AA</small><span class="cnt"></span></button>
+          <button class="chip" data-pattern="無0" aria-pressed="false">不含 0<span class="cnt"></span></button>
+          <button class="chip" data-pattern="流標牌" aria-pressed="false" hidden>流標牌<span class="cnt"></span></button>
+        </div>
+      </div>
+
+      <div class="tools">
+        <div>
+          <label class="label" for="sort">排序</label>
+          <select id="sort">
+            <option value="num-asc">號碼 小→大</option>
+            <option value="num-desc">號碼 大→小</option>
+            <option value="office">依監理所／站（北→南）</option>
+            <option value="new">新增的排前面</option>
+          </select>
+        </div>
+        <button class="btn" id="favOnly" aria-pressed="false">♥ 只看收藏</button>
+      </div>
+    </section>
+
+    <div class="summary" aria-live="polite">
+      <span id="summaryText">—</span>
+      <button class="reset" id="reset" hidden>清除篩選</button>
+    </div>
+    <p class="note" id="newHint" hidden></p>
+
+    <div class="notice" id="noData" hidden>
+      <h2>還沒有車牌資料</h2>
+      <p>資料讀取失敗，請按右上角「更新資料」再試一次。</p>
+    </div>
+    <div class="empty" id="empty" hidden>沒有符合條件的號碼，試著放寬篩選。</div>
+    <ul class="grid" id="grid"></ul>
+    <div id="moreSentinel" aria-hidden="true" style="* {
+  height: 1px
+}"></div>
+
+    <section class="panel favs" aria-labelledby="favTitle">
+      <h2 id="favTitle">我的收藏 <span id="favCount" class="muted"></span></h2>
+      <ul class="favlist" id="favList"></ul>
+      <div class="actions">
+        <button class="btn primary" id="copyFavs">複製收藏清單</button>
+        <a class="btn" id="lineShare" href="https://line.me/R/share" target="_blank" rel="noopener">用 LINE 傳送</a>
+        <span class="status" id="copyStatus" role="status"></span>
+      </div>
+    </section>
+  </section>
+
+  
+  <section id="bidView" aria-label="標牌" hidden>
+    <section class="panel" aria-label="篩選">
+      <label class="label" for="bidPlace">監理所／站</label>
+      <select id="bidPlace"></select>
+    </section>
+    <div class="summary" aria-live="polite"><span id="bidSummary">—</span></div>
+    <p class="note">標牌要在監理服務網用自然人憑證登入後競標。號碼級別、底價與規定以各監理所站的公告為準。</p>
+    <div class="empty" id="bidEmpty" hidden></div>
+    <ul class="auc-list" id="aucList"></ul>
+  </section>
+</main>
+
+<script>const TYPES = [ "電動自小客", "電動租賃車", "自用小客貨車", "租賃小客貨車", "營業小客車", "營業小貨車", "自用大貨車", "營業大貨車" ];
+
+const EV_TYPES = new Set([ "電動自小客", "電動租賃車" ]);
+
+const REGIONS = [ [ "臺北市區", [ "臺北市區監理所", "士林監理站", "基隆監理站", "金門監理站", "連江監理站" ] ], [ "臺北區", [ "臺北區監理所", "板橋監理站", "蘆洲監理站", "宜蘭監理站", "花蓮監理站", "玉里監理分站" ] ], [ "新竹區", [ "新竹區監理所", "新竹市監理站", "桃園監理站", "中壢監理站", "苗栗監理站" ] ], [ "臺中區", [ "臺中區監理所", "臺中市監理站", "豐原監理站", "彰化監理站", "南投監理站", "埔里監理分站" ] ], [ "嘉義區", [ "嘉義區監理所", "嘉義市監理站", "雲林監理站", "東勢監理分站", "新營監理站", "臺南監理站", "麻豆監理站" ] ], [ "高雄市區", [ "高雄市區監理所", "苓雅監理站", "旗山監理站" ] ], [ "高雄區", [ "高雄區監理所", "屏東監理站", "恆春監理分站", "臺東監理站", "澎湖監理站" ] ] ];
+
+const OFFICE_ORDER = new Map, OFFICE_REGION = new Map;
+
+REGIONS.forEach(([r, list]) => list.forEach(o => {
+    OFFICE_ORDER.set(o, OFFICE_ORDER.size);
+    OFFICE_REGION.set(o, r);
+}));
+
+const baseOffice = o => o.split("-")[0];
+
+const regionOf = o => OFFICE_REGION.get(o) || OFFICE_REGION.get(baseOffice(o)) || "其他";
+
+const orderOf = o => OFFICE_ORDER.get(o) ?? OFFICE_ORDER.get(baseOffice(o)) ?? 999;
+
+function kindOf(d) {
+    if (/^(\d)\1{3}$/.test(d)) return "鐵支";
+    if (/(\d)\1\1/.test(d)) return "三條";
+    if (d[0] === d[1] && d[2] === d[3] && d[0] !== d[2]) return "2Pair";
+    if (/(\d)\1/.test(d)) return "一對";
+    return "";
+}
+
+const PATTERNS = {
+    "鐵支": it => it.kind === "鐵支",
+    "三條": it => it.kind === "三條",
+    "2Pair": it => it.kind === "2Pair",
+    "一對": it => it.kind === "一對",
+    "無0": it => !it.digits.includes("0"),
+    "流標牌": it => it.tag === "流標牌"
+};
+
+const FAV_KEY = "ev-plates-favs";
+
+const TYPE_KEY = "ev-plates-type";
+
+const state = {
+    view: "pick",
+    type: TYPES[0],
+    place: "",
+    q: "",
+    starts: "",
+    ends: "",
+    pattern: "",
+    sort: "num-asc",
+    favOnly: false,
+    newOnly: false,
+    bidPlace: ""
+};
+
+const meta = {
+    sourceDate: null,
+    prevDate: null,
+    sourceUpdated: null
+};
+
+const md = d => d ? `${+d.slice(5, 7)}/${+d.slice(8, 10)}` : "";
+
+let items = [], auctions = [];
+
+let byPlate = new Map;
+
+let loaded = false;
+
+let favs = [];
+
+try {
+    favs = JSON.parse(localStorage.getItem(FAV_KEY) || "[]").filter(p => typeof p === "string");
+} catch (e) {
+    favs = [];
+}
+
+try {
+    const t = localStorage.getItem(TYPE_KEY);
+    if (TYPES.includes(t)) state.type = t;
+} catch (e) {}
+
+const saveFavs = () => {
+    try {
+        localStorage.setItem(FAV_KEY, JSON.stringify(favs));
+    } catch (e) {}
+};
+
+const $ = id => document.getElementById(id);
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+}[c]));
+
+const HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.3C.9 8.4 2.9 4.5 6.6 4.1c2.1-.2 3.9.9 5.4 2.8 1.5-1.9 3.3-3 5.4-2.8 3.7.4 5.7 4.3 4.2 7.6C19.5 16.4 12 21 12 21z"/></svg>';
+
+const TPE = new Intl.DateTimeFormat("zh-TW", {
+    timeZone: "Asia/Taipei",
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+    weekday: "short"
+});
+
+function fmtTime(ms) {
+    const p = Object.fromEntries(TPE.formatToParts(new Date(ms)).map(x => [ x.type, x.value ]));
+    return `${p.month}/${p.day}（${String(p.weekday).slice(-1)}）${p.hour}:${p.minute}`;
+}
+
+async function loadData() {
+    try {
+        const r = await fetch("plates.json", {
+            cache: "no-store"
+        });
+        if (!r.ok) return null;
+        return await r.json();
+    } catch (e) {
+        return null;
+    }
+}
+
+function normalize(data) {
+    if (!data || !Array.isArray(data.items)) return [];
+    const seen = new Set;
+    const out = [];
+    for (const it of data.items) {
+        const plate = String(it.plate || "").toUpperCase().trim();
+        if (!/^[A-Z]{3}-\d{4}$/.test(plate) || !TYPES.includes(it.type) || !it.office || seen.has(plate)) continue;
+        seen.add(plate);
+        const digits = plate.slice(4);
+        const isNew = !!(meta.prevDate && meta.sourceDate && it.firstSeen === meta.sourceDate);
+        out.push({
+            plate: plate,
+            digits: digits,
+            kind: kindOf(digits),
+            type: it.type,
+            office: String(it.office),
+            isNew: isNew,
+            newTime: isNew && /^\d{2}:\d{2}$/.test(it.firstSeenTime || "") ? it.firstSeenTime : "",
+            tag: typeof it.tag === "string" ? it.tag : ""
+        });
+    }
+    return out;
+}
+
+function normalizeAuctions(data) {
+    if (!data || !Array.isArray(data.auctions)) return [];
+    return data.auctions.filter(a => a && TYPES.includes(a.type) && a.office && a.plates && !isNaN(Date.parse(a.start)) && !isNaN(Date.parse(a.end))).map(a => ({
+        type: a.type,
+        office: String(a.office),
+        plates: String(a.plates),
+        start: Date.parse(a.start),
+        end: Date.parse(a.end)
+    }));
+}
+
+function applyData(data) {
+    const isDate = s => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s);
+    meta.sourceDate = data && isDate(data.sourceDate) ? data.sourceDate : null;
+    meta.prevDate = data && isDate(data.previousSourceDate) ? data.previousSourceDate : null;
+    const t = data && Date.parse(data.sourceUpdatedAt || data.updatedAt);
+    meta.sourceUpdated = t && !isNaN(t) ? t : null;
+    items = normalize(data);
+    auctions = normalizeAuctions(data);
+    byPlate = new Map(items.map(it => [ it.plate, it ]));
+    loaded = true;
+    $("dataTime").textContent = "資料時間：" + (meta.sourceUpdated ? fmtTime(meta.sourceUpdated) : "—");
+    const site = data && Date.parse(data.updatedAt);
+    $("siteTime").textContent = "網站更新：" + (site && !isNaN(site) ? fmtTime(site) : "—");
+    buildPlaceSelect();
+    buildBidPlaceSelect();
+    render();
+}
+
+function matchesBase(it) {
+    if (it.type !== state.type) return false;
+    if (state.place.startsWith("r:") && regionOf(it.office) !== state.place.slice(2)) return false;
+    if (state.place.startsWith("o:") && it.office !== state.place.slice(2)) return false;
+    if (state.q && !it.plate.replace("-", "").includes(state.q.replace("-", "").toUpperCase())) return false;
+    if (state.starts && !it.digits.startsWith(state.starts)) return false;
+    if (state.ends && !it.digits.endsWith(state.ends)) return false;
+    if (state.favOnly && !favs.includes(it.plate)) return false;
+    if (state.newOnly && !it.isNew) return false;
+    return true;
+}
+
+const matches = it => matchesBase(it) && (!state.pattern || PATTERNS[state.pattern](it));
+
+function sorted(list) {
+    const byNum = (a, b) => a.digits.localeCompare(b.digits) || a.plate.localeCompare(b.plate);
+    if (state.sort === "num-desc") return list.sort((a, b) => byNum(b, a));
+    if (state.sort === "office") return list.sort((a, b) => orderOf(a.office) - orderOf(b.office) || a.office.localeCompare(b.office) || byNum(a, b));
+    if (state.sort === "new") return list.sort((a, b) => b.isNew - a.isNew || b.newTime.localeCompare(a.newTime) || byNum(a, b));
+    return list.sort(byNum);
+}
+
+function placeOptions(offices, allLabel) {
+    const regionCounts = new Map;
+    offices.forEach((n, o) => regionCounts.set(regionOf(o), (regionCounts.get(regionOf(o)) || 0) + n));
+    const total = [ ...offices.values() ].reduce((a, b) => a + b, 0);
+    let html = `<option value="">${allLabel}（${total}）</option>`;
+    const groups = REGIONS.map(([r, list]) => [ r, list ]);
+    const extra = [ ...offices.keys() ].filter(o => regionOf(o) === "其他");
+    if (extra.length) groups.push([ "其他", extra ]);
+    for (const [r, list] of groups) {
+        const names = [ ...new Set([ ...list, ...[ ...offices.keys() ].filter(o => regionOf(o) === r && !list.includes(o)) ]) ];
+        html += `<optgroup label="${esc(r)}"><option value="r:${esc(r)}">${esc(r)}全部（${regionCounts.get(r) || 0}）</option>`;
+        for (const o of names) html += `<option value="o:${esc(o)}">${esc(o)}（${offices.get(o) || 0}）</option>`;
+        html += `</optgroup>`;
+    }
+    return html;
+}
+
+function buildPlaceSelect() {
+    const counts = new Map;
+    items.filter(it => it.type === state.type).forEach(it => counts.set(it.office, (counts.get(it.office) || 0) + 1));
+    const sel = $("place");
+    sel.innerHTML = placeOptions(counts, "全台全部");
+    sel.value = [ ...sel.options ].some(o => o.value === state.place) ? state.place : "";
+    state.place = sel.value;
+}
+
+function cardHTML(it) {
+    const on = favs.includes(it.plate);
+    return `<li class="pcard${it.isNew ? " is-new" : ""}">\n    <div class="pcard-top">\n      ${it.isNew ? `<span class="badge-new">${md(meta.sourceDate)}${it.newTime ? " " + it.newTime : ""} 新增</span>` : ""}\n      <button class="fav" data-plate="${esc(it.plate)}" aria-pressed="${on}" aria-label="${on ? "取消收藏" : "收藏"} ${esc(it.plate)}">${HEART}</button>\n    </div>\n    <div class="plate"><small>${EV_TYPES.has(it.type) ? "電動車" : ""}</small><span>${esc(it.plate)}</span></div>\n    <div class="office">${esc(it.office)}</div>\n    <div class="meta">${it.kind && it.kind !== "一對" ? `<span class="tag kind">${esc(it.kind)}</span>` : ""}${it.tag ? `<span class="tag">${esc(it.tag)}</span>` : ""}</div>\n  </li>`;
+}
+
+function isFiltered() {
+    return state.place || state.q || state.starts || state.ends || state.pattern || state.favOnly || state.newOnly;
+}
+
+function renderChips(base) {
+    document.querySelectorAll("[data-pattern]").forEach(c => {
+        const n = base.filter(PATTERNS[c.dataset.pattern]).length;
+        c.querySelector(".cnt").textContent = n;
+        c.classList.toggle("zero", n === 0);
+        c.setAttribute("aria-pressed", String(c.dataset.pattern === state.pattern));
+    });
+    const ofType = items.filter(it => it.type === state.type);
+    const hasTagged = ofType.some(it => it.tag === "流標牌");
+    document.querySelector('[data-pattern="流標牌"]').hidden = !hasTagged;
+}
+
+function renderPick() {
+    if (state.pattern === "流標牌" && !items.some(it => it.type === state.type && it.tag === "流標牌")) state.pattern = "";
+    const base = items.filter(matchesBase);
+    const list = sorted(base.filter(it => !state.pattern || PATTERNS[state.pattern](it)));
+    const ofType = items.filter(it => it.type === state.type);
+    const newCount = ofType.filter(it => it.isNew).length;
+    currentList = list;
+    shown = Math.min(CHUNK, list.length);
+    $("grid").innerHTML = list.slice(0, shown).map(cardHTML).join("");
+    $("noData").hidden = !(loaded && items.length === 0);
+    $("empty").hidden = !(items.length > 0 && list.length === 0);
+    $("summaryText").innerHTML = items.length ? `<b>${list.length}</b> 面符合　·　${esc(state.type)}共 ${ofType.length} 面` + (meta.prevDate ? `　·　<span class="plus">${md(meta.sourceDate)} 新增 ${newCount} 面</span>` : "") : loaded ? "—" : "讀取中…";
+    renderChips(base);
+    $("newOnly").hidden = !meta.prevDate;
+    $("newOnly").textContent = `只看 ${md(meta.sourceDate)} 新增（${newCount}）`;
+    $("newHint").hidden = !(loaded && items.length && !meta.prevDate);
+    $("newHint").textContent = "從下一次每日更新開始，比前一天多出來的號碼會標上「新增」。";
+    $("reset").hidden = !isFiltered();
+    renderFavs();
+}
+
+function renderFavs() {
+    $("favCount").textContent = `（${favs.length}）`;
+    const ul = $("favList");
+    if (!favs.length) {
+        ul.innerHTML = `<li><span></span><span class="s">點車牌右上角的愛心，就會加到這裡。</span><span></span></li>`;
+    } else {
+        ul.innerHTML = favs.map(p => {
+            const it = byPlate.get(p);
+            const s = it ? `${esc(it.office)} · ${esc(it.type)}` : items.length ? `<span class="gone">今天的清單裡沒有這個號碼，可能已被選走</span>` : "";
+            return `<li><span class="p">${esc(p)}</span><span class="s">${s}</span><button data-remove="${esc(p)}">移除</button></li>`;
+        }).join("");
+    }
+    $("lineShare").href = "https://line.me/R/share?text=" + encodeURIComponent(shareText());
+}
+
+function shareText() {
+    if (!favs.length) return "選牌標牌：全台監理站可選的車牌號碼與標牌公告";
+    const lines = favs.map(p => {
+        const it = byPlate.get(p);
+        return it ? `${p}（${it.office}）` : p;
+    });
+    return "我收藏的車牌：\n" + lines.join("\n");
+}
+
+function toggleFav(plate) {
+    const i = favs.indexOf(plate);
+    if (i >= 0) favs.splice(i, 1); else favs.push(plate);
+    saveFavs();
+    if (state.favOnly) return render();
+    const on = favs.includes(plate);
+    document.querySelectorAll("#grid .fav").forEach(b => {
+        if (b.dataset.plate !== plate) return;
+        b.setAttribute("aria-pressed", String(on));
+        b.setAttribute("aria-label", `${on ? "取消收藏" : "收藏"} ${plate}`);
+    });
+    renderFavs();
+}
+
+function activeAuctions() {
+    const now = Date.now();
+    return auctions.filter(a => a.end > now).map(a => ({
+        ...a,
+        live: a.start <= now
+    }));
+}
+
+function buildBidPlaceSelect() {
+    const counts = new Map;
+    activeAuctions().filter(a => a.type === state.type).forEach(a => counts.set(a.office, (counts.get(a.office) || 0) + 1));
+    const sel = $("bidPlace");
+    sel.innerHTML = placeOptions(counts, "全台全部");
+    sel.value = [ ...sel.options ].some(o => o.value === state.bidPlace) ? state.bidPlace : "";
+    state.bidPlace = sel.value;
+}
+
+function renderBid() {
+    const list = activeAuctions().filter(a => a.type === state.type).filter(a => !state.bidPlace || (state.bidPlace.startsWith("o:") ? a.office === state.bidPlace.slice(2) : regionOf(a.office) === state.bidPlace.slice(2))).sort((a, b) => b.live - a.live || a.start - b.start || orderOf(a.office) - orderOf(b.office) || a.plates.localeCompare(b.plates));
+    const live = list.filter(a => a.live).length;
+    $("bidSummary").innerHTML = loaded ? `競標中 <b>${live}</b> 筆　·　即將開始 <b>${list.length - live}</b> 筆` : "讀取中…";
+    $("bidEmpty").hidden = !loaded || list.length > 0;
+    $("bidEmpty").textContent = !items.length ? "還沒有資料，請按右上角「更新資料」再試一次。" : `目前沒有${state.type}的標牌公告。`;
+    $("aucList").innerHTML = list.map(a => `<li class="auc${a.live ? " live" : ""}">\n      <div class="auc-head">\n        <span class="pill">${a.live ? "競標中" : "即將開始"}</span>\n        <span class="auc-office">${esc(a.office)}</span>\n        <span class="auc-region">${esc(regionOf(a.office))}</span>\n      </div>\n      <div class="auc-range${/[,、]/.test(a.plates) ? " list" : ""}">${a.plates.split(/\s*[,、]\s*/).map(x => `<span class="nw">${esc(x.replace(/~/g, " ～ "))}</span>`).join("、")}</div>\n      <div class="auc-time"><span>競標期間</span>${fmtTime(a.start)} → ${fmtTime(a.end)}</div>\n    </li>`).join("");
+}
+
+function updateTabCounts() {
+    const act = activeAuctions();
+    document.querySelectorAll("#typeTabs button").forEach(b => {
+        const t = b.dataset.type;
+        let label = "";
+        if (state.view === "bid") {
+            label = loaded ? `${act.filter(a => a.type === t).length} 筆公告` : "";
+        } else if (items.length) {
+            const all = items.filter(it => it.type === t);
+            const n = all.filter(it => it.isNew).length;
+            label = `${all.length} 面${n ? `・新增 ${n}` : ""}`;
+        }
+        b.querySelector(".n").textContent = label;
+    });
+}
+
+function render() {
+    $("pickView").hidden = state.view !== "pick";
+    $("bidView").hidden = state.view !== "bid";
+    document.querySelectorAll(".views button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.view === state.view)));
+    document.querySelectorAll("#typeTabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.type === state.type)));
+    updateTabCounts();
+    if (state.view === "bid") renderBid(); else renderPick();
+}
+
+const CHUNK = 300;
+
+let currentList = [], shown = 0;
+
+function appendMore() {
+    if (state.view !== "pick" || shown >= currentList.length) return;
+    const next = currentList.slice(shown, shown + CHUNK);
+    $("grid").insertAdjacentHTML("beforeend", next.map(cardHTML).join(""));
+    shown += next.length;
+}
+
+if ("IntersectionObserver" in window) {
+    new IntersectionObserver(es => {
+        if (es.some(e => e.isIntersecting)) appendMore();
+    }, {
+        rootMargin: "1200px 0px"
+    }).observe($("moreSentinel"));
+} else {
+    window.addEventListener("scroll", () => {
+        if (window.innerHeight + window.scrollY > document.body.offsetHeight - 1500) appendMore();
+    }, {
+        passive: true
+    });
+}
+
+function setType(t) {
+    state.type = t;
+    try {
+        localStorage.setItem(TYPE_KEY, t);
+    } catch (e) {}
+    buildPlaceSelect();
+    buildBidPlaceSelect();
+    render();
+}
+
+function applyHash() {
+    state.view = location.hash === "#bid" ? "bid" : "pick";
+    render();
+}
+
+function resetFilters() {
+    Object.assign(state, {
+        place: "",
+        q: "",
+        starts: "",
+        ends: "",
+        pattern: "",
+        favOnly: false,
+        newOnly: false
+    });
+    [ "q", "starts", "ends" ].forEach(id => $(id).value = "");
+    $("place").value = "";
+    $("favOnly").setAttribute("aria-pressed", "false");
+    $("newOnly").setAttribute("aria-pressed", "false");
+    render();
+}
+
+let statusTimer = null;
+
+async function refreshData() {
+    const btn = $("refresh");
+    const before = meta.sourceUpdated;
+    btn.disabled = true;
+    btn.querySelector("span").textContent = "更新中…";
+    const data = await loadData();
+    btn.disabled = false;
+    btn.querySelector("span").textContent = "更新資料";
+    let msg;
+    if (!data) {
+        msg = "讀取失敗，請稍後再試。";
+    } else {
+        applyData(data);
+        msg = meta.sourceUpdated && meta.sourceUpdated !== before ? `已更新到 ${fmtTime(meta.sourceUpdated)} 的資料。` : "已經是最新資料，每小時會自動檢查一次。";
+    }
+    $("refreshStatus").textContent = msg;
+    clearTimeout(statusTimer);
+    statusTimer = setTimeout(() => {
+        $("refreshStatus").textContent = "";
+    }, 6e3);
+}
+
+$("refresh").addEventListener("click", refreshData);
+
+document.querySelectorAll(".views button").forEach(b => b.addEventListener("click", () => {
+    const h = b.dataset.view === "bid" ? "#bid" : "#pick";
+    if (location.hash !== h) location.hash = h; else applyHash();
+}));
+
+window.addEventListener("hashchange", applyHash);
+
+document.querySelectorAll("#typeTabs button").forEach(b => b.addEventListener("click", () => setType(b.dataset.type)));
+
+$("place").addEventListener("change", e => {
+    state.place = e.target.value;
+    render();
+});
+
+$("bidPlace").addEventListener("change", e => {
+    state.bidPlace = e.target.value;
+    render();
+});
+
+$("q").addEventListener("input", e => {
+    state.q = e.target.value.trim();
+    render();
+});
+
+[ "starts", "ends" ].forEach(id => $(id).addEventListener("input", e => {
+    e.target.value = e.target.value.replace(/\D/g, "").slice(0, 4);
+    state[id] = e.target.value;
+    render();
+}));
+
+document.querySelectorAll("[data-pattern]").forEach(c => c.addEventListener("click", () => {
+    state.pattern = state.pattern === c.dataset.pattern ? "" : c.dataset.pattern;
+    render();
+}));
+
+$("sort").addEventListener("change", e => {
+    state.sort = e.target.value;
+    render();
+});
+
+$("favOnly").addEventListener("click", e => {
+    state.favOnly = !state.favOnly;
+    e.currentTarget.setAttribute("aria-pressed", String(state.favOnly));
+    render();
+});
+
+$("newOnly").addEventListener("click", e => {
+    state.newOnly = !state.newOnly;
+    e.currentTarget.setAttribute("aria-pressed", String(state.newOnly));
+    render();
+});
+
+$("reset").addEventListener("click", resetFilters);
+
+$("grid").addEventListener("click", e => {
+    const b = e.target.closest(".fav");
+    if (b) toggleFav(b.dataset.plate);
+});
+
+$("favList").addEventListener("click", e => {
+    const b = e.target.closest("[data-remove]");
+    if (b) toggleFav(b.dataset.remove);
+});
+
+$("copyFavs").addEventListener("click", async () => {
+    try {
+        await navigator.clipboard.writeText(shareText());
+        $("copyStatus").textContent = "已複製";
+    } catch (e) {
+        $("copyStatus").textContent = "這個瀏覽器不允許複製，請改用 LINE 傳送";
+    }
+    setTimeout(() => {
+        $("copyStatus").textContent = "";
+    }, 2500);
+});
+
+state.view = location.hash === "#bid" ? "bid" : "pick";
+
+render();
+
+loadData().then(data => {
+    if (data) applyData(data); else {
+        loaded = true;
+        render();
+    }
+})</script>
+</body>
+</html>
