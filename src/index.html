@@ -72,11 +72,41 @@ html.lock { overflow: hidden }
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--bg);
+  background: transparent;
   color: var(--text);
   font: 15px/1.55 var(--ui);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+body::before, body::after {
+  content: "";
+  position: fixed;
+  inset: -30%;
+  z-index: -1;
+  pointer-events: none;
+  will-change: transform;
+}
+body::before {
+  background:
+    radial-gradient(34% 30% at 22% 24%, rgba(227, 25, 55, .17), rgba(227, 25, 55, 0) 72%),
+    radial-gradient(30% 26% at 76% 30%, rgba(64, 92, 170, .1), rgba(64, 92, 170, 0) 72%);
+  animation: glow-a 24s ease-in-out infinite alternate;
+}
+body::after {
+  background:
+    radial-gradient(36% 30% at 74% 76%, rgba(18, 150, 96, .14), rgba(18, 150, 96, 0) 72%),
+    radial-gradient(28% 24% at 26% 80%, rgba(227, 25, 55, .07), rgba(227, 25, 55, 0) 72%);
+  animation: glow-b 31s ease-in-out infinite alternate;
+}
+@keyframes glow-a {
+  0% { transform: translate3d(-4%, -3%, 0) scale(1) }
+  50% { transform: translate3d(5%, 3%, 0) scale(1.08) }
+  100% { transform: translate3d(-2%, 5%, 0) scale(1.03) }
+}
+@keyframes glow-b {
+  0% { transform: translate3d(4%, 3%, 0) scale(1.05) }
+  50% { transform: translate3d(-5%, -2%, 0) scale(1) }
+  100% { transform: translate3d(2%, -5%, 0) scale(1.08) }
 }
 button, input, select { font: inherit; color: inherit; margin: 0 }
 button { cursor: pointer; -webkit-tap-highlight-color: transparent }
