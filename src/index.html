@@ -18,6 +18,11 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="選牌標牌">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
@@ -92,19 +97,9 @@ select {
 }
 .mark {
   flex: none;
-  width: 40px;
-  height: 26px;
-  border-radius: 6px;
-  background: #fff;
-  border: 2px solid #fff;
-  box-shadow: inset 0 0 0 2px #111;
-  display: grid;
-  place-items: center;
-  font-family: var(--font-plate);
-  font-weight: 700;
-  font-size: 15px;
-  color: #111;
-  letter-spacing: .02em
+  width: 44px;
+  height: 44px;
+  display: block
 }
 h1 {
   font-size: 24px;
@@ -437,6 +432,65 @@ a.btn {
 .summary .plus {
   color: var(--new);
   font-weight: 500
+}
+#summaryText {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 14px;
+  row-gap: 2px
+}
+.nw {
+  white-space: nowrap
+}
+.seg .nn {
+  display: block;
+  font-size: 11px;
+  color: var(--new)
+}
+.share {
+  margin-left: auto;
+  height: 32px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0 12px;
+  font-size: 13px;
+  cursor: pointer
+}
+.share:hover {
+  border-color: var(--muted)
+}
+.chip.gone-chip {
+  border-color: rgba(255,77,94,.5);
+  color: #ff8a9a
+}
+.chip.gone-chip[aria-pressed=true] {
+  background: var(--heart);
+  border-color: var(--heart);
+  color: #fff
+}
+.pcard.is-gone {
+  background: #111214;
+  border-style: dashed
+}
+.pcard.is-gone .plate {
+  background: #c9cdd3
+}
+.pcard.is-gone .plate span {
+  text-decoration: line-through;
+  text-decoration-color: var(--heart);
+  text-decoration-thickness: 3px
+}
+.badge-gone {
+  background: rgba(255,77,94,.16);
+  color: #ff8a9a;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 999px
 }
 .reset {
   border: 0;
@@ -774,7 +828,7 @@ footer a {
   <div class="wrap">
     <div class="brandrow">
       <div class="brand">
-        <span class="mark" aria-hidden="true">EV</span>
+        <svg class="mark" viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="11" fill="#e31937"/><rect x="5" y="12" width="34" height="20" rx="4" fill="#fff" stroke="#111" stroke-width="2"/><text x="22" y="26.5" text-anchor="middle" font-size="11" font-weight="900" fill="#111" font-family="Noto Sans TC,PingFang TC,Microsoft JhengHei,sans-serif">選牌</text></svg>
         <div>
           <h1>選牌標牌</h1>
           <p class="sub">全台可選號碼與標牌公告</p>
@@ -822,6 +876,7 @@ footer a {
           <button class="chip" data-pattern="一對" aria-pressed="false">一對 <small>AA</small><span class="cnt"></span></button>
           <button class="chip" data-pattern="無0" aria-pressed="false">不含 0<span class="cnt"></span></button>
           <button class="chip" data-pattern="流標牌" aria-pressed="false" hidden>流標牌<span class="cnt"></span></button>
+          <button class="chip gone-chip" id="removedOnly" aria-pressed="false" hidden>今天被選走</button>
         </div>
       </div>
 
@@ -841,6 +896,7 @@ footer a {
 
     <div class="summary" aria-live="polite">
       <span id="summaryText">—</span>
+      <button class="share" id="sharePick" type="button">分享篩選</button>
       <button class="reset" id="reset" hidden>清除篩選</button>
     </div>
     <p class="note" id="newHint" hidden></p>
@@ -872,7 +928,7 @@ footer a {
       <label class="label" for="bidPlace">監理所／站</label>
       <select id="bidPlace"></select>
     </section>
-    <div class="summary" aria-live="polite"><span id="bidSummary">—</span></div>
+    <div class="summary" aria-live="polite"><span id="bidSummary">—</span><button class="share" id="shareBid" type="button">分享</button></div>
     <p class="note">標牌要在監理服務網用自然人憑證登入後競標。號碼級別、底價與規定以各監理所站的公告為準。</p>
     <div class="empty" id="bidEmpty" hidden></div>
     <ul class="auc-list" id="aucList"></ul>
@@ -940,6 +996,7 @@ const state = {
     sort: "num-asc",
     favOnly: false,
     newOnly: false,
+    removedOnly: false,
     bidPlace: ""
 };
 
@@ -951,7 +1008,7 @@ const meta = {
 
 const md = d => d ? `${+d.slice(5, 7)}/${+d.slice(8, 10)}` : "";
 
-let items = [], auctions = [];
+let items = [], auctions = [], removed = [];
 
 let byPlate = new Map;
 
@@ -1025,11 +1082,59 @@ async function loadData(group) {
     }
 }
 
-function normalize(data) {
-    if (!data || !Array.isArray(data.items)) return [];
+function expandDoc(data) {
+    if (!data) return {
+        items: [],
+        removed: []
+    };
+    if (data.v !== 2) return {
+        items: Array.isArray(data.items) ? data.items : [],
+        removed: []
+    };
+    const O = data.offices || [], T = data.types || [], D = data.dates || [], c = data.items || {}, r = data.removed || {};
+    const items = (c.p || []).map((plate, k) => ({
+        plate: plate,
+        office: O[c.o[k]],
+        type: T[c.t[k]],
+        firstSeen: c.f[k] >= 0 ? D[c.f[k]] : "",
+        firstSeenTime: c.h[k] || "",
+        tag: c.g[k] || ""
+    }));
+    const removed = (r.p || []).map((plate, k) => ({
+        plate: plate,
+        office: O[r.o[k]],
+        type: T[r.t[k]],
+        time: r.h[k] || ""
+    }));
+    return {
+        items: items,
+        removed: removed
+    };
+}
+
+function normalizeRemoved(list) {
+    return list.filter(it => it && PLATE_RE.test(String(it.plate || "")) && TYPES.includes(it.type) && it.office).map(it => {
+        const plate = String(it.plate).toUpperCase();
+        const digits = plate.match(/(\d+)$/)[1];
+        return {
+            plate: plate,
+            digits: digits,
+            kind: kindOf(digits),
+            type: it.type,
+            office: String(it.office),
+            goneTime: /^\d{2}:\d{2}$/.test(it.time || "") ? it.time : "",
+            gone: true,
+            isNew: false,
+            newTime: "",
+            tag: ""
+        };
+    });
+}
+
+function normalize(list) {
     const seen = new Set;
     const out = [];
-    for (const it of data.items) {
+    for (const it of list) {
         const plate = String(it.plate || "").toUpperCase().trim();
         if (!PLATE_RE.test(plate) || !TYPES.includes(it.type) || !it.office || seen.has(plate)) continue;
         seen.add(plate);
@@ -1070,9 +1175,11 @@ function prepare(data) {
     const t = data && Date.parse(data.sourceUpdatedAt || data.updatedAt);
     m.sourceUpdated = t && !isNaN(t) ? t : null;
     Object.assign(meta, m);
+    const raw = expandDoc(data);
     return {
         meta: m,
-        items: normalize(data),
+        items: normalize(raw.items),
+        removed: normalizeRemoved(raw.removed),
         auctions: normalizeAuctions(data)
     };
 }
@@ -1081,6 +1188,7 @@ function useGroup() {
     const d = store[state.group];
     loaded = !!d;
     items = d ? d.items : [];
+    removed = d ? d.removed || [] : [];
     auctions = d ? d.auctions : [];
     if (d) Object.assign(meta, d.meta);
     byPlate = new Map;
@@ -1099,6 +1207,7 @@ async function ensureGroup(group) {
     store[group] = data ? prepare(data) : {
         meta: {},
         items: [],
+        removed: [],
         auctions: []
     };
     if (state.group === group) useGroup(); else renderGroupTabs();
@@ -1117,6 +1226,16 @@ function matchesBase(it) {
 }
 
 const matches = it => matchesBase(it) && (!state.pattern || PATTERNS[state.pattern](it));
+
+function matchesGone(it) {
+    if (it.type !== state.type) return false;
+    if (state.place.startsWith("r:") && regionOf(it.office) !== state.place.slice(2)) return false;
+    if (state.place.startsWith("o:") && it.office !== state.place.slice(2)) return false;
+    if (state.q && !it.plate.replace("-", "").includes(state.q.replace("-", "").toUpperCase())) return false;
+    if (state.starts && !it.digits.startsWith(state.starts)) return false;
+    if (state.ends && !it.digits.endsWith(state.ends)) return false;
+    return true;
+}
 
 function sorted(list) {
     const byNum = (a, b) => a.digits.localeCompare(b.digits) || a.plate.localeCompare(b.plate);
@@ -1153,12 +1272,13 @@ function buildPlaceSelect() {
 }
 
 function cardHTML(it) {
+    if (it.gone) return `<li class="pcard is-gone">\n    <div class="pcard-top"><span class="badge-gone">${md(meta.sourceDate)}${it.goneTime ? " " + it.goneTime : ""} 被選走</span></div>\n    <div class="plate"><small>${EV_TYPES.has(it.type) ? "電動車" : ""}</small><span>${esc(it.plate)}</span></div>\n    <div class="office">${esc(it.office)}</div>\n    <div class="meta">${it.kind && it.kind !== "一對" ? `<span class="tag kind">${esc(it.kind)}</span>` : ""}</div>\n  </li>`;
     const on = favs.includes(it.plate);
     return `<li class="pcard${it.isNew ? " is-new" : ""}">\n    <div class="pcard-top">\n      ${it.isNew ? `<span class="badge-new">${md(meta.sourceDate)}${it.newTime ? " " + it.newTime : ""} 新增</span>` : ""}\n      <button class="fav" data-plate="${esc(it.plate)}" aria-pressed="${on}" aria-label="${on ? "取消收藏" : "收藏"} ${esc(it.plate)}">${HEART}</button>\n    </div>\n    <div class="plate"><small>${EV_TYPES.has(it.type) ? "電動車" : ""}</small><span>${esc(it.plate)}</span></div>\n    <div class="office">${esc(it.office)}</div>\n    <div class="meta">${it.kind && it.kind !== "一對" ? `<span class="tag kind">${esc(it.kind)}</span>` : ""}${it.tag ? `<span class="tag">${esc(it.tag)}</span>` : ""}</div>\n  </li>`;
 }
 
 function isFiltered() {
-    return state.place || state.q || state.starts || state.ends || state.pattern || state.favOnly || state.newOnly;
+    return state.place || state.q || state.starts || state.ends || state.pattern || state.favOnly || state.newOnly || state.removedOnly;
 }
 
 function renderChips(base) {
@@ -1174,9 +1294,11 @@ function renderChips(base) {
 }
 
 function renderPick() {
-    if (state.pattern === "流標牌" && !items.some(it => it.type === state.type && it.tag === "流標牌")) state.pattern = "";
-    const base = items.filter(matchesBase);
-    const list = sorted(base.filter(it => !state.pattern || PATTERNS[state.pattern](it)));
+    if (loaded && state.pattern === "流標牌" && !items.some(it => it.type === state.type && it.tag === "流標牌")) state.pattern = "";
+    const goneOfType = removed.filter(it => it.type === state.type);
+    if (loaded && state.removedOnly && !goneOfType.length) state.removedOnly = false;
+    const base = state.removedOnly ? removed.filter(matchesGone) : items.filter(matchesBase);
+    const list = state.removedOnly ? base.filter(it => !state.pattern || PATTERNS[state.pattern](it)).sort((a, b) => b.goneTime.localeCompare(a.goneTime) || a.digits.localeCompare(b.digits)) : sorted(base.filter(it => !state.pattern || PATTERNS[state.pattern](it)));
     const ofType = items.filter(it => it.type === state.type);
     const newCount = ofType.filter(it => it.isNew).length;
     currentList = list;
@@ -1184,7 +1306,11 @@ function renderPick() {
     $("grid").innerHTML = list.slice(0, shown).map(cardHTML).join("");
     $("noData").hidden = !(loaded && items.length === 0);
     $("empty").hidden = !(items.length > 0 && list.length === 0);
-    $("summaryText").innerHTML = items.length ? `<b>${list.length}</b> 面符合　·　${esc(state.type)}共 ${ofType.length} 面` + (meta.prevDate ? `　·　<span class="plus">${md(meta.sourceDate)} 新增 ${newCount} 面</span>` : "") : loaded ? "—" : "讀取中…";
+    $("summaryText").innerHTML = !items.length ? loaded ? "—" : "讀取中…" : state.removedOnly ? `<span class="nw"><b>${list.length}</b> 面符合</span><span class="nw">${md(meta.sourceDate)} ${esc(state.type)}被選走 ${goneOfType.length} 面</span>` : `<span class="nw"><b>${list.length}</b> 面符合</span><span class="nw">${esc(state.type)}共 ${ofType.length} 面</span>` + (meta.prevDate ? `<span class="nw plus">${md(meta.sourceDate)} 新增 ${newCount} 面</span>` : "");
+    $("removedOnly").hidden = !goneOfType.length && !state.removedOnly;
+    $("removedOnly").textContent = `${md(meta.sourceDate)} 被選走（${goneOfType.length}）`;
+    $("removedOnly").setAttribute("aria-pressed", String(state.removedOnly));
+    $("newOnly").setAttribute("aria-pressed", String(state.newOnly));
     renderChips(base);
     $("newOnly").hidden = !meta.prevDate;
     $("newOnly").textContent = `只看 ${md(meta.sourceDate)} 新增（${newCount}）`;
@@ -1290,9 +1416,9 @@ function updateTabCounts() {
         } else if (items.length) {
             const all = items.filter(it => it.type === t);
             const n = all.filter(it => it.isNew).length;
-            label = `${all.length} 面${n ? `・新增 ${n}` : ""}`;
+            label = `${all.length.toLocaleString("en-US")} 面` + (n ? `<span class="nn">新增 ${n.toLocaleString("en-US")}</span>` : "");
         }
-        b.querySelector(".n").textContent = label;
+        b.querySelector(".n").innerHTML = label;
     });
 }
 
@@ -1302,6 +1428,7 @@ function render() {
     document.querySelectorAll(".views button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.view === state.view)));
     renderGroupTabs();
     updateTabCounts();
+    syncUrl();
     if (state.view === "bid") renderBid(); else renderPick();
 }
 
@@ -1351,9 +1478,102 @@ function setGroup(g) {
     ensureGroup(g);
 }
 
-function applyHash() {
-    state.view = location.hash === "#bid" ? "bid" : "pick";
-    render();
+const SORTS = [ "num-asc", "num-desc", "office", "new" ];
+
+function stateToQuery() {
+    const q = new URLSearchParams;
+    if (state.view === "bid") q.set("v", "bid");
+    q.set("t", state.type);
+    if (state.view === "bid") {
+        if (state.bidPlace) q.set("p", state.bidPlace);
+    } else {
+        if (state.place) q.set("p", state.place);
+        if (state.q) q.set("q", state.q);
+        if (state.starts) q.set("s", state.starts);
+        if (state.ends) q.set("e", state.ends);
+        if (state.pattern) q.set("k", state.pattern);
+        if (state.sort !== "num-asc") q.set("o", state.sort);
+        if (state.newOnly) q.set("n", "1");
+        if (state.removedOnly) q.set("r", "1");
+    }
+    return q.toString();
+}
+
+function syncUrl() {
+    try {
+        history.replaceState(null, "", location.pathname + "?" + stateToQuery());
+    } catch (e) {}
+}
+
+function readUrl() {
+    const q = new URLSearchParams(location.search);
+    state.view = q.get("v") === "bid" || location.hash === "#bid" ? "bid" : "pick";
+    const t = q.get("t");
+    if (TYPES.includes(t)) {
+        state.type = t;
+        state.group = groupOf(t);
+    }
+    const place = q.get("p") || "";
+    if (state.view === "bid") state.bidPlace = place; else state.place = place;
+    state.q = (q.get("q") || "").slice(0, 12);
+    state.starts = (q.get("s") || "").replace(/\D/g, "").slice(0, 5);
+    state.ends = (q.get("e") || "").replace(/\D/g, "").slice(0, 5);
+    const k = q.get("k");
+    state.pattern = k && PATTERNS[k] ? k : "";
+    const o = q.get("o");
+    if (SORTS.includes(o)) state.sort = o;
+    state.newOnly = q.get("n") === "1";
+    state.removedOnly = !state.newOnly && q.get("r") === "1";
+    $("q").value = state.q;
+    $("starts").value = state.starts;
+    $("ends").value = state.ends;
+    $("sort").value = state.sort;
+}
+
+function describeState() {
+    const parts = [];
+    const place = state.view === "bid" ? state.bidPlace : state.place;
+    if (place) parts.push(place.slice(2));
+    parts.push(state.type + (state.view === "bid" ? "標牌" : ""));
+    if (state.view === "pick") {
+        if (state.starts) parts.push(`開頭 ${state.starts}`);
+        if (state.ends) parts.push(`結尾 ${state.ends}`);
+        if (state.q) parts.push(`含 ${state.q}`);
+        if (state.pattern) parts.push(state.pattern === "無0" ? "不含 0" : state.pattern);
+        if (state.newOnly) parts.push("新增");
+        if (state.removedOnly) parts.push("今天被選走");
+    }
+    return "選牌標牌｜" + parts.join("・");
+}
+
+async function shareCurrent(btn) {
+    const url = location.origin + location.pathname + "?" + stateToQuery();
+    const text = describeState();
+    const label = btn.textContent;
+    const flash = msg => {
+        btn.textContent = msg;
+        setTimeout(() => {
+            btn.textContent = label;
+        }, 2200);
+    };
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: "選牌標牌",
+                text: text,
+                url: url
+            });
+            return;
+        } catch (e) {
+            if (e && e.name === "AbortError") return;
+        }
+    }
+    try {
+        await navigator.clipboard.writeText(`${text}\n${url}`);
+        flash("已複製連結");
+    } catch (e) {
+        flash("無法複製");
+    }
 }
 
 function resetFilters() {
@@ -1364,7 +1584,8 @@ function resetFilters() {
         ends: "",
         pattern: "",
         favOnly: false,
-        newOnly: false
+        newOnly: false,
+        removedOnly: false
     });
     [ "q", "starts", "ends" ].forEach(id => $(id).value = "");
     $("place").value = "";
@@ -1376,11 +1597,19 @@ function resetFilters() {
 
 
 document.querySelectorAll(".views button").forEach(b => b.addEventListener("click", () => {
-    const h = b.dataset.view === "bid" ? "#bid" : "#pick";
-    if (location.hash !== h) location.hash = h; else applyHash();
+    state.view = b.dataset.view;
+    render();
 }));
 
-window.addEventListener("hashchange", applyHash);
+$("sharePick").addEventListener("click", e => shareCurrent(e.currentTarget));
+
+$("shareBid").addEventListener("click", e => shareCurrent(e.currentTarget));
+
+$("removedOnly").addEventListener("click", () => {
+    state.removedOnly = !state.removedOnly;
+    if (state.removedOnly) state.newOnly = false;
+    render();
+});
 
 $("typeTabs").addEventListener("click", e => {
     const b = e.target.closest("[data-type]");
@@ -1426,9 +1655,9 @@ $("favOnly").addEventListener("click", e => {
     render();
 });
 
-$("newOnly").addEventListener("click", e => {
+$("newOnly").addEventListener("click", () => {
     state.newOnly = !state.newOnly;
-    e.currentTarget.setAttribute("aria-pressed", String(state.newOnly));
+    if (state.newOnly) state.removedOnly = false;
     render();
 });
 
@@ -1456,10 +1685,14 @@ $("copyFavs").addEventListener("click", async () => {
     }, 2500);
 });
 
-state.view = location.hash === "#bid" ? "bid" : "pick";
+readUrl();
 
 render();
 
-ensureGroup(state.group)</script>
+ensureGroup(state.group);
+
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}</script>
 </body>
 </html>
