@@ -5,7 +5,8 @@
 car16 沒有更新時（更新時間和前一份相同）不會重抓，也不會寫出檔案。
 用法：python3 update_plates.py 輸出路徑 [前一天的 plates.json]
 有提供前一天的檔案時，會替每個號碼記下第一次出現的日期（firstSeen），
-頁面用它標出比前一天新增的號碼。
+當天新增的號碼另外記下是哪一次更新出現的時間（firstSeenTime，台灣時間 HH:MM）。
+頁面用它們標出比前一天新增的號碼與新增時間。
 選牌資料有問題時以非 0 結束，不會寫出檔案，舊的 plates.json 會保留。
 標牌資料抓不到時沿用前一天還沒結束的公告，並在輸出的 warnings 裡說明。
 """
@@ -167,8 +168,9 @@ def load_previous(path):
         items = prev["items"]
         prev_date = prev.get("sourceDate") or taipei_date(prev["sourceUpdatedAt"])
         first = {str(i["plate"]): (i.get("firstSeen") or prev_date) for i in items}
+        times = {str(i["plate"]): i["firstSeenTime"] for i in items if i.get("firstSeenTime")}
         types = {i.get("type") for i in items}
-        return {"date": prev_date, "previousSourceDate": prev.get("previousSourceDate"), "first": first,
+        return {"date": prev_date, "previousSourceDate": prev.get("previousSourceDate"), "first": first, "times": times,
                 "types": types, "auctions": prev.get("auctions") or [],
                 "signature": prev.get("sourceSignature"), "allTypes": set(TYPES) <= types}
     except Exception as e:
@@ -176,7 +178,7 @@ def load_previous(path):
         return None
 
 
-def mark_first_seen(items, source_date, prev):
+def mark_first_seen(items, source_date, prev, source_time=None):
     """回傳 previousSourceDate（比較基準日；None 表示沒有可比較的資料）。"""
     if prev is None:
         for i in items:
@@ -190,6 +192,11 @@ def mark_first_seen(items, source_date, prev):
             i["firstSeen"] = previous or source_date
         else:
             i["firstSeen"] = prev["first"].get(i["plate"], source_date)
+            if previous and i["firstSeen"] == source_date:
+                # 當天新增：沿用先前記下的時間；這次才出現的記成這次更新的時間
+                t = prev["times"].get(i["plate"]) or source_time
+                if t:
+                    i["firstSeenTime"] = t
     return previous
 
 
@@ -229,7 +236,9 @@ def main():
 
     source_updated = max(src_times) if src_times else None
     source_date = taipei_date(source_updated) if source_updated else now.astimezone(TPE).date().isoformat()
-    previous_date = mark_first_seen(items, source_date, prev)
+    source_time = (datetime.fromisoformat(source_updated.replace("Z", "+00:00")).astimezone(TPE).strftime("%H:%M")
+                   if source_updated else None)
+    previous_date = mark_first_seen(items, source_date, prev, source_time)
     new_counts = {t: (sum(1 for i in items if i["type"] == t and i["firstSeen"] == source_date) if previous_date else 0) for t in TYPES}
 
     result = {

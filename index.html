@@ -186,7 +186,7 @@ footer a{color:inherit}
         <span>更新資料</span>
       </button>
     </div>
-    <p class="upd" id="upd"><span class="live-dot" aria-hidden="true"></span><span><b>每小時</b>自動更新</span><span class="sep" aria-hidden="true">｜</span><span id="dataTime">資料時間：—</span></p>
+    <p class="upd" id="upd"><span class="live-dot" aria-hidden="true"></span><span><b>每小時</b>自動更新</span><span class="sep" aria-hidden="true">｜</span><span id="dataTime">資料時間：—</span><span class="sep" aria-hidden="true">｜</span><span id="siteTime">網站更新：—</span></p>
     <p class="refresh-status" id="refreshStatus" role="status"></p>
   </div>
 </header>
@@ -367,7 +367,7 @@ function normalize(data) {
     seen.add(plate);
     const digits = plate.slice(4);
     const isNew = !!(meta.prevDate && meta.sourceDate && it.firstSeen === meta.sourceDate);
-    out.push({ plate, digits, kind: kindOf(digits), type: it.type, office: String(it.office), isNew, tag: typeof it.tag === "string" ? it.tag : "" });
+    out.push({ plate, digits, kind: kindOf(digits), type: it.type, office: String(it.office), isNew, newTime: isNew && /^\d{2}:\d{2}$/.test(it.firstSeenTime || "") ? it.firstSeenTime : "", tag: typeof it.tag === "string" ? it.tag : "" });
   }
   return out;
 }
@@ -390,6 +390,8 @@ function applyData(data) {
   byPlate = new Map(items.map(it => [it.plate, it]));
   loaded = true;
   $("dataTime").textContent = "資料時間：" + (meta.sourceUpdated ? fmtTime(meta.sourceUpdated) : "—");
+  const site = data && Date.parse(data.updatedAt);
+  $("siteTime").textContent = "網站更新：" + (site && !isNaN(site) ? fmtTime(site) : "—");
   buildPlaceSelect();
   buildBidPlaceSelect();
   render();
@@ -413,7 +415,7 @@ function sorted(list) {
   const byNum = (a, b) => a.digits.localeCompare(b.digits) || a.plate.localeCompare(b.plate);
   if (state.sort === "num-desc") return list.sort((a, b) => byNum(b, a));
   if (state.sort === "office") return list.sort((a, b) => orderOf(a.office) - orderOf(b.office) || a.office.localeCompare(b.office) || byNum(a, b));
-  if (state.sort === "new") return list.sort((a, b) => (b.isNew - a.isNew) || byNum(a, b));
+  if (state.sort === "new") return list.sort((a, b) => (b.isNew - a.isNew) || b.newTime.localeCompare(a.newTime) || byNum(a, b));
   return list.sort(byNum);
 }
 
@@ -448,7 +450,7 @@ function cardHTML(it) {
   const on = favs.includes(it.plate);
   return `<li class="pcard${it.isNew ? " is-new" : ""}">
     <div class="pcard-top">
-      ${it.isNew ? `<span class="badge-new">${md(meta.sourceDate)} 新增</span>` : ""}
+      ${it.isNew ? `<span class="badge-new">${md(meta.sourceDate)}${it.newTime ? " " + it.newTime : ""} 新增</span>` : ""}
       <button class="fav" data-plate="${esc(it.plate)}" aria-pressed="${on}" aria-label="${on ? "取消收藏" : "收藏"} ${esc(it.plate)}">${HEART}</button>
     </div>
     <div class="plate"><small>${EV_TYPES.has(it.type) ? "電動車" : ""}</small><span>${esc(it.plate)}</span></div>
