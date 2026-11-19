@@ -16,11 +16,7 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - uses: actions/checkout@v5
 
       - name: 從 car16 抓取選牌與標牌資料
         run: |
@@ -45,6 +41,16 @@ jobs:
           fi
           git config user.name "plates-bot"
           git config user.email "plates-bot@users.noreply.github.com"
-          git add data
-          git commit -m "資料更新 $(TZ=Asia/Taipei date '+%F %H:%M')"
-          git push
+          cp -r data "$RUNNER_TEMP/new"
+          for i in 1 2 3; do
+            git add data
+            git diff --cached --quiet && exit 0
+            git commit -q -m "資料更新 $(TZ=Asia/Taipei date '+%F %H:%M')"
+            git push && exit 0
+            # 推送失敗（例如剛好有人更新了網頁）：改用最新版本，再放回這次抓到的資料
+            sleep 5
+            git fetch --depth=1 origin main
+            git reset -q --hard FETCH_HEAD
+            rm -rf data && cp -r "$RUNNER_TEMP/new" data
+          done
+          exit 1

@@ -1,5 +1,5 @@
-const CACHE = "plate-picker-v1";
-const SHELL = ["./", "index.html", "manifest.webmanifest", "favicon.png", "apple-touch-icon.png", "icon-192.png", "icon-512.png"];
+const CACHE = "plate-picker-v2";
+const SHELL = ["./", "index.html", "manifest.webmanifest", "favicon.png", "apple-touch-icon.png", "icon-192.png", "icon-512.png", "fonts/barlow-condensed-600.woff2", "fonts/barlow-condensed-700.woff2"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));

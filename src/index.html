@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>選牌標牌</title>
 <meta name="description" content="全台監理所站可選車牌號碼與標牌公告。">
-<meta name="theme-color" content="#0a0b0d">
+<meta name="theme-color" content="#121316">
+<meta name="color-scheme" content="dark">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="選牌標牌">
 <meta property="og:title" content="選牌標牌">
@@ -23,1676 +24,1477 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="選牌標牌">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-<style>:root {
-  --bg: #0a0b0d;
-  --surface: #141619;
-  --surface-2: #1b1e22;
-  --line: #272b31;
-  --line-strong: #3a3f47;
-  --ink: #f3f4f6;
-  --muted: #99a1ad;
-  --accent: #e31937;
-  --accent-soft: rgba(227,25,55,.12);
-  --new: #34d399;
-  --new-ink: #052e1f;
-  --live: #f5a524;
-  --soon: #6ea8fe;
-  --heart: #ff4d5e;
-  --font-body: "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
-  --font-plate: "Barlow Condensed","Arial Narrow","Roboto Condensed",sans-serif;
-  color-scheme: dark
+<link rel="preload" href="fonts/barlow-condensed-700.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face {
+  font-family: "Barlow Condensed";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(fonts/barlow-condensed-600.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-* {
-  box-sizing: border-box
-}
-body,
-html {
-  margin: 0
-}
-body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.55;
-  -webkit-font-smoothing: antialiased
-}
-.wrap {
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 0 16px
-}
-button,
-input,
-select {
-  font: inherit;
-  color: inherit
-}
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px
-}
-[hidden] {
-  display: none!important
-}
-.top {
-  padding: 22px 0 6px;
-  background: radial-gradient(120% 140% at 0 0,rgba(227,25,55,.16),transparent 55%),var(--bg);
-  border-bottom: 1px solid var(--line)
-}
-.brandrow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px
-}
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0
-}
-.mark {
-  flex: none;
-  width: 44px;
-  height: 44px;
-  display: block
-}
-h1 {
-  font-size: 24px;
-  line-height: 1.2;
-  margin: 0;
-  letter-spacing: .08em;
+@font-face {
+  font-family: "Barlow Condensed";
+  font-style: normal;
   font-weight: 700;
-  text-wrap: balance
+  font-display: swap;
+  src: url(fonts/barlow-condensed-700.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-.sub {
-  margin: 2px 0 0;
-  font-size: 13px;
-  color: var(--muted)
+
+:root {
+  --bg: #121316;
+  --s1: #191b1e;
+  --s2: #202226;
+  --line: #2a2d32;
+  --line2: #3b3f46;
+  --text: #eceef1;
+  --muted: #9ca2aa;
+  --faint: #6f747c;
+  --white: #f3f4ef;
+  --ink: #15171a;
+  --red: #e31937;
+  --red-text: #ff5c72;
+  --green: #3fd68c;
+  --green-ink: #0a7a43;
+  --amber: #f2c014;
+  --ui: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", "Noto Sans CJK TC", "Microsoft JhengHei", Roboto, "Helvetica Neue", sans-serif;
+  --num: "Barlow Condensed", "Roboto Condensed", "Arial Narrow", sans-serif;
+  --pad: 16px;
+  --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%239ca2aa' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
-.refresh {
+
+*, *::before, *::after { box-sizing: border-box }
+[hidden] { display: none !important }
+html { background: var(--bg); -webkit-text-size-adjust: 100%; text-size-adjust: 100% }
+html.lock { overflow: hidden }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.55 var(--ui);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+button, input, select { font: inherit; color: inherit; margin: 0 }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent }
+a { color: inherit }
+:focus-visible { outline: 2px solid var(--white); outline-offset: 2px }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap }
+.nw { white-space: nowrap }
+.wrap { max-width: 1320px; margin: 0 auto; padding: 0 var(--pad) }
+
+.top { border-bottom: 1px solid var(--line) }
+.top-in { display: flex; align-items: center; gap: 12px; min-height: 66px; padding-top: 10px; padding-bottom: 10px }
+.brand { display: flex; align-items: center; gap: 11px; min-width: 0 }
+.mark { display: block; flex: none; width: 40px; height: 40px }
+.brand-txt { display: grid; min-width: 0 }
+.brand-name { margin: 0; font-size: 19px; line-height: 1.25; font-weight: 700; letter-spacing: .08em; white-space: nowrap }
+.brand-sub { display: none; margin-left: 12px; font-size: 13px; font-weight: 400; letter-spacing: .02em; color: var(--muted) }
+.upd { margin: 1px 0 0; font-size: 12px; line-height: 1.4; color: var(--muted); white-space: nowrap }
+.upd b { font-family: var(--num); font-size: 14px; font-weight: 600; letter-spacing: .03em; color: var(--text) }
+
+.fav-open {
+  position: relative;
   flex: none;
+  margin-left: auto;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  height: 38px;
-  border: 1px solid var(--line-strong);
-  background: var(--surface-2);
-  color: var(--ink);
+  gap: 7px;
+  height: 40px;
+  padding: 0 15px 0 13px;
+  border: 1px solid var(--line2);
   border-radius: 999px;
-  padding: 0 14px;
+  background: var(--s1);
   font-size: 14px;
-  cursor: pointer
+  font-weight: 600;
 }
-.refresh:hover {
-  border-color: var(--muted)
+.fav-open svg { width: 17px; height: 17px; color: var(--red) }
+.fav-open .cnt { font-family: var(--num); font-size: 17px; font-weight: 600; line-height: 1 }
+.fav-open.alert::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 0 3px var(--bg);
 }
-.refresh:disabled {
-  opacity: .6;
-  cursor: default
-}
-.refresh svg {
-  width: 15px;
-  height: 15px
-}
-.upd {
+
+.layout { padding-top: 16px; padding-bottom: 56px }
+.side { display: grid; gap: 14px; min-width: 0 }
+
+.switches { display: grid; grid-template-columns: 1fr 1fr; gap: 10px }
+.seg2 { display: grid; grid-template-columns: 1fr 1fr; padding: 3px; border: 1px solid var(--line); border-radius: 12px; background: var(--s1) }
+.seg2 button {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 4px 10px;
-  margin: 16px 0 0;
-  font-size: 13px;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums
-}
-.upd b {
-  color: var(--ink);
-  font-weight: 700
-}
-.live-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--new);
-  box-shadow: 0 0 0 3px rgba(52,211,153,.18)
-}
-.sep {
-  color: var(--line-strong)
-}
-.refresh-status {
-  margin: 4px 0 0;
-  font-size: 12px;
-  color: var(--live);
-  min-height: 1.3em
-}
-main.wrap {
-  padding-top: 16px;
-  padding-bottom: 44px
-}
-.views {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 4px;
-  margin-bottom: 12px
-}
-.views button {
-  height: 42px;
-  border: 0;
-  border-radius: 10px;
-  background: 0 0;
-  color: var(--muted);
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  cursor: pointer
-}
-.views button[aria-selected=true] {
-  background: var(--accent);
-  color: #fff
-}
-.groups {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  margin: 4px 0 10px;
-  border-bottom: 1px solid var(--line)
-}
-.groups button {
-  background: none;
-  border: 0;
-  border-bottom: 3px solid transparent;
-  margin-bottom: -1px;
-  padding: 10px 4px 9px;
-  cursor: pointer;
-  color: var(--muted);
-  display: flex;
   justify-content: center;
-  align-items: baseline;
-  gap: 8px
-}
-.groups .g {
-  font-size: 17px;
+  gap: 8px;
+  height: 38px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: .2em
+  letter-spacing: .14em;
 }
-.groups .gn {
-  font-size: 12px;
-  font-variant-numeric: tabular-nums
+.seg2 button:hover { color: var(--text) }
+.seg2 button[aria-selected=true] { background: var(--white); color: var(--ink) }
+.seg2 .g { padding-left: .14em }
+.seg2 .gn { display: none; font-family: var(--num); font-size: 14px; font-weight: 600; letter-spacing: .02em; opacity: .6 }
+
+.types {
+  position: relative;
+  display: flex;
+  gap: 8px;
+  margin: 0 calc(-1 * var(--pad));
+  padding: 0 var(--pad) 2px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scroll-padding: 0 var(--pad);
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
-.groups button[aria-selected=true] {
-  color: var(--ink);
-  border-bottom-color: var(--ink)
-}
-.seg {
+.types::-webkit-scrollbar { display: none }
+.types button {
+  flex: none;
   display: grid;
-  grid-template-columns: repeat(4,1fr);
-  gap: 6px;
-  margin-bottom: 12px
-}
-.seg button {
-  background: var(--surface);
+  grid-template-columns: auto auto;
+  align-items: center;
+  justify-content: start;
+  column-gap: 8px;
+  row-gap: 2px;
+  padding: 9px 14px 8px 11px;
   border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 8px 2px;
-  align-content: center;
-  min-height: 58px;
-  display: grid;
-  gap: 2px;
-  justify-items: center;
-  cursor: pointer;
-  line-height: 1.35;
-  color: var(--muted)
+  background: var(--s1);
+  text-align: left;
+  scroll-snap-align: start;
 }
-.seg .t {
-  font-weight: 700;
-  font-size: 13px;
-  color: var(--ink);
-  text-align: center;
-  word-break: keep-all
-}
-.seg.cols-3 {
-  grid-template-columns: repeat(3,1fr)
-}
-.seg .n {
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
-  min-height: 1.35em
-}
-.seg button[aria-selected=true] {
-  border-color: var(--accent);
-  background: var(--accent-soft)
-}
-.seg button[aria-selected=true] .n {
-  color: #ffb3bf
-}
-.panel {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 16px
-}
-.filters {
-  display: grid;
-  gap: 16px
-}
-.label {
+.types button:hover { border-color: var(--line2) }
+.types .t { font-size: 14px; font-weight: 700; letter-spacing: .02em; white-space: nowrap }
+.types .n { grid-column: 1 / -1; min-height: 20px; font-size: 12px; color: var(--muted); white-space: nowrap }
+.types .n b { margin-right: 2px; font-family: var(--num); font-size: 16px; font-weight: 600; color: var(--text) }
+.types .n i { margin-left: 8px; font-style: normal; color: var(--green) }
+.types button[aria-selected=true] { border-color: var(--white); background: var(--white); color: var(--ink) }
+.types button[aria-selected=true] .n, .types button[aria-selected=true] .n b { color: var(--ink) }
+.types button[aria-selected=true] .n i { color: var(--green-ink) }
+
+.sw { position: relative; display: block; flex: none; width: 28px; height: 12px; border-radius: 2.5px; background: #f3f4ef; color: var(--ink); box-shadow: 0 0 0 1px rgba(0, 0, 0, .55) }
+.sw::after { content: ""; position: absolute; left: 21%; right: 21%; top: 41%; height: 20%; border-radius: 1px; background: currentColor }
+.sw.ink-red { color: #c4122f }
+.sw.ink-green { color: #0a7440 }
+.sw.pg { background: #0c6b3d; color: #f5f6f1 }
+.sw.py { background: #efc11c }
+.sw.pr { background: #c8102e; color: #f5f6f1 }
+.sw.ev-car { background: linear-gradient(180deg, #0a7a43 0 25%, #f3f4ef 25% 83%, #0a7a43 83%) }
+.sw.ev-car::after { top: 46%; height: 18% }
+.sw.ev-moto::after { top: 50% }
+.sw.ev-moto::before { content: ""; position: absolute; left: 39%; right: 39%; top: 17%; height: 14%; background: currentColor; opacity: .75 }
+
+.filters { display: grid; gap: 10px }
+.field {
+  position: relative;
   display: block;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--muted);
-  margin: 0 0 6px;
-  letter-spacing: .04em
-}
-input[type=text],
-select {
-  width: 100%;
   min-width: 0;
-  height: 42px;
-  padding: 0 12px;
+  padding: 7px 12px 6px;
   border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--surface-2);
-  color: var(--ink)
+  border-radius: 11px;
+  background: var(--s2);
+  cursor: text;
+  transition: border-color .15s;
 }
-input[type=text]:focus,
-select:focus {
-  border-color: var(--accent);
-  outline: 0;
-  box-shadow: 0 0 0 3px var(--accent-soft)
+.field:hover { border-color: var(--line2) }
+.field:focus-within { border-color: var(--muted) }
+.fl { display: block; font-size: 11px; line-height: 1.35; letter-spacing: .06em; color: var(--muted); white-space: nowrap }
+.field input, .field select {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-appearance: none;
+  appearance: none;
 }
-input::placeholder {
-  color: #5f6772
-}
-.row3 {
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 8px
-}
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px
-}
+.field input::placeholder { color: var(--faint); opacity: 1 }
+.field.sel { cursor: pointer }
+.field select { padding-right: 22px; background: var(--chev) no-repeat right 1px center / 12px; cursor: pointer; text-overflow: ellipsis }
+.field select option, .field select optgroup { background: var(--s2); color: var(--text) }
+.fields3 { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 8px }
+.field input.digits, .field input.code { font-family: var(--num); font-size: 19px; font-weight: 600; line-height: 1.3; letter-spacing: .06em }
+.field input.code { text-transform: uppercase }
+.field input.code::placeholder, .field input.digits::placeholder { text-transform: none; font-weight: 600 }
+
+.chips { display: flex; flex-wrap: wrap; gap: 7px }
 .chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 36px;
-  border: 1px solid var(--line);
-  background: var(--surface-2);
-  border-radius: 999px;
+  height: 32px;
   padding: 0 12px;
-  font-size: 14px;
-  cursor: pointer;
-  color: var(--ink)
-}
-.chip small {
-  font-family: var(--font-plate);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--muted);
-  letter-spacing: .06em
-}
-.chip .cnt {
-  min-width: 22px;
-  text-align: center;
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
-  background: var(--bg);
-  color: var(--muted);
+  border: 1px solid var(--line2);
   border-radius: 999px;
-  padding: 1px 7px
-}
-.chip.zero {
-  opacity: .45
-}
-.chip:hover {
-  border-color: var(--line-strong)
-}
-.chip[aria-pressed=true] {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff
-}
-.chip[aria-pressed=true] .cnt,
-.chip[aria-pressed=true] small {
-  color: #fff;
-  background: rgba(0,0,0,.22)
-}
-.chip.new-chip {
-  border-color: rgba(52,211,153,.5);
-  color: var(--new)
-}
-.chip.new-chip[aria-pressed=true] {
-  background: var(--new);
-  border-color: var(--new);
-  color: var(--new-ink)
-}
-.tools {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 8px;
-  align-items: end
-}
-.btn {
-  height: 42px;
-  border: 1px solid var(--line);
-  background: var(--surface-2);
-  border-radius: 10px;
-  padding: 0 14px;
-  cursor: pointer;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
   white-space: nowrap;
-  color: var(--ink)
 }
-.btn:hover {
-  border-color: var(--line-strong)
+.chip:hover { border-color: var(--muted) }
+.chip small { font-family: var(--num); font-size: 13px; font-weight: 600; letter-spacing: .08em; color: var(--faint) }
+.chip .cnt { min-width: 1ch; font-family: var(--num); font-size: 15px; font-weight: 600; color: var(--muted) }
+.chip svg { width: 13px; height: 13px; color: var(--red) }
+.chip[aria-pressed=true] { border-color: var(--white); background: var(--white); color: var(--ink) }
+.chip[aria-pressed=true] small, .chip[aria-pressed=true] .cnt { color: #5b6067 }
+.chip.zero:not([aria-pressed=true]) { opacity: .38 }
+.chip-new { border-color: rgba(63, 214, 140, .4); color: var(--green) }
+.chip-new .cnt { color: var(--green) }
+.chip-new[aria-pressed=true] { border-color: var(--green); background: var(--green); color: #03170c }
+.chip-new[aria-pressed=true] .cnt { color: #03170c }
+.chip-gone { border-color: rgba(255, 92, 114, .42); color: var(--red-text) }
+.chip-gone .cnt { color: var(--red-text) }
+.chip-gone[aria-pressed=true] { border-color: var(--red); background: var(--red); color: #fff }
+.chip-gone[aria-pressed=true] .cnt { color: #fff }
+.chip-reset { border-style: dashed; color: var(--muted) }
+
+.main { min-width: 0 }
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px calc(-1 * var(--pad)) 0;
+  padding: 10px var(--pad);
+  border-bottom: 1px solid var(--line);
+  background: rgba(18, 19, 22, .9);
+  -webkit-backdrop-filter: saturate(140%) blur(12px);
+  backdrop-filter: saturate(140%) blur(12px);
 }
-.btn[aria-pressed=true] {
-  border-color: var(--heart);
-  color: var(--heart);
-  background: rgba(255,77,94,.1)
+.summary { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 12px; margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted) }
+.summary .big { font-family: var(--num); font-size: 28px; font-weight: 700; line-height: 1.1; letter-spacing: .01em; color: var(--text) }
+.summary .u { margin-left: 4px; font-size: 14px; color: var(--text) }
+.summary .plus { color: var(--green) }
+.bar-tools { flex: none; display: flex; align-items: center; gap: 8px }
+.mini-select {
+  max-width: 128px;
+  height: 36px;
+  padding: 0 28px 0 13px;
+  border: 1px solid var(--line2);
+  border-radius: 999px;
+  background: var(--s1) var(--chev) no-repeat right 11px center / 10px;
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
 }
-.btn.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-  font-weight: 500
-}
-a.btn {
+.mini-select option { background: var(--s2); color: var(--text) }
+.icon-btn {
   display: inline-flex;
   align-items: center;
-  text-decoration: none
-}
-.summary {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin: 22px 2px 12px;
-  font-size: 14px;
-  color: var(--muted)
-}
-.summary b {
-  font-family: var(--font-plate);
-  font-size: 30px;
-  line-height: 1;
-  color: var(--ink);
-  font-variant-numeric: tabular-nums;
-  margin-right: 4px
-}
-.summary .plus {
-  color: var(--new);
-  font-weight: 500
-}
-#summaryText {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  column-gap: 14px;
-  row-gap: 2px
-}
-.nw {
-  white-space: nowrap
-}
-.seg .nn {
-  display: block;
-  font-size: 11px;
-  color: var(--new)
-}
-.share {
-  margin-left: auto;
-  height: 32px;
-  border: 1px solid var(--line-strong);
-  background: var(--surface-2);
-  color: var(--ink);
-  border-radius: 999px;
+  justify-content: center;
+  gap: 6px;
+  min-width: 36px;
+  height: 36px;
   padding: 0 12px;
-  font-size: 13px;
-  cursor: pointer
-}
-.share:hover {
-  border-color: var(--muted)
-}
-.chip.gone-chip {
-  border-color: rgba(255,77,94,.5);
-  color: #ff8a9a
-}
-.chip.gone-chip[aria-pressed=true] {
-  background: var(--heart);
-  border-color: var(--heart);
-  color: #fff
-}
-.pcard.is-gone {
-  background: #111214;
-  border-style: dashed
-}
-.pcard.is-gone .plate {
-  background: #c9cdd3
-}
-.pcard.is-gone .plate span {
-  text-decoration: line-through;
-  text-decoration-color: var(--heart);
-  text-decoration-thickness: 3px
-}
-.badge-gone {
-  background: rgba(255,77,94,.16);
-  color: #ff8a9a;
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1;
-  padding: 4px 8px;
-  border-radius: 999px
-}
-.reset {
-  border: 0;
-  background: 0 0;
-  color: #ff8a9a;
-  cursor: pointer;
-  padding: 0;
-  font-size: 14px
-}
-.note {
-  font-size: 13px;
-  color: var(--muted);
-  margin: 0 0 12px;
-  padding: 10px 12px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-left: 3px solid var(--accent);
-  border-radius: 10px
-}
-.grid {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(156px,1fr));
-  gap: 10px
-}
-.pcard {
-  background: linear-gradient(180deg,#181a1e,#131518);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 6px 12px 12px;
-  display: grid;
-  grid-template-rows: 30px auto 22px 22px;
-  justify-items: center;
-  align-items: center;
-  row-gap: 4px;
-  transition: border-color .15s
-}
-.pcard:hover {
-  border-color: var(--line-strong)
-}
-.pcard.is-new {
-  border-color: rgba(52,211,153,.7);
-  box-shadow: 0 0 0 1px rgba(52,211,153,.35),0 6px 20px rgba(52,211,153,.08)
-}
-.pcard-top {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center
-}
-.badge-new {
-  background: var(--new);
-  color: var(--new-ink);
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1;
-  padding: 4px 8px;
-  border-radius: 999px
-}
-.fav {
-  margin-left: auto;
-  width: 32px;
-  height: 30px;
-  border: 0;
-  background: 0 0;
-  cursor: pointer;
-  color: #4a5059;
-  display: grid;
-  place-items: center;
-  border-radius: 8px
-}
-.fav svg {
-  width: 20px;
-  height: 20px
-}
-.fav[aria-pressed=true] {
-  color: var(--heart)
-}
-.fav:hover {
-  color: var(--heart)
-}
-.plate {
-  background: #fdfdfd;
-  color: #111;
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 2px #111,0 2px 0 rgba(0,0,0,.4);
-  padding: 4px 10px 6px;
-  display: grid;
-  justify-items: center;
-  line-height: 1;
-  width: 100%;
-  max-width: 152px
-}
-.plate small {
-  font-family: var(--font-body);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .35em;
-  padding-left: .35em;
-  min-height: 10px;
-  color: #222
-}
-.plate span {
-  font-family: var(--font-plate);
-  font-weight: 700;
-  font-size: 30px;
-  letter-spacing: .03em;
-  white-space: nowrap;
-  font-stretch: condensed
-}
-.office {
-  font-size: 13px;
-  color: #d4d8de;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%
-}
-.meta {
-  font-size: 12px;
-  color: var(--muted);
-  display: flex;
-  gap: 4px
-}
-.tag {
-  border: 1px solid var(--line-strong);
-  border-radius: 6px;
-  padding: 0 6px;
-  line-height: 18px
-}
-.tag.kind {
-  border-color: rgba(227,25,55,.55);
-  color: #ff9aa8
-}
-.empty,
-.notice {
-  background: var(--surface);
-  border: 1px dashed var(--line-strong);
-  border-radius: 16px;
-  padding: 28px 18px;
-  text-align: center;
-  color: var(--muted)
-}
-.notice h2 {
-  color: var(--ink);
-  font-size: 18px;
-  margin: 0 0 6px
-}
-.auc-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 10px
-}
-.auc {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 14px 16px;
-  display: grid;
-  gap: 8px;
-  position: relative;
-  overflow: hidden
-}
-.auc::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: var(--soon)
-}
-.auc.live::before {
-  background: var(--live)
-}
-.auc-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap
-}
-.pill {
-  font-size: 12px;
-  font-weight: 700;
+  border: 1px solid var(--line2);
   border-radius: 999px;
-  padding: 1px 10px;
-  color: var(--soon);
-  background: rgba(110,168,254,.12)
-}
-.auc.live .pill {
-  color: var(--live);
-  background: rgba(245,165,36,.14)
-}
-.auc-office {
-  font-weight: 700
-}
-.auc-region {
+  background: var(--s1);
   font-size: 13px;
-  color: var(--muted)
+  font-weight: 600;
 }
-.auc-range {
-  font-family: var(--font-plate);
-  font-weight: 700;
-  font-size: 28px;
-  letter-spacing: .04em;
-  line-height: 1.1;
-  word-break: break-word
-}
-.auc-range.list {
-  font-size: 19px;
-  line-height: 1.4;
-  letter-spacing: .02em
-}
-.auc-range .nw {
-  white-space: nowrap
-}
-.auc-time {
-  font-size: 14px;
-  font-variant-numeric: tabular-nums;
-  color: #d4d8de
-}
-.auc-time span {
-  display: block;
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 2px
-}
-.favs {
-  margin-top: 28px
-}
-.favs h2 {
-  font-size: 16px;
-  margin: 0 0 8px
-}
-.favlist {
-  list-style: none;
-  margin: 0 0 12px;
-  padding: 0
-}
-.favlist li {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 10px;
-  align-items: center;
-  border-top: 1px solid var(--line);
-  padding: 9px 0
-}
-.favlist .p {
-  font-family: var(--font-plate);
-  font-weight: 700;
-  font-size: 20px;
-  letter-spacing: .03em
-}
-.favlist .s {
-  font-size: 13px;
-  color: var(--muted)
-}
-.favlist .gone {
-  color: var(--heart)
-}
-.favlist button {
-  border: 0;
-  background: 0 0;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: 13px
-}
-.actions {
+.icon-btn:hover, .mini-select:hover { border-color: var(--muted) }
+.icon-btn svg { width: 15px; height: 15px }
+
+.note { margin: 14px 0 0; padding-left: 12px; border-left: 2px solid var(--line2); font-size: 13px; line-height: 1.6; color: var(--muted) }
+.empty { margin: 24px 0 8px; padding: 30px 20px; border: 1px dashed var(--line2); border-radius: 14px; text-align: center; color: var(--muted) }
+.empty b { display: block; margin-bottom: 4px; font-size: 16px; color: var(--text) }
+.empty p { margin: 0 }
+.empty .btn { margin-top: 16px; padding: 0 22px }
+
+.wall { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 14px; margin: 20px 0 0; padding: 0; list-style: none }
+.pl { min-width: 0 }
+.pl-art { position: relative }
+.pl-cap { display: flex; align-items: center; gap: 4px; min-height: 26px; margin-top: 9px }
+.pl-office { flex: 1; min-width: 0; overflow: hidden; font-size: 13px; color: var(--muted); white-space: nowrap; text-overflow: ellipsis }
+.fav { flex: none; display: grid; place-items: center; width: 36px; height: 36px; margin: -6px -9px -6px 0; border: 0; border-radius: 50%; background: transparent; color: var(--faint) }
+.fav svg { width: 19px; height: 19px }
+.fav:hover { color: var(--text) }
+.fav[aria-pressed=true] { color: var(--red) }
+.pl-tags { display: flex; flex-wrap: wrap; gap: 3px 10px; margin-top: 2px; font-size: 12px; line-height: 1.45 }
+.tg-new { display: inline-flex; align-items: center; gap: 5px; color: var(--green) }
+.tg-new::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor }
+.tg-kind { font-weight: 700; letter-spacing: .04em; color: var(--text) }
+.tg-tag { color: var(--amber) }
+
+.plate {
+  position: relative;
+  isolation: isolate;
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 38 / 16;
+  overflow: hidden;
+  border-radius: 6% / 14%;
+  background: linear-gradient(180deg, #fdfdfa 0%, #ecede6 100%);
+  color: var(--ink);
+  container-type: inline-size;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .65), 0 1px 0 1px rgba(255, 255, 255, .05), 0 14px 22px -16px #000;
 }
-.status {
-  font-size: 13px;
-  color: var(--new);
-  min-height: 1em
+.plate::before { content: ""; position: absolute; inset: 5% 2.8%; z-index: -1; border: 1.5px solid currentColor; border-radius: 4.5% / 11%; opacity: .85 }
+.plate::after { content: ""; position: absolute; inset: 0; background: linear-gradient(112deg, rgba(255, 255, 255, 0) 8%, rgba(255, 255, 255, .16) 22%, rgba(255, 255, 255, 0) 40%); pointer-events: none }
+.plate .ch {
+  font-family: var(--num);
+  font-size: clamp(16px, 8vw, 34px);
+  font-size: 20.5cqw;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: .015em;
+  white-space: nowrap;
+  transform: translateY(3%);
+  text-shadow: 0 .045em 0 rgba(255, 255, 255, .6), 0 -.025em 0 rgba(0, 0, 0, .22);
 }
-.muted {
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 400
+.plate.ink-red { color: #c4122f }
+.plate.ink-green { color: #0a7440 }
+.plate.pg { background: linear-gradient(180deg, #0f7b47 0%, #0a5c35 100%); color: #f5f6f1 }
+.plate.py { background: linear-gradient(180deg, #f8d23c 0%, #e4b00b 100%) }
+.plate.pr { background: linear-gradient(180deg, #d81b3d 0%, #ab0d28 100%); color: #f5f6f1 }
+.plate.pg .ch, .plate.pr .ch { text-shadow: 0 -.03em 0 rgba(0, 0, 0, .35), 0 .04em 0 rgba(255, 255, 255, .15) }
+.plate.ev-car { background: linear-gradient(180deg, #0a7a43 0 19%, #fdfdfa 19%, #ecede6 90%, #0a7a43 90%) }
+.plate.ev-car::before { display: none }
+.plate.ev-car .ch { font-size: clamp(15px, 7.4vw, 31px); font-size: 19cqw; transform: translateY(9%) }
+.plate .band { position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: center; height: 19%; color: #fff; font: 700 clamp(7px, 2.6vw, 12px)/1 var(--ui); font-size: 7.2cqw; letter-spacing: .8em; text-indent: .8em }
+.plate .evt { position: absolute; top: 9%; left: 0; right: 0; text-align: center; font: 700 clamp(6px, 2.4vw, 10px)/1 var(--ui); font-size: 6.6cqw; letter-spacing: .55em; text-indent: .55em }
+.plate.ev-moto .ch { font-size: clamp(15px, 7.4vw, 31px); font-size: 18.5cqw; transform: translateY(13%) }
+
+.pl.gone .plate { filter: grayscale(.85) brightness(.6) }
+.stamp {
+  position: absolute;
+  top: -10px;
+  right: -6px;
+  padding: 3px 8px 2px;
+  border: 1.5px solid var(--red-text);
+  border-radius: 6px;
+  background: rgba(18, 19, 22, .94);
+  color: var(--red-text);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: .16em;
+  text-indent: .16em;
+  text-align: center;
+  white-space: nowrap;
+  transform: rotate(6deg);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, .45);
 }
-footer {
-  color: #6f7782;
-  font-size: 12px;
-  line-height: 1.8;
-  padding: 32px 0 44px;
-  text-align: center
+.stamp b { display: block; font-family: var(--num); font-size: 14px; font-weight: 700; letter-spacing: .06em; text-indent: 0 }
+
+.pl.sk .plate { background: var(--s1); box-shadow: none }
+.pl.sk .plate::before, .pl.sk .plate::after { display: none }
+.sk-line { width: 62%; height: 10px; margin-top: 14px; border-radius: 5px; background: var(--s1) }
+
+.aucs { display: grid; gap: 12px; margin: 16px 0 0; padding: 0; list-style: none }
+.auc { padding: 14px 16px 15px; border: 1px solid var(--line); border-radius: 14px; background: var(--s1) }
+.auc.live { border-color: rgba(255, 92, 114, .5) }
+.auc-top { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px }
+.status { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: .1em; color: var(--muted) }
+.status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor }
+.auc.live .status { color: var(--red-text) }
+.auc-office { font-size: 15px; font-weight: 700 }
+.auc-left { margin-left: auto; font-size: 13px; color: var(--muted); white-space: nowrap }
+.auc.live .auc-left { color: var(--text) }
+.auc-plates { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 14px 0 12px }
+.ap { display: inline-flex; align-items: center; gap: 8px }
+.ap .plate { width: 124px }
+.tilde { font-size: 16px; color: var(--muted) }
+.auc-time { margin: 0; font-size: 13px; color: var(--muted) }
+
+.btn {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--line2);
+  border-radius: 12px;
+  background: var(--s2);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
 }
-footer a {
-  color: inherit
+.btn:hover { border-color: var(--muted) }
+.btn.primary { border-color: var(--white); background: var(--white); color: var(--ink) }
+.btn.line { border-color: #06c755; background: #06c755; color: #fff }
+.empty .btn { flex: none }
+
+.sheet {
+  width: 100%;
+  max-width: 560px;
+  max-height: min(84vh, 760px);
+  margin: auto auto 0;
+  padding: 0;
+  border: 0;
+  border-radius: 20px 20px 0 0;
+  background: var(--s1);
+  color: var(--text);
+  box-shadow: 0 -24px 60px rgba(0, 0, 0, .6);
 }
-@media (max-width:420px) {
-  h1 {
-    font-size: 22px
-  }
-  .row3 {
-    gap: 6px
-  }
-  .grid {
-    grid-template-columns: repeat(2,1fr);
-    gap: 8px
-  }
-  .pcard {
-    padding: 6px 8px 10px
-  }
-  .plate {
-    padding: 4px 6px 6px
-  }
-  .plate span {
-    font-size: clamp(20px,6.4vw,27px)
-  }
-  .seg .t {
-    font-size: 12px
-  }
-  .seg .n {
-    font-size: 11px
-  }
+.sheet::backdrop { background: rgba(4, 5, 7, .64) }
+.sheet[open] { animation: sheet-up .26s cubic-bezier(.2, .8, .2, 1) }
+@keyframes sheet-up { from { transform: translateY(48px); opacity: 0 } }
+@keyframes sheet-in { from { transform: translateX(48px); opacity: 0 } }
+.sheet-in { display: flex; flex-direction: column; max-height: inherit; padding: 8px 18px calc(18px + env(safe-area-inset-bottom)) }
+.grab { width: 40px; height: 4px; margin: 2px auto 12px; border-radius: 2px; background: var(--line2) }
+.sheet-head { display: flex; align-items: center; gap: 10px }
+.sheet-head h2 { margin: 0; font-size: 18px; letter-spacing: .06em }
+.sheet-head h2 span { margin-left: 4px; font-family: var(--num); font-size: 20px; font-weight: 600; color: var(--muted) }
+.x { display: grid; place-items: center; width: 36px; height: 36px; margin-left: auto; border: 1px solid var(--line2); border-radius: 50%; background: transparent; color: var(--muted) }
+.x svg { width: 15px; height: 15px }
+.favlist { flex: 1; margin: 10px -18px 0; padding: 0 18px; overflow: auto; list-style: none; overscroll-behavior: contain }
+.fv { display: grid; grid-template-columns: 112px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--line) }
+.fv .plate { width: 112px }
+.fv.is-gone .plate { filter: grayscale(.8) brightness(.55) }
+.fv-info { display: grid; min-width: 0; font-size: 13px; line-height: 1.45; color: var(--muted) }
+.fv-info b { overflow: hidden; font-size: 14px; font-weight: 600; color: var(--text); text-overflow: ellipsis; white-space: nowrap }
+.fv-info b.bad { color: var(--red-text) }
+.fv-rm { height: 32px; padding: 0 12px; border: 1px solid var(--line2); border-radius: 999px; background: transparent; font-size: 13px; color: var(--muted) }
+.fv-rm:hover { color: var(--text); border-color: var(--muted) }
+.fv-empty { padding: 34px 6px; text-align: center; color: var(--muted) }
+.sheet-actions { display: flex; gap: 10px; margin-top: 16px }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(22px + env(safe-area-inset-bottom));
+  z-index: 60;
+  max-width: calc(100vw - 32px);
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .5);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 16px);
+  transition: opacity .22s, transform .22s;
 }
-@media (prefers-reduced-motion:reduce) {
-  * {
-    transition: none!important
-  }
-}</style>
+.toast.show { opacity: 1; transform: translate(-50%, 0) }
+.sheet .toast { position: absolute; bottom: calc(86px + env(safe-area-inset-bottom)) }
+
+@media (max-width: 380px) {
+  .icon-btn span { display: none }
+  .icon-btn { padding: 0 }
+  .fav-open .lbl { display: none }
+}
+@media (min-width: 560px) {
+  .wall { grid-template-columns: repeat(3, minmax(0, 1fr)) }
+  .brand-sub { display: inline }
+}
+@media (min-width: 800px) {
+  :root { --pad: 24px }
+  .wall { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px 18px }
+  .aucs { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+}
+@media (min-width: 1024px) {
+  :root { --pad: 32px }
+  .top-in { min-height: 78px }
+  .mark { width: 44px; height: 44px }
+  .brand-name { font-size: 21px }
+  .layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); align-items: start; gap: 40px; padding-top: 28px }
+  .side { position: sticky; top: 20px; max-height: calc(100vh - 40px); margin: -4px -8px 0 -4px; padding: 4px 8px 24px 4px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--line2) transparent }
+  .switches { grid-template-columns: 1fr }
+  .seg2 .gn { display: inline }
+  .types { flex-direction: column; gap: 6px; margin: 0; padding: 0; overflow: visible }
+  .types button { grid-template-columns: 28px minmax(0, 1fr) auto; justify-content: stretch; column-gap: 12px; width: 100%; padding: 10px 13px 10px 12px }
+  .types .n { grid-column: auto; min-height: 0; text-align: right }
+  .bar { margin: 0; padding: 4px 0 14px }
+  .wall { grid-template-columns: repeat(auto-fill, minmax(156px, 1fr)) }
+  .sheet { width: 440px; max-width: 440px; height: 100vh; max-height: 100vh; margin: 0 0 0 auto; border-radius: 0; box-shadow: -24px 0 60px rgba(0, 0, 0, .6) }
+  .sheet[open] { animation-name: sheet-in }
+  .sheet-in { height: 100%; padding: 22px 26px 26px }
+  .grab { display: none }
+  .favlist { margin: 14px -26px 0; padding: 0 26px }
+}
+@media (hover: none) {
+  .seg2 button:hover { color: var(--muted) }
+  .seg2 button[aria-selected=true]:hover { color: var(--ink) }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important }
+}
+</style>
 </head>
 <body>
 
 <header class="top">
-  <div class="wrap">
-    <div class="brandrow">
-      <div class="brand">
-        <svg class="mark" viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="11" fill="#e31937"/><rect x="5" y="12" width="34" height="20" rx="4" fill="#fff" stroke="#111" stroke-width="2"/><text x="22" y="26.5" text-anchor="middle" font-size="11" font-weight="900" fill="#111" font-family="Noto Sans TC,PingFang TC,Microsoft JhengHei,sans-serif">選牌</text></svg>
-        <div>
-          <h1>選牌標牌</h1>
-          <p class="sub">全台可選號碼與標牌公告</p>
-        </div>
+  <div class="wrap top-in">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="11" fill="#e31937"/><rect x="5" y="12" width="34" height="20" rx="4" fill="#fff" stroke="#111" stroke-width="2"/><text x="22" y="26.5" text-anchor="middle" font-size="11" font-weight="900" fill="#111" font-family="PingFang TC,Noto Sans TC,Microsoft JhengHei,sans-serif">選牌</text></svg>
+      <div class="brand-txt">
+        <h1 class="brand-name">選牌標牌<span class="brand-sub">全台可選號碼與標牌公告</span></h1>
+        <p class="upd" id="upd"><span id="dataTime">更新時間：—</span></p>
       </div>
     </div>
-    <p class="upd" id="upd"><span class="live-dot" aria-hidden="true"></span><span id="dataTime">更新時間：—</span></p>
+    <button class="fav-open" id="favOpen" type="button" aria-haspopup="dialog" aria-label="我的收藏"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.3C.9 8.4 2.9 4.5 6.6 4.1c2.1-.2 3.9.9 5.4 2.8 1.5-1.9 3.3-3 5.4-2.8 3.7.4 5.7 4.3 4.2 7.6C19.5 16.4 12 21 12 21z"/></svg><span class="lbl">收藏</span><span class="cnt" id="favBadge"></span></button>
   </div>
 </header>
 
-<main class="wrap">
-  <nav class="views" role="tablist" aria-label="頁面">
-    <button role="tab" id="view-pick" data-view="pick" aria-selected="true">選牌</button>
-    <button role="tab" id="view-bid" data-view="bid" aria-selected="false">標牌</button>
-  </nav>
-
-  <div class="groups" role="tablist" aria-label="汽車或機車" id="groupTabs">
-    <button role="tab" data-group="car" aria-selected="true"><span class="g">汽車</span><span class="gn"></span></button>
-    <button role="tab" data-group="moto" aria-selected="false"><span class="g">機車</span><span class="gn"></span></button>
-  </div>
-
-  <div class="seg" role="tablist" aria-label="車種" id="typeTabs"></div>
-
-  
-  <section id="pickView" aria-label="選牌">
-    <section class="panel filters" aria-label="篩選">
-      <div>
-        <label class="label" for="place">監理所／站</label>
-        <select id="place"></select>
+<div class="wrap layout">
+  <aside class="side" aria-label="車種與篩選">
+    <div class="switches">
+      <nav class="seg2 views" role="tablist" aria-label="頁面">
+        <button role="tab" id="view-pick" data-view="pick" aria-selected="true">選牌</button>
+        <button role="tab" id="view-bid" data-view="bid" aria-selected="false">標牌</button>
+      </nav>
+      <div class="seg2 groups" role="tablist" aria-label="汽車或機車" id="groupTabs">
+        <button role="tab" data-group="car" aria-selected="true"><span class="g">汽車</span><span class="gn"></span></button>
+        <button role="tab" data-group="moto" aria-selected="false"><span class="g">機車</span><span class="gn"></span></button>
       </div>
+    </div>
 
-      <div class="row3">
-        <div><label class="label" for="q">號碼包含</label><input type="text" id="q" placeholder="EBQ、88" autocomplete="off"></div>
-        <div><label class="label" for="starts">開頭數字</label><input type="text" id="starts" inputmode="numeric" maxlength="5" placeholder="例 6" autocomplete="off"></div>
-        <div><label class="label" for="ends">結尾數字</label><input type="text" id="ends" inputmode="numeric" maxlength="5" placeholder="例 88" autocomplete="off"></div>
+    <div class="types" role="tablist" aria-label="車種" id="typeTabs"></div>
+
+    <section class="filters" id="pickFilters" aria-label="篩選號碼">
+      <label class="field sel"><span class="fl">監理所／站</span><select id="place"></select></label>
+      <div class="fields3">
+        <label class="field"><span class="fl">號碼包含</span><input class="code" type="text" id="q" placeholder="EBQ、88" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
+        <label class="field"><span class="fl">開頭數字</span><input class="digits" type="text" id="starts" inputmode="numeric" maxlength="5" placeholder="6" autocomplete="off"></label>
+        <label class="field"><span class="fl">結尾數字</span><input class="digits" type="text" id="ends" inputmode="numeric" maxlength="5" placeholder="88" autocomplete="off"></label>
       </div>
-
-      <div>
-        <span class="label" id="chipsLabel">號碼組合</span>
-        <div class="chips" id="chips" aria-labelledby="chipsLabel">
-          <button class="chip new-chip" id="newOnly" aria-pressed="false" hidden>新增</button>
-          <button class="chip" data-pattern="鐵支" aria-pressed="false">鐵支 <small>AAAA</small><span class="cnt"></span></button>
-          <button class="chip" data-pattern="三條" aria-pressed="false">三條 <small>AAA</small><span class="cnt"></span></button>
-          <button class="chip" data-pattern="2Pair" aria-pressed="false">2Pair <small>AABB</small><span class="cnt"></span></button>
-          <button class="chip" data-pattern="一對" aria-pressed="false">一對 <small>AA</small><span class="cnt"></span></button>
-          <button class="chip" data-pattern="無0" aria-pressed="false">不含 0<span class="cnt"></span></button>
-          <button class="chip" data-pattern="流標牌" aria-pressed="false" hidden>流標牌<span class="cnt"></span></button>
-          <button class="chip gone-chip" id="removedOnly" aria-pressed="false" hidden>今天被選走</button>
-        </div>
+      <div class="chips" id="chips" role="group" aria-label="號碼組合">
+        <button class="chip chip-new" id="newOnly" type="button" aria-pressed="false" hidden>新增</button>
+        <button class="chip" type="button" data-pattern="鐵支" aria-pressed="false">鐵支<small>AAAA</small><span class="cnt"></span></button>
+        <button class="chip" type="button" data-pattern="三條" aria-pressed="false">三條<small>AAA</small><span class="cnt"></span></button>
+        <button class="chip" type="button" data-pattern="2Pair" aria-pressed="false">2Pair<small>AABB</small><span class="cnt"></span></button>
+        <button class="chip" type="button" data-pattern="一對" aria-pressed="false">一對<small>AA</small><span class="cnt"></span></button>
+        <button class="chip" type="button" data-pattern="無0" aria-pressed="false">不含 0<span class="cnt"></span></button>
+        <button class="chip" type="button" data-pattern="流標牌" aria-pressed="false" hidden>流標牌<span class="cnt"></span></button>
+        <button class="chip chip-gone" id="removedOnly" type="button" aria-pressed="false" hidden>被選走</button>
+        <button class="chip chip-fav" id="favOnly" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.3C.9 8.4 2.9 4.5 6.6 4.1c2.1-.2 3.9.9 5.4 2.8 1.5-1.9 3.3-3 5.4-2.8 3.7.4 5.7 4.3 4.2 7.6C19.5 16.4 12 21 12 21z"/></svg>只看收藏</button>
+        <button class="chip chip-reset" id="reset" type="button" hidden>清除篩選</button>
       </div>
+    </section>
 
-      <div class="tools">
-        <div>
-          <label class="label" for="sort">排序</label>
-          <select id="sort">
-            <option value="num-asc">號碼 小→大</option>
-            <option value="num-desc">號碼 大→小</option>
-            <option value="office">依監理所／站（北→南）</option>
+    <section class="filters" id="bidFilters" aria-label="篩選標牌" hidden>
+      <label class="field sel"><span class="fl">監理所／站</span><select id="bidPlace"></select></label>
+    </section>
+  </aside>
+
+  <main class="main">
+    <section id="pickView" aria-label="選牌">
+      <div class="bar">
+        <p class="summary" id="summaryText" aria-live="polite">讀取中…</p>
+        <div class="bar-tools">
+          <label class="sr" for="sort">排序</label>
+          <select class="mini-select" id="sort">
+            <option value="num-asc">號碼由小到大</option>
+            <option value="num-desc">號碼由大到小</option>
+            <option value="office">依監理所站，北到南</option>
             <option value="new">新增的排前面</option>
           </select>
+          <button class="icon-btn" id="sharePick" type="button" aria-label="分享目前的篩選"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg><span>分享</span></button>
         </div>
-        <button class="btn" id="favOnly" aria-pressed="false">♥ 只看收藏</button>
       </div>
+      <p class="note" id="newHint" hidden>從下一次更新開始，新出現的號碼會標上「新增」。</p>
+      <div class="empty" id="noData" hidden><b>還沒有車牌資料</b><p>資料讀取失敗，請稍後重新整理網頁。</p></div>
+      <div class="empty" id="empty" hidden><b>沒有符合條件的號碼</b><p>試著放寬篩選條件。</p><button class="btn" id="emptyReset" type="button">清除篩選</button></div>
+      <ul class="wall" id="grid"></ul>
+      <div id="moreSentinel" aria-hidden="true"></div>
     </section>
 
-    <div class="summary" aria-live="polite">
-      <span id="summaryText">—</span>
-      <button class="share" id="sharePick" type="button">分享篩選</button>
-      <button class="reset" id="reset" hidden>清除篩選</button>
-    </div>
-    <p class="note" id="newHint" hidden></p>
-
-    <div class="notice" id="noData" hidden>
-      <h2>還沒有車牌資料</h2>
-      <p>資料讀取失敗，請稍後重新整理網頁。</p>
-    </div>
-    <div class="empty" id="empty" hidden>沒有符合條件的號碼，試著放寬篩選。</div>
-    <ul class="grid" id="grid"></ul>
-    <div id="moreSentinel" aria-hidden="true" style="* {
-  height: 1px
-}"></div>
-
-    <section class="panel favs" aria-labelledby="favTitle">
-      <h2 id="favTitle">我的收藏 <span id="favCount" class="muted"></span></h2>
-      <ul class="favlist" id="favList"></ul>
-      <div class="actions">
-        <button class="btn primary" id="copyFavs">複製收藏清單</button>
-        <a class="btn" id="lineShare" href="https://line.me/R/share" target="_blank" rel="noopener">用 LINE 傳送</a>
-        <span class="status" id="copyStatus" role="status"></span>
+    <section id="bidView" aria-label="標牌" hidden>
+      <div class="bar">
+        <p class="summary" id="bidSummary" aria-live="polite">讀取中…</p>
+        <div class="bar-tools">
+          <button class="icon-btn" id="shareBid" type="button" aria-label="分享標牌清單"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg><span>分享</span></button>
+        </div>
       </div>
+      <p class="note">標牌要在監理服務網用自然人憑證登入後競標。號碼級別、底價與規定以各監理所站的公告為準。</p>
+      <div class="empty" id="bidEmpty" hidden></div>
+      <ul class="aucs" id="aucList"></ul>
     </section>
-  </section>
+  </main>
+</div>
 
-  
-  <section id="bidView" aria-label="標牌" hidden>
-    <section class="panel" aria-label="篩選">
-      <label class="label" for="bidPlace">監理所／站</label>
-      <select id="bidPlace"></select>
-    </section>
-    <div class="summary" aria-live="polite"><span id="bidSummary">—</span><button class="share" id="shareBid" type="button">分享</button></div>
-    <p class="note">標牌要在監理服務網用自然人憑證登入後競標。號碼級別、底價與規定以各監理所站的公告為準。</p>
-    <div class="empty" id="bidEmpty" hidden></div>
-    <ul class="auc-list" id="aucList"></ul>
-  </section>
-</main>
+<dialog class="sheet" id="favSheet" aria-labelledby="favTitle">
+  <div class="sheet-in">
+    <div class="grab" aria-hidden="true"></div>
+    <div class="sheet-head">
+      <h2 id="favTitle">我的收藏<span id="favCount"></span></h2>
+      <button class="x" id="favClose" type="button" aria-label="關閉"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <ul class="favlist" id="favList"></ul>
+    <div class="sheet-actions" id="favActions">
+      <button class="btn primary" id="copyFavs" type="button">複製清單</button>
+      <a class="btn line" id="lineShare" href="https://line.me/R/share" target="_blank" rel="noopener">用 LINE 傳送</a>
+    </div>
+  </div>
+</dialog>
 
-<script>const GROUPS = {
-    car: [ "電動自小客", "電動租賃車", "自用小客貨車", "租賃小客貨車", "營業小客車", "營業小貨車", "自用大貨車", "營業大貨車" ],
-    moto: [ "普通重型機車", "550cc以下重機", "550cc以上重機", "電動普通重型機車", "電動普通輕型機車", "微型電動二輪車" ]
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const GROUPS = {
+  car: ["電動自小客", "電動租賃車", "自用小客貨車", "租賃小客貨車", "營業小客車", "營業小貨車", "自用大貨車", "營業大貨車"],
+  moto: ["普通重型機車", "550cc以下重機", "550cc以上重機", "電動普通重型機車", "電動普通輕型機車", "微型電動二輪車"]
 };
-
-const TYPES = [ ...GROUPS.car, ...GROUPS.moto ];
-
+const TYPES = [...GROUPS.car, ...GROUPS.moto];
 const groupOf = t => GROUPS.moto.includes(t) ? "moto" : "car";
-
 const PLATE_RE = /^(?:[A-Z]{3}-\d{4}|[A-Z]{2}\d{5})$/;
 
-const EV_TYPES = new Set([ "電動自小客", "電動租賃車", "電動普通重型機車", "電動普通輕型機車" ]);
+const PLATE_STYLE = {
+  "電動自小客": "ev-car",
+  "電動租賃車": "ev-car",
+  "自用小客貨車": "",
+  "租賃小客貨車": "",
+  "營業小客車": "ink-red",
+  "營業小貨車": "pg",
+  "自用大貨車": "ink-green",
+  "營業大貨車": "pg",
+  "普通重型機車": "",
+  "550cc以下重機": "py",
+  "550cc以上重機": "pr",
+  "電動普通重型機車": "ev-moto",
+  "電動普通輕型機車": "pg ev-moto",
+  "微型電動二輪車": "ink-green"
+};
 
-const REGIONS = [ [ "臺北市區", [ "臺北市區監理所", "士林監理站", "基隆監理站", "金門監理站", "連江監理站" ] ], [ "臺北區", [ "臺北區監理所", "板橋監理站", "蘆洲監理站", "宜蘭監理站", "花蓮監理站", "玉里監理分站" ] ], [ "新竹區", [ "新竹區監理所", "新竹市監理站", "桃園監理站", "中壢監理站", "苗栗監理站" ] ], [ "臺中區", [ "臺中區監理所", "臺中市監理站", "豐原監理站", "彰化監理站", "南投監理站", "埔里監理分站" ] ], [ "嘉義區", [ "嘉義區監理所", "嘉義市監理站", "雲林監理站", "東勢監理分站", "新營監理站", "臺南監理站", "麻豆監理站" ] ], [ "高雄市區", [ "高雄市區監理所", "苓雅監理站", "旗山監理站" ] ], [ "高雄區", [ "高雄區監理所", "屏東監理站", "恆春監理分站", "臺東監理站", "澎湖監理站" ] ] ];
-
+const REGIONS = [
+  ["臺北市區", ["臺北市區監理所", "士林監理站", "基隆監理站", "金門監理站", "連江監理站"]],
+  ["臺北區", ["臺北區監理所", "板橋監理站", "蘆洲監理站", "宜蘭監理站", "花蓮監理站", "玉里監理分站"]],
+  ["新竹區", ["新竹區監理所", "新竹市監理站", "桃園監理站", "中壢監理站", "苗栗監理站"]],
+  ["臺中區", ["臺中區監理所", "臺中市監理站", "豐原監理站", "彰化監理站", "南投監理站", "埔里監理分站"]],
+  ["嘉義區", ["嘉義區監理所", "嘉義市監理站", "雲林監理站", "東勢監理分站", "新營監理站", "臺南監理站", "麻豆監理站"]],
+  ["高雄市區", ["高雄市區監理所", "苓雅監理站", "旗山監理站"]],
+  ["高雄區", ["高雄區監理所", "屏東監理站", "恆春監理分站", "臺東監理站", "澎湖監理站"]]
+];
 const OFFICE_ORDER = new Map, OFFICE_REGION = new Map;
-
 REGIONS.forEach(([r, list]) => list.forEach(o => {
-    OFFICE_ORDER.set(o, OFFICE_ORDER.size);
-    OFFICE_REGION.set(o, r);
+  OFFICE_ORDER.set(o, OFFICE_ORDER.size);
+  OFFICE_REGION.set(o, r);
 }));
-
 const baseOffice = o => o.split("-")[0];
-
 const regionOf = o => OFFICE_REGION.get(o) || OFFICE_REGION.get(baseOffice(o)) || "其他";
-
 const orderOf = o => OFFICE_ORDER.get(o) ?? OFFICE_ORDER.get(baseOffice(o)) ?? 999;
 
 function kindOf(d) {
-    if (/^(\d)\1+$/.test(d)) return "鐵支";
-    if (/(\d)\1\1/.test(d)) return "三條";
-    if (/(\d)\1(?!\1)(\d)\2/.test(d)) return "2Pair";
-    if (/(\d)\1/.test(d)) return "一對";
-    return "";
+  if (/^(\d)\1+$/.test(d)) return "鐵支";
+  if (/(\d)\1\1/.test(d)) return "三條";
+  if (/(\d)\1(?!\1)(\d)\2/.test(d)) return "2Pair";
+  if (/(\d)\1/.test(d)) return "一對";
+  return "";
 }
 
 const PATTERNS = {
-    "鐵支": it => it.kind === "鐵支",
-    "三條": it => it.kind === "三條",
-    "2Pair": it => it.kind === "2Pair",
-    "一對": it => it.kind === "一對",
-    "無0": it => !it.digits.includes("0"),
-    "流標牌": it => it.tag === "流標牌"
+  "鐵支": it => it.kind === "鐵支",
+  "三條": it => it.kind === "三條",
+  "2Pair": it => it.kind === "2Pair",
+  "一對": it => it.kind === "一對",
+  "無0": it => !it.digits.includes("0"),
+  "流標牌": it => it.tag === "流標牌"
 };
 
 const FAV_KEY = "ev-plates-favs";
-
 const TYPE_KEY = "ev-plates-type";
+const CHUNK = 120;
+const CHECK_EVERY = 10 * 60 * 1000;
 
 const state = {
-    view: "pick",
-    group: "car",
-    type: TYPES[0],
-    place: "",
-    q: "",
-    starts: "",
-    ends: "",
-    pattern: "",
-    sort: "num-asc",
-    favOnly: false,
-    newOnly: false,
-    removedOnly: false,
-    bidPlace: ""
+  view: "pick",
+  group: "car",
+  type: TYPES[0],
+  place: "",
+  q: "",
+  starts: "",
+  ends: "",
+  pattern: "",
+  sort: "num-asc",
+  favOnly: false,
+  newOnly: false,
+  removedOnly: false,
+  bidPlace: ""
 };
-
-const meta = {
-    sourceDate: null,
-    prevDate: null,
-    sourceUpdated: null
-};
-
-const md = d => d ? `${+d.slice(5, 7)}/${+d.slice(8, 10)}` : "";
-
-let items = [], auctions = [], removed = [];
-
-let byPlate = new Map;
-
-let loaded = false;
-
-const store = {
-    car: null,
-    moto: null
-};
-
+const meta = { sourceDate: null, prevDate: null, sourceUpdated: null };
+const store = { car: null, moto: null };
 const loading = {};
 
+let items = [], auctions = [], removed = [], counts = {};
+let byPlate = new Map, goneByPlate = new Map;
+let loaded = false;
+let currentList = [], shown = 0, keepShown = 0;
+let lastCheck = 0, checking = false;
 let favs = [];
 
 try {
-    favs = JSON.parse(localStorage.getItem(FAV_KEY) || "[]").filter(p => typeof p === "string");
+  favs = JSON.parse(localStorage.getItem(FAV_KEY) || "[]").filter(p => typeof p === "string");
 } catch (e) {
-    favs = [];
+  favs = [];
 }
-
 try {
-    const t = localStorage.getItem(TYPE_KEY);
-    if (TYPES.includes(t)) {
-        state.type = t;
-        state.group = groupOf(t);
-    }
+  const t = localStorage.getItem(TYPE_KEY);
+  if (TYPES.includes(t)) {
+    state.type = t;
+    state.group = groupOf(t);
+  }
 } catch (e) {}
 
 const saveFavs = () => {
-    try {
-        localStorage.setItem(FAV_KEY, JSON.stringify(favs));
-    } catch (e) {}
+  try {
+    localStorage.setItem(FAV_KEY, JSON.stringify(favs));
+  } catch (e) {}
 };
 
 const $ = id => document.getElementById(id);
-
-const esc = s => String(s).replace(/[&<>"']/g, c => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-}[c]));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const md = d => d ? `${+d.slice(5, 7)}/${+d.slice(8, 10)}` : "";
+const fmtN = n => n.toLocaleString("en-US");
 
 const HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.3C.9 8.4 2.9 4.5 6.6 4.1c2.1-.2 3.9.9 5.4 2.8 1.5-1.9 3.3-3 5.4-2.8 3.7.4 5.7 4.3 4.2 7.6C19.5 16.4 12 21 12 21z"/></svg>';
 
 const TPE = new Intl.DateTimeFormat("zh-TW", {
-    timeZone: "Asia/Taipei",
-    month: "numeric",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-    weekday: "short"
+  timeZone: "Asia/Taipei",
+  month: "numeric",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+  weekday: "short"
 });
 
 function fmtTime(ms) {
-    const p = Object.fromEntries(TPE.formatToParts(new Date(ms)).map(x => [ x.type, x.value ]));
-    return `${p.month}/${p.day}（${String(p.weekday).slice(-1)}）${p.hour}:${p.minute}`;
+  const p = Object.fromEntries(TPE.formatToParts(new Date(ms)).map(x => [x.type, x.value]));
+  return `${p.month}/${p.day}（${String(p.weekday).slice(-1)}）${p.hour}:${p.minute}`;
 }
 
+function plateHTML(text, type) {
+  const st = PLATE_STYLE[type] || "";
+  const ev = st.includes("ev-car") ? '<span class="band" aria-hidden="true">電動車</span>' : st.includes("ev-moto") ? '<span class="evt" aria-hidden="true">電動車</span>' : "";
+  return `<div class="plate${st ? " " + st : ""}">${ev}<span class="ch">${esc(text)}</span></div>`;
+}
+
+const swatchHTML = type => `<span class="sw${PLATE_STYLE[type] ? " " + PLATE_STYLE[type] : ""}" aria-hidden="true"></span>`;
+
 async function loadData(group) {
-    try {
-        const r = await fetch(`data/${group}.json`, {
-            cache: "no-store"
-        });
-        if (!r.ok) return null;
-        return await r.json();
-    } catch (e) {
-        return null;
-    }
+  try {
+    const r = await fetch(`data/${group}.json`, { cache: "no-cache" });
+    if (!r.ok) return null;
+    return await r.json();
+  } catch (e) {
+    return null;
+  }
 }
 
 function expandDoc(data) {
-    if (!data) return {
-        items: [],
-        removed: []
-    };
-    if (data.v !== 2) return {
-        items: Array.isArray(data.items) ? data.items : [],
-        removed: []
-    };
-    const O = data.offices || [], T = data.types || [], D = data.dates || [], c = data.items || {}, r = data.removed || {};
-    const items = (c.p || []).map((plate, k) => ({
-        plate: plate,
-        office: O[c.o[k]],
-        type: T[c.t[k]],
-        firstSeen: c.f[k] >= 0 ? D[c.f[k]] : "",
-        firstSeenTime: c.h[k] || "",
-        tag: c.g[k] || ""
-    }));
-    const removed = (r.p || []).map((plate, k) => ({
-        plate: plate,
-        office: O[r.o[k]],
-        type: T[r.t[k]],
-        time: r.h[k] || ""
-    }));
-    return {
-        items: items,
-        removed: removed
-    };
+  if (!data) return { items: [], removed: [] };
+  if (data.v !== 2) return { items: Array.isArray(data.items) ? data.items : [], removed: [] };
+  const O = data.offices || [], T = data.types || [], D = data.dates || [], c = data.items || {}, r = data.removed || {};
+  const list = (c.p || []).map((plate, k) => ({
+    plate: plate,
+    office: O[c.o[k]],
+    type: T[c.t[k]],
+    firstSeen: c.f[k] >= 0 ? D[c.f[k]] : "",
+    firstSeenTime: c.h[k] || "",
+    tag: c.g[k] || ""
+  }));
+  const gone = (r.p || []).map((plate, k) => ({
+    plate: plate,
+    office: O[r.o[k]],
+    type: T[r.t[k]],
+    time: r.h[k] || ""
+  }));
+  return { items: list, removed: gone };
 }
 
 function normalizeRemoved(list) {
-    return list.filter(it => it && PLATE_RE.test(String(it.plate || "")) && TYPES.includes(it.type) && it.office).map(it => {
-        const plate = String(it.plate).toUpperCase();
-        const digits = plate.match(/(\d+)$/)[1];
-        return {
-            plate: plate,
-            digits: digits,
-            kind: kindOf(digits),
-            type: it.type,
-            office: String(it.office),
-            goneTime: /^\d{2}:\d{2}$/.test(it.time || "") ? it.time : "",
-            gone: true,
-            isNew: false,
-            newTime: "",
-            tag: ""
-        };
-    });
+  return list.filter(it => it && PLATE_RE.test(String(it.plate || "")) && TYPES.includes(it.type) && it.office).map(it => {
+    const plate = String(it.plate).toUpperCase();
+    const digits = plate.match(/(\d+)$/)[1];
+    return {
+      plate: plate,
+      digits: digits,
+      kind: kindOf(digits),
+      type: it.type,
+      office: String(it.office),
+      goneTime: /^\d{2}:\d{2}$/.test(it.time || "") ? it.time : "",
+      gone: true,
+      isNew: false,
+      newTime: "",
+      tag: ""
+    };
+  });
 }
 
-function normalize(list) {
-    const seen = new Set;
-    const out = [];
-    for (const it of list) {
-        const plate = String(it.plate || "").toUpperCase().trim();
-        if (!PLATE_RE.test(plate) || !TYPES.includes(it.type) || !it.office || seen.has(plate)) continue;
-        seen.add(plate);
-        const digits = plate.match(/(\d+)$/)[1];
-        const isNew = !!(meta.prevDate && meta.sourceDate && it.firstSeen === meta.sourceDate);
-        out.push({
-            plate: plate,
-            digits: digits,
-            kind: kindOf(digits),
-            type: it.type,
-            office: String(it.office),
-            isNew: isNew,
-            newTime: isNew && /^\d{2}:\d{2}$/.test(it.firstSeenTime || "") ? it.firstSeenTime : "",
-            tag: typeof it.tag === "string" ? it.tag : ""
-        });
-    }
-    return out;
+function normalize(list, m) {
+  const seen = new Set;
+  const out = [];
+  for (const it of list) {
+    const plate = String(it.plate || "").toUpperCase().trim();
+    if (!PLATE_RE.test(plate) || !TYPES.includes(it.type) || !it.office || seen.has(plate)) continue;
+    seen.add(plate);
+    const digits = plate.match(/(\d+)$/)[1];
+    const isNew = !!(m.prevDate && m.sourceDate && it.firstSeen === m.sourceDate);
+    out.push({
+      plate: plate,
+      digits: digits,
+      kind: kindOf(digits),
+      type: it.type,
+      office: String(it.office),
+      isNew: isNew,
+      newTime: isNew && /^\d{2}:\d{2}$/.test(it.firstSeenTime || "") ? it.firstSeenTime : "",
+      tag: typeof it.tag === "string" ? it.tag : ""
+    });
+  }
+  return out;
 }
 
 function normalizeAuctions(data) {
-    if (!data || !Array.isArray(data.auctions)) return [];
-    return data.auctions.filter(a => a && TYPES.includes(a.type) && a.office && a.plates && !isNaN(Date.parse(a.start)) && !isNaN(Date.parse(a.end))).map(a => ({
-        type: a.type,
-        office: String(a.office),
-        plates: String(a.plates),
-        start: Date.parse(a.start),
-        end: Date.parse(a.end)
-    }));
+  if (!data || !Array.isArray(data.auctions)) return [];
+  return data.auctions.filter(a => a && TYPES.includes(a.type) && a.office && a.plates && !isNaN(Date.parse(a.start)) && !isNaN(Date.parse(a.end))).map(a => ({
+    type: a.type,
+    office: String(a.office),
+    plates: String(a.plates),
+    start: Date.parse(a.start),
+    end: Date.parse(a.end)
+  }));
 }
 
+function countTypes(list) {
+  const c = {};
+  for (const it of list) {
+    const x = c[it.type] || (c[it.type] = { n: 0, nNew: 0, tagged: 0 });
+    x.n++;
+    if (it.isNew) x.nNew++;
+    if (it.tag === "流標牌") x.tagged++;
+  }
+  return c;
+}
+
+const typeCount = t => counts[t] || { n: 0, nNew: 0, tagged: 0 };
+
 function prepare(data) {
-    const isDate = s => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s);
-    const m = {
-        sourceDate: data && isDate(data.sourceDate) ? data.sourceDate : null,
-        prevDate: data && isDate(data.previousSourceDate) ? data.previousSourceDate : null,
-        sourceUpdated: null
-    };
-    const t = data && Date.parse(data.sourceUpdatedAt || data.updatedAt);
-    m.sourceUpdated = t && !isNaN(t) ? t : null;
-    Object.assign(meta, m);
-    const raw = expandDoc(data);
-    return {
-        meta: m,
-        items: normalize(raw.items),
-        removed: normalizeRemoved(raw.removed),
-        auctions: normalizeAuctions(data)
-    };
+  const isDate = s => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s);
+  const t = data && Date.parse(data.sourceUpdatedAt || data.updatedAt);
+  const m = {
+    sourceDate: data && isDate(data.sourceDate) ? data.sourceDate : null,
+    prevDate: data && isDate(data.previousSourceDate) ? data.previousSourceDate : null,
+    sourceUpdated: t && !isNaN(t) ? t : null
+  };
+  const raw = expandDoc(data);
+  const list = normalize(raw.items, m);
+  return {
+    meta: m,
+    sig: String(data && (data.sourceSignature || data.updatedAt) || ""),
+    items: list,
+    counts: countTypes(list),
+    removed: normalizeRemoved(raw.removed),
+    auctions: normalizeAuctions(data)
+  };
+}
+
+function rebuildIndex() {
+  byPlate = new Map;
+  goneByPlate = new Map;
+  for (const d of Object.values(store)) {
+    if (!d) continue;
+    d.items.forEach(it => byPlate.set(it.plate, it));
+    (d.removed || []).forEach(it => goneByPlate.set(it.plate, { ...it, date: d.meta.sourceDate }));
+  }
 }
 
 function useGroup() {
-    const d = store[state.group];
-    loaded = !!d;
-    items = d ? d.items : [];
-    removed = d ? d.removed || [] : [];
-    auctions = d ? d.auctions : [];
-    if (d) Object.assign(meta, d.meta);
-    byPlate = new Map;
-    Object.values(store).forEach(x => x && x.items.forEach(it => byPlate.set(it.plate, it)));
-    if (meta.sourceUpdated) $("dataTime").innerHTML = "更新時間：<b>" + fmtTime(meta.sourceUpdated) + "</b>";
-    buildPlaceSelect();
-    buildBidPlaceSelect();
-    render();
+  const d = store[state.group];
+  loaded = !!d;
+  items = d ? d.items : [];
+  removed = d ? d.removed || [] : [];
+  auctions = d ? d.auctions : [];
+  counts = d ? d.counts || {} : {};
+  Object.assign(meta, { sourceDate: null, prevDate: null, sourceUpdated: null }, d ? d.meta : {});
+  rebuildIndex();
+  if (meta.sourceUpdated) $("dataTime").innerHTML = `更新時間：<b>${fmtTime(meta.sourceUpdated)}</b>`;
+  buildPlaceSelect();
+  buildBidPlaceSelect();
+  render();
 }
 
 async function ensureGroup(group) {
-    if (store[group] || loading[group]) return;
-    loading[group] = true;
-    const data = await loadData(group);
-    loading[group] = false;
-    store[group] = data ? prepare(data) : {
-        meta: {},
-        items: [],
-        removed: [],
-        auctions: []
-    };
-    if (state.group === group) useGroup(); else renderGroupTabs();
+  if (store[group] || loading[group]) return;
+  loading[group] = true;
+  const data = await loadData(group);
+  loading[group] = false;
+  store[group] = data ? prepare(data) : { meta: {}, sig: "", items: [], counts: {}, removed: [], auctions: [] };
+  lastCheck = Date.now();
+  if (state.group === group) {
+    useGroup();
+    showSelectedType();
+  } else {
+    rebuildIndex();
+    renderGroupTabs();
+    renderFavs();
+  }
+  loadForFavs();
+}
+
+function loadForFavs() {
+  if (!favs.some(p => !byPlate.has(p) && !goneByPlate.has(p))) return;
+  Object.keys(GROUPS).forEach(g => {
+    if (!store[g]) ensureGroup(g);
+  });
+}
+
+function inPlace(it, place) {
+  if (place.startsWith("r:")) return regionOf(it.office) === place.slice(2);
+  if (place.startsWith("o:")) return it.office === place.slice(2);
+  return true;
+}
+
+function matchesText(it) {
+  if (it.type !== state.type || !inPlace(it, state.place)) return false;
+  if (state.q && !it.plate.replace("-", "").includes(state.q.replace("-", "").toUpperCase())) return false;
+  if (state.starts && !it.digits.startsWith(state.starts)) return false;
+  if (state.ends && !it.digits.endsWith(state.ends)) return false;
+  return true;
 }
 
 function matchesBase(it) {
-    if (it.type !== state.type) return false;
-    if (state.place.startsWith("r:") && regionOf(it.office) !== state.place.slice(2)) return false;
-    if (state.place.startsWith("o:") && it.office !== state.place.slice(2)) return false;
-    if (state.q && !it.plate.replace("-", "").includes(state.q.replace("-", "").toUpperCase())) return false;
-    if (state.starts && !it.digits.startsWith(state.starts)) return false;
-    if (state.ends && !it.digits.endsWith(state.ends)) return false;
-    if (state.favOnly && !favs.includes(it.plate)) return false;
-    if (state.newOnly && !it.isNew) return false;
-    return true;
+  if (!matchesText(it)) return false;
+  if (state.favOnly && !favs.includes(it.plate)) return false;
+  if (state.newOnly && !it.isNew) return false;
+  return true;
 }
 
-const matches = it => matchesBase(it) && (!state.pattern || PATTERNS[state.pattern](it));
-
-function matchesGone(it) {
-    if (it.type !== state.type) return false;
-    if (state.place.startsWith("r:") && regionOf(it.office) !== state.place.slice(2)) return false;
-    if (state.place.startsWith("o:") && it.office !== state.place.slice(2)) return false;
-    if (state.q && !it.plate.replace("-", "").includes(state.q.replace("-", "").toUpperCase())) return false;
-    if (state.starts && !it.digits.startsWith(state.starts)) return false;
-    if (state.ends && !it.digits.endsWith(state.ends)) return false;
-    return true;
-}
+const matchesPattern = it => !state.pattern || PATTERNS[state.pattern](it);
 
 function sorted(list) {
-    const byNum = (a, b) => a.digits.localeCompare(b.digits) || a.plate.localeCompare(b.plate);
-    if (state.sort === "num-desc") return list.sort((a, b) => byNum(b, a));
-    if (state.sort === "office") return list.sort((a, b) => orderOf(a.office) - orderOf(b.office) || a.office.localeCompare(b.office) || byNum(a, b));
-    if (state.sort === "new") return list.sort((a, b) => b.isNew - a.isNew || b.newTime.localeCompare(a.newTime) || byNum(a, b));
-    return list.sort(byNum);
+  const byNum = (a, b) => a.digits.localeCompare(b.digits) || a.plate.localeCompare(b.plate);
+  if (state.sort === "num-desc") return list.sort((a, b) => byNum(b, a));
+  if (state.sort === "office") return list.sort((a, b) => orderOf(a.office) - orderOf(b.office) || a.office.localeCompare(b.office) || byNum(a, b));
+  if (state.sort === "new") return list.sort((a, b) => b.isNew - a.isNew || b.newTime.localeCompare(a.newTime) || byNum(a, b));
+  return list.sort(byNum);
 }
 
 function placeOptions(offices, allLabel) {
-    const regionCounts = new Map;
-    offices.forEach((n, o) => regionCounts.set(regionOf(o), (regionCounts.get(regionOf(o)) || 0) + n));
-    const total = [ ...offices.values() ].reduce((a, b) => a + b, 0);
-    let html = `<option value="">${allLabel}（${total}）</option>`;
-    const groups = REGIONS.map(([r, list]) => [ r, list ]);
-    const extra = [ ...offices.keys() ].filter(o => regionOf(o) === "其他");
-    if (extra.length) groups.push([ "其他", extra ]);
-    for (const [r, list] of groups) {
-        const names = [ ...new Set([ ...list, ...[ ...offices.keys() ].filter(o => regionOf(o) === r && !list.includes(o)) ]) ];
-        html += `<optgroup label="${esc(r)}"><option value="r:${esc(r)}">${esc(r)}全部（${regionCounts.get(r) || 0}）</option>`;
-        for (const o of names) html += `<option value="o:${esc(o)}">${esc(o)}（${offices.get(o) || 0}）</option>`;
-        html += `</optgroup>`;
-    }
-    return html;
+  const regionCounts = new Map;
+  offices.forEach((n, o) => regionCounts.set(regionOf(o), (regionCounts.get(regionOf(o)) || 0) + n));
+  const total = [...offices.values()].reduce((a, b) => a + b, 0);
+  let html = `<option value="">${allLabel}（${total}）</option>`;
+  const groups = REGIONS.map(([r, list]) => [r, list]);
+  const extra = [...offices.keys()].filter(o => regionOf(o) === "其他");
+  if (extra.length) groups.push(["其他", extra]);
+  for (const [r, list] of groups) {
+    const names = [...new Set([...list, ...[...offices.keys()].filter(o => regionOf(o) === r && !list.includes(o))])];
+    html += `<optgroup label="${esc(r)}"><option value="r:${esc(r)}">${esc(r)}全部（${regionCounts.get(r) || 0}）</option>`;
+    for (const o of names) html += `<option value="o:${esc(o)}">${esc(o)}（${offices.get(o) || 0}）</option>`;
+    html += `</optgroup>`;
+  }
+  return html;
 }
 
 function buildPlaceSelect() {
-    const counts = new Map;
-    items.filter(it => it.type === state.type).forEach(it => counts.set(it.office, (counts.get(it.office) || 0) + 1));
-    const sel = $("place");
-    sel.innerHTML = placeOptions(counts, "全台全部");
-    sel.value = [ ...sel.options ].some(o => o.value === state.place) ? state.place : "";
-    state.place = sel.value;
+  const counts = new Map;
+  items.filter(it => it.type === state.type).forEach(it => counts.set(it.office, (counts.get(it.office) || 0) + 1));
+  const sel = $("place");
+  sel.innerHTML = placeOptions(counts, "全台全部");
+  sel.value = [...sel.options].some(o => o.value === state.place) ? state.place : "";
+  if (loaded) state.place = sel.value;
 }
 
 function cardHTML(it) {
-    if (it.gone) return `<li class="pcard is-gone">\n    <div class="pcard-top"><span class="badge-gone">${md(meta.sourceDate)}${it.goneTime ? " " + it.goneTime : ""} 被選走</span></div>\n    <div class="plate"><small>${EV_TYPES.has(it.type) ? "電動車" : ""}</small><span>${esc(it.plate)}</span></div>\n    <div class="office">${esc(it.office)}</div>\n    <div class="meta">${it.kind && it.kind !== "一對" ? `<span class="tag kind">${esc(it.kind)}</span>` : ""}</div>\n  </li>`;
-    const on = favs.includes(it.plate);
-    return `<li class="pcard${it.isNew ? " is-new" : ""}">\n    <div class="pcard-top">\n      ${it.isNew ? `<span class="badge-new">${md(meta.sourceDate)}${it.newTime ? " " + it.newTime : ""} 新增</span>` : ""}\n      <button class="fav" data-plate="${esc(it.plate)}" aria-pressed="${on}" aria-label="${on ? "取消收藏" : "收藏"} ${esc(it.plate)}">${HEART}</button>\n    </div>\n    <div class="plate"><small>${EV_TYPES.has(it.type) ? "電動車" : ""}</small><span>${esc(it.plate)}</span></div>\n    <div class="office">${esc(it.office)}</div>\n    <div class="meta">${it.kind && it.kind !== "一對" ? `<span class="tag kind">${esc(it.kind)}</span>` : ""}${it.tag ? `<span class="tag">${esc(it.tag)}</span>` : ""}</div>\n  </li>`;
+  const kind = it.kind && it.kind !== "一對" ? `<span class="tg-kind">${esc(it.kind)}</span>` : "";
+  if (it.gone) {
+    return `<li class="pl gone"><div class="pl-art">${plateHTML(it.plate, it.type)}<span class="stamp">已被選走${it.goneTime ? `<b>${esc(it.goneTime)}</b>` : ""}</span></div><div class="pl-cap"><span class="pl-office">${esc(it.office)}</span></div>${kind ? `<div class="pl-tags">${kind}</div>` : ""}</li>`;
+  }
+  const on = favs.includes(it.plate);
+  const tags = (it.isNew ? `<span class="tg-new">${md(meta.sourceDate)}${it.newTime ? " " + esc(it.newTime) : ""} 新增</span>` : "") + kind + (it.tag ? `<span class="tg-tag">${esc(it.tag)}</span>` : "");
+  return `<li class="pl${it.isNew ? " is-new" : ""}"><div class="pl-art">${plateHTML(it.plate, it.type)}</div><div class="pl-cap"><span class="pl-office">${esc(it.office)}</span><button class="fav" type="button" data-plate="${esc(it.plate)}" aria-pressed="${on}" aria-label="${on ? "取消收藏" : "收藏"} ${esc(it.plate)}">${HEART}</button></div>${tags ? `<div class="pl-tags">${tags}</div>` : ""}</li>`;
 }
 
+const SKELETON = Array.from({ length: 8 }, () => '<li class="pl sk" aria-hidden="true"><div class="plate"></div><div class="sk-line"></div></li>').join("");
+
 function isFiltered() {
-    return state.place || state.q || state.starts || state.ends || state.pattern || state.favOnly || state.newOnly || state.removedOnly;
+  return !!(state.place || state.q || state.starts || state.ends || state.pattern || state.favOnly || state.newOnly || state.removedOnly);
 }
 
 function renderChips(base) {
-    document.querySelectorAll("[data-pattern]").forEach(c => {
-        const n = base.filter(PATTERNS[c.dataset.pattern]).length;
-        c.querySelector(".cnt").textContent = n;
-        c.classList.toggle("zero", n === 0);
-        c.setAttribute("aria-pressed", String(c.dataset.pattern === state.pattern));
-    });
-    const ofType = items.filter(it => it.type === state.type);
-    const hasTagged = ofType.some(it => it.tag === "流標牌");
-    document.querySelector('[data-pattern="流標牌"]').hidden = !hasTagged;
+  document.querySelectorAll("[data-pattern]").forEach(c => {
+    const n = base.filter(PATTERNS[c.dataset.pattern]).length;
+    c.querySelector(".cnt").textContent = fmtN(n);
+    c.classList.toggle("zero", n === 0);
+    c.setAttribute("aria-pressed", String(c.dataset.pattern === state.pattern));
+  });
+  document.querySelector('[data-pattern="流標牌"]').hidden = !typeCount(state.type).tagged;
 }
 
+const countHTML = (n, unit) => `<span class="nw"><b class="big">${fmtN(n)}</b><span class="u">${unit}</span></span>`;
+
 function renderPick() {
-    if (loaded && state.pattern === "流標牌" && !items.some(it => it.type === state.type && it.tag === "流標牌")) state.pattern = "";
-    const goneOfType = removed.filter(it => it.type === state.type);
-    if (loaded && state.removedOnly && !goneOfType.length) state.removedOnly = false;
-    const base = state.removedOnly ? removed.filter(matchesGone) : items.filter(matchesBase);
-    const list = state.removedOnly ? base.filter(it => !state.pattern || PATTERNS[state.pattern](it)).sort((a, b) => b.goneTime.localeCompare(a.goneTime) || a.digits.localeCompare(b.digits)) : sorted(base.filter(it => !state.pattern || PATTERNS[state.pattern](it)));
-    const ofType = items.filter(it => it.type === state.type);
-    const newCount = ofType.filter(it => it.isNew).length;
-    currentList = list;
-    shown = Math.min(CHUNK, list.length);
-    $("grid").innerHTML = list.slice(0, shown).map(cardHTML).join("");
-    $("noData").hidden = !(loaded && items.length === 0);
-    $("empty").hidden = !(items.length > 0 && list.length === 0);
-    $("summaryText").innerHTML = !items.length ? loaded ? "—" : "讀取中…" : state.removedOnly ? `<span class="nw"><b>${list.length}</b> 面符合</span><span class="nw">${md(meta.sourceDate)} ${esc(state.type)}被選走 ${goneOfType.length} 面</span>` : `<span class="nw"><b>${list.length}</b> 面符合</span><span class="nw">${esc(state.type)}共 ${ofType.length} 面</span>` + (meta.prevDate ? `<span class="nw plus">${md(meta.sourceDate)} 新增 ${newCount} 面</span>` : "");
-    $("removedOnly").hidden = !goneOfType.length && !state.removedOnly;
-    $("removedOnly").textContent = `${md(meta.sourceDate)} 被選走（${goneOfType.length}）`;
-    $("removedOnly").setAttribute("aria-pressed", String(state.removedOnly));
-    $("newOnly").setAttribute("aria-pressed", String(state.newOnly));
-    renderChips(base);
-    $("newOnly").hidden = !meta.prevDate;
-    $("newOnly").textContent = `只看 ${md(meta.sourceDate)} 新增（${newCount}）`;
-    $("newHint").hidden = !(loaded && items.length && !meta.prevDate);
-    $("newHint").textContent = "從下一次每日更新開始，比前一天多出來的號碼會標上「新增」。";
-    $("reset").hidden = !isFiltered();
-    renderFavs();
+  const tc = typeCount(state.type);
+  if (loaded && state.pattern === "流標牌" && !tc.tagged) state.pattern = "";
+  const goneOfType = removed.filter(it => it.type === state.type);
+  if (loaded && state.removedOnly && !goneOfType.length) state.removedOnly = false;
+  const base = state.removedOnly ? removed.filter(matchesText) : items.filter(matchesBase);
+  const list = state.removedOnly ? base.filter(matchesPattern).sort((a, b) => b.goneTime.localeCompare(a.goneTime) || a.digits.localeCompare(b.digits)) : sorted(base.filter(matchesPattern));
+  const newCount = tc.nNew;
+  currentList = list;
+  shown = Math.min(Math.max(CHUNK, keepShown), list.length);
+  keepShown = 0;
+  $("grid").innerHTML = loaded ? list.slice(0, shown).map(cardHTML).join("") : SKELETON;
+  $("noData").hidden = !(loaded && items.length === 0);
+  $("empty").hidden = !(items.length > 0 && list.length === 0);
+  let s;
+  if (!loaded) s = "讀取中…";
+  else if (!items.length) s = "—";
+  else if (state.removedOnly) s = countHTML(list.length, "面") + `<span class="nw">${md(meta.sourceDate)} 被選走</span>`;
+  else if (isFiltered()) s = countHTML(list.length, "面符合") + `<span class="nw">共 ${fmtN(tc.n)} 面</span>`;
+  else s = countHTML(list.length, "面可選") + (meta.prevDate && newCount ? `<span class="nw plus">${md(meta.sourceDate)} 新增 ${fmtN(newCount)}</span>` : "");
+  $("summaryText").innerHTML = s;
+  const goneBtn = $("removedOnly");
+  goneBtn.hidden = !goneOfType.length && !state.removedOnly;
+  goneBtn.innerHTML = `${md(meta.sourceDate)} 被選走<span class="cnt">${fmtN(goneOfType.length)}</span>`;
+  goneBtn.setAttribute("aria-pressed", String(state.removedOnly));
+  const newBtn = $("newOnly");
+  newBtn.hidden = !meta.prevDate;
+  newBtn.innerHTML = `${md(meta.sourceDate)} 新增<span class="cnt">${fmtN(newCount)}</span>`;
+  newBtn.setAttribute("aria-pressed", String(state.newOnly));
+  newBtn.classList.toggle("zero", !newCount);
+  $("favOnly").setAttribute("aria-pressed", String(state.favOnly));
+  renderChips(base);
+  $("newHint").hidden = !(loaded && items.length && !meta.prevDate);
+  $("reset").hidden = !isFiltered();
+  $("emptyReset").hidden = !isFiltered();
+  renderFavs();
+}
+
+function favStatus(p) {
+  const it = byPlate.get(p);
+  if (it) return { type: it.type, alert: false, html: `<b>${esc(it.office)}</b><span>${esc(it.type)}</span>` };
+  const g = goneByPlate.get(p);
+  if (g) return { type: g.type, alert: true, html: `<b class="bad">${md(g.date)}${g.goneTime ? " " + esc(g.goneTime) : ""} 被選走</b><span>${esc(g.office)}</span>` };
+  if (store.car && store.moto && store.car.items.length && store.moto.items.length) {
+    return { type: "", alert: true, html: `<b class="bad">清單裡已經沒有這個號碼</b><span>可能已被選走</span>` };
+  }
+  return { type: "", alert: false, html: `<span>確認中…</span>` };
 }
 
 function renderFavs() {
-    $("favCount").textContent = `（${favs.length}）`;
-    const ul = $("favList");
-    if (!favs.length) {
-        ul.innerHTML = `<li><span></span><span class="s">點車牌右上角的愛心，就會加到這裡。</span><span></span></li>`;
-    } else {
-        ul.innerHTML = favs.map(p => {
-            const it = byPlate.get(p);
-            const allLoaded = store.car && store.moto && store.car.items.length && store.moto.items.length;
-            const s = it ? `${esc(it.office)} · ${esc(it.type)}` : allLoaded ? `<span class="gone">今天的清單裡沒有這個號碼，可能已被選走</span>` : "";
-            return `<li><span class="p">${esc(p)}</span><span class="s">${s}</span><button data-remove="${esc(p)}">移除</button></li>`;
-        }).join("");
-    }
-    $("lineShare").href = "https://line.me/R/share?text=" + encodeURIComponent(shareText());
+  const list = favs.map(p => [p, favStatus(p)]);
+  const alert = list.some(([, s]) => s.alert);
+  $("favBadge").textContent = favs.length ? String(favs.length) : "";
+  $("favCount").textContent = favs.length ? String(favs.length) : "";
+  $("favOpen").classList.toggle("alert", alert);
+  $("favOpen").setAttribute("aria-label", `我的收藏，${favs.length} 個` + (alert ? "，有號碼已經不在清單裡" : ""));
+  $("favList").innerHTML = favs.length ? list.map(([p, s]) => `<li class="fv${s.alert ? " is-gone" : ""}">${plateHTML(p, s.type)}<div class="fv-info">${s.html}</div><button class="fv-rm" type="button" data-remove="${esc(p)}" aria-label="移除 ${esc(p)}">移除</button></li>`).join("") : `<li class="fv-empty">還沒有收藏。點號碼旁的愛心，就會加到這裡。</li>`;
+  $("favActions").hidden = !favs.length;
+  $("lineShare").href = "https://line.me/R/share?text=" + encodeURIComponent(shareText());
 }
 
 function shareText() {
-    if (!favs.length) return "選牌標牌：全台監理站可選的車牌號碼與標牌公告";
-    const lines = favs.map(p => {
-        const it = byPlate.get(p);
-        return it ? `${p}（${it.office}）` : p;
-    });
-    return "我收藏的車牌：\n" + lines.join("\n");
+  if (!favs.length) return "選牌標牌：全台監理站可選的車牌號碼與標牌公告";
+  const lines = favs.map(p => {
+    const it = byPlate.get(p);
+    return it ? `${p}（${it.office}）` : p;
+  });
+  return "我收藏的車牌：\n" + lines.join("\n");
 }
 
 function toggleFav(plate) {
-    const i = favs.indexOf(plate);
-    if (i >= 0) favs.splice(i, 1); else favs.push(plate);
-    saveFavs();
-    if (state.favOnly) return render();
-    const on = favs.includes(plate);
-    document.querySelectorAll("#grid .fav").forEach(b => {
-        if (b.dataset.plate !== plate) return;
-        b.setAttribute("aria-pressed", String(on));
-        b.setAttribute("aria-label", `${on ? "取消收藏" : "收藏"} ${plate}`);
-    });
-    renderFavs();
+  const i = favs.indexOf(plate);
+  if (i >= 0) favs.splice(i, 1); else favs.push(plate);
+  saveFavs();
+  if (state.favOnly) return render();
+  const on = favs.includes(plate);
+  document.querySelectorAll("#grid .fav").forEach(b => {
+    if (b.dataset.plate !== plate) return;
+    b.setAttribute("aria-pressed", String(on));
+    b.setAttribute("aria-label", `${on ? "取消收藏" : "收藏"} ${plate}`);
+  });
+  renderFavs();
 }
 
 function activeAuctions() {
-    const now = Date.now();
-    return auctions.filter(a => a.end > now).map(a => ({
-        ...a,
-        live: a.start <= now
-    }));
+  const now = Date.now();
+  return auctions.filter(a => a.end > now).map(a => ({ ...a, live: a.start <= now }));
 }
 
 function buildBidPlaceSelect() {
-    const counts = new Map;
-    activeAuctions().filter(a => a.type === state.type).forEach(a => counts.set(a.office, (counts.get(a.office) || 0) + 1));
-    const sel = $("bidPlace");
-    sel.innerHTML = placeOptions(counts, "全台全部");
-    sel.value = [ ...sel.options ].some(o => o.value === state.bidPlace) ? state.bidPlace : "";
-    state.bidPlace = sel.value;
+  const counts = new Map;
+  activeAuctions().filter(a => a.type === state.type).forEach(a => counts.set(a.office, (counts.get(a.office) || 0) + 1));
+  const sel = $("bidPlace");
+  sel.innerHTML = placeOptions(counts, "全台全部");
+  sel.value = [...sel.options].some(o => o.value === state.bidPlace) ? state.bidPlace : "";
+  if (loaded) state.bidPlace = sel.value;
+}
+
+function relTime(a, now) {
+  const mins = Math.max(1, Math.round(((a.live ? a.end : a.start) - now) / 60000));
+  const d = Math.floor(mins / 1440), h = Math.floor(mins % 1440 / 60), m = mins % 60;
+  const span = d ? `${d} 天${h ? ` ${h} 小時` : ""}` : h ? `${h} 小時${m ? ` ${m} 分` : ""}` : `${m} 分鐘`;
+  return a.live ? `剩 ${span}` : `${span}後開始`;
+}
+
+function auctionPlates(a) {
+  return a.plates.split(/\s*[,、]\s*/).filter(Boolean).map(tok => `<span class="ap">${tok.split(/\s*[~～]\s*/).map(x => plateHTML(x, a.type)).join('<span class="tilde" aria-label="到">～</span>')}</span>`).join("");
 }
 
 function renderBid() {
-    const list = activeAuctions().filter(a => a.type === state.type).filter(a => !state.bidPlace || (state.bidPlace.startsWith("o:") ? a.office === state.bidPlace.slice(2) : regionOf(a.office) === state.bidPlace.slice(2))).sort((a, b) => b.live - a.live || a.start - b.start || orderOf(a.office) - orderOf(b.office) || a.plates.localeCompare(b.plates));
-    const live = list.filter(a => a.live).length;
-    $("bidSummary").innerHTML = loaded ? `競標中 <b>${live}</b> 筆　·　即將開始 <b>${list.length - live}</b> 筆` : "讀取中…";
-    $("bidEmpty").hidden = !loaded || list.length > 0;
-    $("bidEmpty").textContent = !items.length ? "還沒有資料，請稍後重新整理網頁。" : `目前沒有${state.type}的標牌公告。`;
-    $("aucList").innerHTML = list.map(a => `<li class="auc${a.live ? " live" : ""}">\n      <div class="auc-head">\n        <span class="pill">${a.live ? "競標中" : "即將開始"}</span>\n        <span class="auc-office">${esc(a.office)}</span>\n        <span class="auc-region">${esc(regionOf(a.office))}</span>\n      </div>\n      <div class="auc-range${/[,、]/.test(a.plates) ? " list" : ""}">${a.plates.split(/\s*[,、]\s*/).map(x => `<span class="nw">${esc(x.replace(/~/g, " ～ "))}</span>`).join("、")}</div>\n      <div class="auc-time"><span>競標期間</span>${fmtTime(a.start)} → ${fmtTime(a.end)}</div>\n    </li>`).join("");
+  const now = Date.now();
+  const list = activeAuctions().filter(a => a.type === state.type && inPlace(a, state.bidPlace)).sort((a, b) => b.live - a.live || a.start - b.start || orderOf(a.office) - orderOf(b.office) || a.plates.localeCompare(b.plates));
+  const live = list.filter(a => a.live).length;
+  $("bidSummary").innerHTML = loaded ? countHTML(live, "筆競標中") + `<span class="nw">${fmtN(list.length - live)} 筆即將開始</span>` : "讀取中…";
+  $("bidEmpty").hidden = !loaded || list.length > 0;
+  $("bidEmpty").textContent = !items.length ? "還沒有資料，請稍後重新整理網頁。" : `目前沒有${state.type}的標牌公告。`;
+  $("aucList").innerHTML = list.map(a => `<li class="auc${a.live ? " live" : ""}"><div class="auc-top"><span class="status">${a.live ? "競標中" : "即將開始"}</span><span class="auc-office">${esc(a.office)}</span><span class="auc-left">${relTime(a, now)}</span></div><div class="auc-plates">${auctionPlates(a)}</div><p class="auc-time">${fmtTime(a.start)} ～ ${fmtTime(a.end)}</p></li>`).join("");
 }
 
 function renderGroupTabs() {
-    document.querySelectorAll("#groupTabs button").forEach(b => {
-        const g = b.dataset.group;
-        b.setAttribute("aria-selected", String(g === state.group));
-        const d = store[g];
-        let label = "";
-        if (d && d.items.length) {
-            label = state.view === "bid" ? `${d.auctions.filter(a => a.end > Date.now()).length} 筆公告` : `${d.items.length.toLocaleString("en-US")} 面`;
-        }
-        b.querySelector(".gn").textContent = label;
-    });
+  document.querySelectorAll("#groupTabs button").forEach(b => {
+    const g = b.dataset.group;
+    b.setAttribute("aria-selected", String(g === state.group));
+    const d = store[g];
+    let label = "";
+    if (d && d.items.length) label = state.view === "bid" ? `${d.auctions.filter(a => a.end > Date.now()).length} 筆` : fmtN(d.items.length);
+    b.querySelector(".gn").textContent = label;
+  });
 }
 
 function updateTabCounts() {
-    const box = $("typeTabs");
-    const types = GROUPS[state.group];
-    if (box.dataset.group !== state.group) {
-        box.dataset.group = state.group;
-        box.classList.toggle("cols-3", types.length % 3 === 0 && types.length % 4 !== 0);
-        box.innerHTML = types.map(t => `<button role="tab" data-type="${esc(t)}" aria-selected="false"><span class="t">${esc(t)}</span><span class="n"></span></button>`).join("");
+  const box = $("typeTabs");
+  const types = GROUPS[state.group];
+  if (box.dataset.group !== state.group) {
+    box.dataset.group = state.group;
+    box.innerHTML = types.map(t => `<button role="tab" type="button" data-type="${esc(t)}" aria-selected="false">${swatchHTML(t)}<span class="t">${esc(t)}</span><span class="n"></span></button>`).join("");
+  }
+  const act = state.view === "bid" ? activeAuctions() : [];
+  box.querySelectorAll("button").forEach(b => {
+    const t = b.dataset.type;
+    b.setAttribute("aria-selected", String(t === state.type));
+    let label = "";
+    if (state.view === "bid") {
+      label = loaded ? `<b>${act.filter(a => a.type === t).length}</b> 筆公告` : "";
+    } else if (items.length) {
+      const c = typeCount(t);
+      label = `<b>${fmtN(c.n)}</b> 面` + (c.nNew ? `<i>新增 ${fmtN(c.nNew)}</i>` : "");
     }
-    const act = activeAuctions();
-    box.querySelectorAll("button").forEach(b => {
-        const t = b.dataset.type;
-        b.setAttribute("aria-selected", String(t === state.type));
-        let label = "";
-        if (state.view === "bid") {
-            label = loaded ? `${act.filter(a => a.type === t).length} 筆公告` : "";
-        } else if (items.length) {
-            const all = items.filter(it => it.type === t);
-            const n = all.filter(it => it.isNew).length;
-            label = `${all.length.toLocaleString("en-US")} 面` + (n ? `<span class="nn">新增 ${n.toLocaleString("en-US")}</span>` : "");
-        }
-        b.querySelector(".n").innerHTML = label;
-    });
+    b.querySelector(".n").innerHTML = label;
+  });
+}
+
+function showSelectedType() {
+  const rail = $("typeTabs");
+  const b = rail.querySelector('[aria-selected="true"]');
+  if (!b || rail.scrollWidth <= rail.clientWidth) return;
+  const l = b.offsetLeft, r = l + b.offsetWidth;
+  if (l < rail.scrollLeft + 8 || r > rail.scrollLeft + rail.clientWidth - 8) rail.scrollLeft = Math.max(0, l - 16);
 }
 
 function render() {
-    $("pickView").hidden = state.view !== "pick";
-    $("bidView").hidden = state.view !== "bid";
-    document.querySelectorAll(".views button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.view === state.view)));
-    renderGroupTabs();
-    updateTabCounts();
-    syncUrl();
-    if (state.view === "bid") renderBid(); else renderPick();
+  const bid = state.view === "bid";
+  $("pickView").hidden = bid;
+  $("bidView").hidden = !bid;
+  $("pickFilters").hidden = bid;
+  $("bidFilters").hidden = !bid;
+  document.querySelectorAll(".views button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.view === state.view)));
+  renderGroupTabs();
+  updateTabCounts();
+  syncUrl();
+  if (bid) renderBid(); else renderPick();
 }
 
-const CHUNK = 300;
-
-let currentList = [], shown = 0;
-
 function appendMore() {
-    if (state.view !== "pick" || shown >= currentList.length) return;
-    const next = currentList.slice(shown, shown + CHUNK);
-    $("grid").insertAdjacentHTML("beforeend", next.map(cardHTML).join(""));
-    shown += next.length;
+  if (state.view !== "pick" || !loaded || shown >= currentList.length) return;
+  const next = currentList.slice(shown, shown + CHUNK);
+  $("grid").insertAdjacentHTML("beforeend", next.map(cardHTML).join(""));
+  shown += next.length;
 }
 
 if ("IntersectionObserver" in window) {
-    new IntersectionObserver(es => {
-        if (es.some(e => e.isIntersecting)) appendMore();
-    }, {
-        rootMargin: "1200px 0px"
-    }).observe($("moreSentinel"));
+  new IntersectionObserver(es => {
+    if (es.some(e => e.isIntersecting)) appendMore();
+  }, { rootMargin: "1600px 0px" }).observe($("moreSentinel"));
 } else {
-    window.addEventListener("scroll", () => {
-        if (window.innerHeight + window.scrollY > document.body.offsetHeight - 1500) appendMore();
-    }, {
-        passive: true
-    });
+  window.addEventListener("scroll", () => {
+    if (window.innerHeight + window.scrollY > document.body.offsetHeight - 1500) appendMore();
+  }, { passive: true });
+}
+
+function rememberType() {
+  try {
+    localStorage.setItem(TYPE_KEY, state.type);
+  } catch (e) {}
 }
 
 function setType(t) {
-    state.type = t;
-    try {
-        localStorage.setItem(TYPE_KEY, t);
-    } catch (e) {}
-    buildPlaceSelect();
-    buildBidPlaceSelect();
-    render();
+  if (t === state.type) return;
+  state.type = t;
+  rememberType();
+  buildPlaceSelect();
+  buildBidPlaceSelect();
+  render();
+  showSelectedType();
 }
 
 function setGroup(g) {
-    if (g === state.group) return;
-    state.group = g;
-    if (!GROUPS[g].includes(state.type)) state.type = GROUPS[g][0];
-    try {
-        localStorage.setItem(TYPE_KEY, state.type);
-    } catch (e) {}
-    useGroup();
-    ensureGroup(g);
+  if (g === state.group) return;
+  state.group = g;
+  if (!GROUPS[g].includes(state.type)) state.type = GROUPS[g][0];
+  rememberType();
+  useGroup();
+  showSelectedType();
+  ensureGroup(g);
 }
 
-const SORTS = [ "num-asc", "num-desc", "office", "new" ];
+const SORTS = ["num-asc", "num-desc", "office", "new"];
 
 function stateToQuery() {
-    const q = new URLSearchParams;
-    if (state.view === "bid") q.set("v", "bid");
-    q.set("t", state.type);
-    if (state.view === "bid") {
-        if (state.bidPlace) q.set("p", state.bidPlace);
-    } else {
-        if (state.place) q.set("p", state.place);
-        if (state.q) q.set("q", state.q);
-        if (state.starts) q.set("s", state.starts);
-        if (state.ends) q.set("e", state.ends);
-        if (state.pattern) q.set("k", state.pattern);
-        if (state.sort !== "num-asc") q.set("o", state.sort);
-        if (state.newOnly) q.set("n", "1");
-        if (state.removedOnly) q.set("r", "1");
-    }
-    return q.toString();
+  const q = new URLSearchParams;
+  if (state.view === "bid") q.set("v", "bid");
+  q.set("t", state.type);
+  if (state.view === "bid") {
+    if (state.bidPlace) q.set("p", state.bidPlace);
+  } else {
+    if (state.place) q.set("p", state.place);
+    if (state.q) q.set("q", state.q);
+    if (state.starts) q.set("s", state.starts);
+    if (state.ends) q.set("e", state.ends);
+    if (state.pattern) q.set("k", state.pattern);
+    if (state.sort !== "num-asc") q.set("o", state.sort);
+    if (state.newOnly) q.set("n", "1");
+    if (state.removedOnly) q.set("r", "1");
+  }
+  return q.toString();
 }
 
 function syncUrl() {
-    try {
-        history.replaceState(null, "", location.pathname + "?" + stateToQuery());
-    } catch (e) {}
+  try {
+    history.replaceState(null, "", location.pathname + "?" + stateToQuery());
+  } catch (e) {}
 }
 
 function readUrl() {
-    const q = new URLSearchParams(location.search);
-    state.view = q.get("v") === "bid" || location.hash === "#bid" ? "bid" : "pick";
-    const t = q.get("t");
-    if (TYPES.includes(t)) {
-        state.type = t;
-        state.group = groupOf(t);
-    }
-    const place = q.get("p") || "";
-    if (state.view === "bid") state.bidPlace = place; else state.place = place;
-    state.q = (q.get("q") || "").slice(0, 12);
-    state.starts = (q.get("s") || "").replace(/\D/g, "").slice(0, 5);
-    state.ends = (q.get("e") || "").replace(/\D/g, "").slice(0, 5);
-    const k = q.get("k");
-    state.pattern = k && PATTERNS[k] ? k : "";
-    const o = q.get("o");
-    if (SORTS.includes(o)) state.sort = o;
-    state.newOnly = q.get("n") === "1";
-    state.removedOnly = !state.newOnly && q.get("r") === "1";
-    $("q").value = state.q;
-    $("starts").value = state.starts;
-    $("ends").value = state.ends;
-    $("sort").value = state.sort;
+  const q = new URLSearchParams(location.search);
+  state.view = q.get("v") === "bid" || location.hash === "#bid" ? "bid" : "pick";
+  const t = q.get("t");
+  if (TYPES.includes(t)) {
+    state.type = t;
+    state.group = groupOf(t);
+  }
+  const place = q.get("p") || "";
+  if (state.view === "bid") state.bidPlace = place; else state.place = place;
+  state.q = (q.get("q") || "").slice(0, 12);
+  state.starts = (q.get("s") || "").replace(/\D/g, "").slice(0, 5);
+  state.ends = (q.get("e") || "").replace(/\D/g, "").slice(0, 5);
+  const k = q.get("k");
+  state.pattern = k && PATTERNS[k] ? k : "";
+  const o = q.get("o");
+  if (SORTS.includes(o)) state.sort = o;
+  state.newOnly = q.get("n") === "1";
+  state.removedOnly = !state.newOnly && q.get("r") === "1";
+  $("q").value = state.q;
+  $("starts").value = state.starts;
+  $("ends").value = state.ends;
+  $("sort").value = state.sort;
 }
 
 function describeState() {
-    const parts = [];
-    const place = state.view === "bid" ? state.bidPlace : state.place;
-    if (place) parts.push(place.slice(2));
-    parts.push(state.type + (state.view === "bid" ? "標牌" : ""));
-    if (state.view === "pick") {
-        if (state.starts) parts.push(`開頭 ${state.starts}`);
-        if (state.ends) parts.push(`結尾 ${state.ends}`);
-        if (state.q) parts.push(`含 ${state.q}`);
-        if (state.pattern) parts.push(state.pattern === "無0" ? "不含 0" : state.pattern);
-        if (state.newOnly) parts.push("新增");
-        if (state.removedOnly) parts.push("今天被選走");
-    }
-    return "選牌標牌｜" + parts.join("・");
+  const parts = [];
+  const place = state.view === "bid" ? state.bidPlace : state.place;
+  if (place) parts.push(place.slice(2));
+  parts.push(state.type + (state.view === "bid" ? "標牌" : ""));
+  if (state.view === "pick") {
+    if (state.starts) parts.push(`開頭 ${state.starts}`);
+    if (state.ends) parts.push(`結尾 ${state.ends}`);
+    if (state.q) parts.push(`含 ${state.q}`);
+    if (state.pattern) parts.push(state.pattern === "無0" ? "不含 0" : state.pattern);
+    if (state.newOnly) parts.push("新增");
+    if (state.removedOnly) parts.push("今天被選走");
+  }
+  return "選牌標牌｜" + parts.join("・");
 }
 
-async function shareCurrent(btn) {
-    const url = location.origin + location.pathname + "?" + stateToQuery();
-    const text = describeState();
-    const label = btn.textContent;
-    const flash = msg => {
-        btn.textContent = msg;
-        setTimeout(() => {
-            btn.textContent = label;
-        }, 2200);
-    };
-    if (navigator.share) {
-        try {
-            await navigator.share({
-                title: "選牌標牌",
-                text: text,
-                url: url
-            });
-            return;
-        } catch (e) {
-            if (e && e.name === "AbortError") return;
-        }
-    }
+let toastTimer = 0;
+
+function toast(msg) {
+  const t = $("toast");
+  const sheet = $("favSheet");
+  const host = sheet.open ? sheet : document.body;
+  if (t.parentNode !== host) host.appendChild(t);
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+async function shareCurrent() {
+  const url = location.origin + location.pathname + "?" + stateToQuery();
+  const text = describeState();
+  if (navigator.share) {
     try {
-        await navigator.clipboard.writeText(`${text}\n${url}`);
-        flash("已複製連結");
+      await navigator.share({ title: "選牌標牌", text: text, url: url });
+      return;
     } catch (e) {
-        flash("無法複製");
+      if (e && e.name === "AbortError") return;
     }
+  }
+  try {
+    await navigator.clipboard.writeText(`${text}\n${url}`);
+    toast("已複製連結");
+  } catch (e) {
+    toast("這個瀏覽器不允許複製，請直接複製網址");
+  }
 }
 
 function resetFilters() {
-    Object.assign(state, {
-        place: "",
-        q: "",
-        starts: "",
-        ends: "",
-        pattern: "",
-        favOnly: false,
-        newOnly: false,
-        removedOnly: false
-    });
-    [ "q", "starts", "ends" ].forEach(id => $(id).value = "");
-    $("place").value = "";
-    $("favOnly").setAttribute("aria-pressed", "false");
-    $("newOnly").setAttribute("aria-pressed", "false");
-    render();
+  Object.assign(state, { place: "", q: "", starts: "", ends: "", pattern: "", favOnly: false, newOnly: false, removedOnly: false });
+  ["q", "starts", "ends"].forEach(id => $(id).value = "");
+  $("place").value = "";
+  render();
 }
 
+function openFavs() {
+  renderFavs();
+  const d = $("favSheet");
+  if (d.open) return;
+  document.documentElement.classList.add("lock");
+  if (typeof d.showModal === "function") d.showModal(); else d.setAttribute("open", "");
+}
 
+function closeFavs() {
+  const d = $("favSheet");
+  if (typeof d.close === "function") d.close(); else d.removeAttribute("open");
+  document.documentElement.classList.remove("lock");
+}
+
+async function refreshData(force) {
+  if (checking || document.hidden || !navigator.onLine) return;
+  if (!force && Date.now() - lastCheck < CHECK_EVERY) return;
+  checking = true;
+  lastCheck = Date.now();
+  let changed = false;
+  try {
+    for (const g of Object.keys(store)) {
+      const cur = store[g];
+      if (!cur) continue;
+      const data = await loadData(g);
+      if (!data) continue;
+      const next = prepare(data);
+      if (cur.sig && next.sig === cur.sig) continue;
+      store[g] = next;
+      changed = true;
+    }
+  } finally {
+    checking = false;
+  }
+  if (!changed) return;
+  keepShown = shown;
+  useGroup();
+  if (meta.sourceUpdated) toast(`已更新到 ${fmtTime(meta.sourceUpdated)}`);
+}
 
 document.querySelectorAll(".views button").forEach(b => b.addEventListener("click", () => {
-    state.view = b.dataset.view;
-    render();
+  if (state.view === b.dataset.view) return;
+  state.view = b.dataset.view;
+  render();
 }));
-
-$("sharePick").addEventListener("click", e => shareCurrent(e.currentTarget));
-
-$("shareBid").addEventListener("click", e => shareCurrent(e.currentTarget));
-
-$("removedOnly").addEventListener("click", () => {
-    state.removedOnly = !state.removedOnly;
-    if (state.removedOnly) state.newOnly = false;
-    render();
-});
-
-$("typeTabs").addEventListener("click", e => {
-    const b = e.target.closest("[data-type]");
-    if (b) setType(b.dataset.type);
-});
-
 document.querySelectorAll("#groupTabs button").forEach(b => b.addEventListener("click", () => setGroup(b.dataset.group)));
-
+$("typeTabs").addEventListener("click", e => {
+  const b = e.target.closest("[data-type]");
+  if (b) setType(b.dataset.type);
+});
 $("place").addEventListener("change", e => {
-    state.place = e.target.value;
-    render();
+  state.place = e.target.value;
+  render();
 });
-
 $("bidPlace").addEventListener("change", e => {
-    state.bidPlace = e.target.value;
-    render();
+  state.bidPlace = e.target.value;
+  render();
 });
-
 $("q").addEventListener("input", e => {
-    state.q = e.target.value.trim();
-    render();
+  state.q = e.target.value.trim();
+  render();
 });
-
-[ "starts", "ends" ].forEach(id => $(id).addEventListener("input", e => {
-    e.target.value = e.target.value.replace(/\D/g, "").slice(0, 5);
-    state[id] = e.target.value;
-    render();
+["starts", "ends"].forEach(id => $(id).addEventListener("input", e => {
+  e.target.value = e.target.value.replace(/\D/g, "").slice(0, 5);
+  state[id] = e.target.value;
+  render();
 }));
-
 document.querySelectorAll("[data-pattern]").forEach(c => c.addEventListener("click", () => {
-    state.pattern = state.pattern === c.dataset.pattern ? "" : c.dataset.pattern;
-    render();
+  state.pattern = state.pattern === c.dataset.pattern ? "" : c.dataset.pattern;
+  render();
 }));
-
-$("sort").addEventListener("change", e => {
-    state.sort = e.target.value;
-    render();
-});
-
-$("favOnly").addEventListener("click", e => {
-    state.favOnly = !state.favOnly;
-    e.currentTarget.setAttribute("aria-pressed", String(state.favOnly));
-    render();
-});
-
 $("newOnly").addEventListener("click", () => {
-    state.newOnly = !state.newOnly;
-    if (state.newOnly) state.removedOnly = false;
-    render();
+  state.newOnly = !state.newOnly;
+  if (state.newOnly) state.removedOnly = false;
+  render();
 });
-
+$("removedOnly").addEventListener("click", () => {
+  state.removedOnly = !state.removedOnly;
+  if (state.removedOnly) state.newOnly = false;
+  render();
+});
+$("favOnly").addEventListener("click", () => {
+  state.favOnly = !state.favOnly;
+  render();
+});
+$("sort").addEventListener("change", e => {
+  state.sort = e.target.value;
+  render();
+});
 $("reset").addEventListener("click", resetFilters);
-
+$("emptyReset").addEventListener("click", resetFilters);
+$("sharePick").addEventListener("click", shareCurrent);
+$("shareBid").addEventListener("click", shareCurrent);
 $("grid").addEventListener("click", e => {
-    const b = e.target.closest(".fav");
-    if (b) toggleFav(b.dataset.plate);
+  const b = e.target.closest(".fav");
+  if (b) toggleFav(b.dataset.plate);
 });
-
+$("favOpen").addEventListener("click", openFavs);
+$("favClose").addEventListener("click", closeFavs);
+$("favSheet").addEventListener("click", e => {
+  if (e.target === e.currentTarget) closeFavs();
+});
+$("favSheet").addEventListener("close", () => document.documentElement.classList.remove("lock"));
 $("favList").addEventListener("click", e => {
-    const b = e.target.closest("[data-remove]");
-    if (b) toggleFav(b.dataset.remove);
+  const b = e.target.closest("[data-remove]");
+  if (b) toggleFav(b.dataset.remove);
 });
-
 $("copyFavs").addEventListener("click", async () => {
-    try {
-        await navigator.clipboard.writeText(shareText());
-        $("copyStatus").textContent = "已複製";
-    } catch (e) {
-        $("copyStatus").textContent = "這個瀏覽器不允許複製，請改用 LINE 傳送";
-    }
-    setTimeout(() => {
-        $("copyStatus").textContent = "";
-    }, 2500);
+  try {
+    await navigator.clipboard.writeText(shareText());
+    toast("已複製收藏清單");
+  } catch (e) {
+    toast("這個瀏覽器不允許複製，請改用 LINE 傳送");
+  }
 });
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) refreshData(false);
+});
+window.addEventListener("online", () => refreshData(true));
+setInterval(() => refreshData(false), CHECK_EVERY + 5000);
 
 readUrl();
-
 render();
-
 ensureGroup(state.group);
 
 if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
-}</script>
+  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
+</script>
 </body>
 </html>
