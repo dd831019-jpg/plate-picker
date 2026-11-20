@@ -125,6 +125,27 @@ a { color: inherit }
 .brand-sub { display: none; margin-left: 12px; font-size: 13px; font-weight: 400; letter-spacing: .02em; color: var(--muted) }
 .upd { margin: 1px 0 0; font-size: 12px; line-height: 1.4; color: var(--muted); white-space: nowrap }
 .upd b { font-family: var(--num); font-size: 14px; font-weight: 600; letter-spacing: .03em; color: var(--text) }
+.chk {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  margin-left: 8px;
+  padding: 0 9px 0 7px;
+  border: 1px solid var(--line2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+.chk:hover { border-color: var(--muted) }
+.chk:disabled { cursor: default; opacity: .55 }
+.chk svg { width: 13px; height: 13px; flex: none }
+.chk.busy { opacity: 1 }
+.chk.busy svg { animation: spin .9s linear infinite }
+@keyframes spin { to { transform: rotate(360deg) } }
 
 .fav-open {
   position: relative;
@@ -517,10 +538,15 @@ a { color: inherit }
 .toast.show { opacity: 1; transform: translate(-50%, 0) }
 .sheet .toast { position: absolute; bottom: calc(86px + env(safe-area-inset-bottom)) }
 
+@media (max-width: 480px) {
+  .fav-open .lbl { display: none }
+  .fav-open { padding: 0 13px }
+}
 @media (max-width: 380px) {
   .icon-btn span { display: none }
   .icon-btn { padding: 0 }
-  .fav-open .lbl { display: none }
+  .chk span { display: none }
+  .chk { width: 26px; padding: 0; justify-content: center }
 }
 @media (min-width: 560px) {
   .wall { grid-template-columns: repeat(3, minmax(0, 1fr)) }
@@ -569,7 +595,7 @@ a { color: inherit }
       <svg class="mark" viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="11" fill="#e31937"/><rect x="5" y="12" width="34" height="20" rx="4" fill="#fff" stroke="#111" stroke-width="2"/><text x="22" y="26.5" text-anchor="middle" font-size="11" font-weight="900" fill="#111" font-family="PingFang TC,Noto Sans TC,Microsoft JhengHei,sans-serif">選牌</text></svg>
       <div class="brand-txt">
         <h1 class="brand-name">選牌標牌<span class="brand-sub">全台可選號碼與標牌公告</span></h1>
-        <p class="upd" id="upd"><span id="dataTime">更新時間：—</span></p>
+        <p class="upd" id="upd"><span id="dataTime">更新時間：—</span><button class="chk" id="checkNow" type="button" aria-label="檢查有沒有最新資料" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg><span id="checkLabel">更新</span></button></p>
       </div>
     </div>
     <button class="fav-open" id="favOpen" type="button" aria-haspopup="dialog" aria-label="我的收藏"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.3C.9 8.4 2.9 4.5 6.6 4.1c2.1-.2 3.9.9 5.4 2.8 1.5-1.9 3.3-3 5.4-2.8 3.7.4 5.7 4.3 4.2 7.6C19.5 16.4 12 21 12 21z"/></svg><span class="lbl">收藏</span><span class="cnt" id="favBadge"></span></button>
@@ -753,6 +779,8 @@ const state = {
 };
 const meta = { sourceDate: null, prevDate: null, sourceUpdated: null };
 const store = { car: null, moto: null };
+const liveMeta = {};
+const typeMeta = t => liveMeta[t] || { date: meta.sourceDate, prevDate: meta.prevDate, time: meta.sourceUpdated };
 const loading = {};
 
 let items = [], auctions = [], removed = [], counts = {};
@@ -934,7 +962,7 @@ function rebuildIndex() {
   for (const d of Object.values(store)) {
     if (!d) continue;
     d.items.forEach(it => byPlate.set(it.plate, it));
-    (d.removed || []).forEach(it => goneByPlate.set(it.plate, { ...it, date: d.meta.sourceDate }));
+    (d.removed || []).forEach(it => goneByPlate.set(it.plate, { ...it, date: (liveMeta[it.type] || {}).date || d.meta.sourceDate }));
   }
 }
 
@@ -947,7 +975,6 @@ function useGroup() {
   counts = d ? d.counts || {} : {};
   Object.assign(meta, { sourceDate: null, prevDate: null, sourceUpdated: null }, d ? d.meta : {});
   rebuildIndex();
-  if (meta.sourceUpdated) $("dataTime").innerHTML = `更新時間：<b>${fmtTime(meta.sourceUpdated)}</b>`;
   buildPlaceSelect();
   buildBidPlaceSelect();
   render();
@@ -1040,7 +1067,7 @@ function cardHTML(it) {
     return `<li class="pl gone"><div class="pl-art">${plateHTML(it.plate, it.type)}<span class="stamp">已被選走${it.goneTime ? `<b>${esc(it.goneTime)}</b>` : ""}</span></div><div class="pl-cap"><span class="pl-office">${esc(it.office)}</span></div>${kind ? `<div class="pl-tags">${kind}</div>` : ""}</li>`;
   }
   const on = favs.includes(it.plate);
-  const tags = (it.isNew ? `<span class="tg-new">${md(meta.sourceDate)}${it.newTime ? " " + esc(it.newTime) : ""} 新增</span>` : "") + kind + (it.tag ? `<span class="tg-tag">${esc(it.tag)}</span>` : "");
+  const tags = (it.isNew ? `<span class="tg-new">${md(typeMeta(it.type).date)}${it.newTime ? " " + esc(it.newTime) : ""} 新增</span>` : "") + kind + (it.tag ? `<span class="tg-tag">${esc(it.tag)}</span>` : "");
   return `<li class="pl${it.isNew ? " is-new" : ""}"><div class="pl-art">${plateHTML(it.plate, it.type)}</div><div class="pl-cap"><span class="pl-office">${esc(it.office)}</span><button class="fav" type="button" data-plate="${esc(it.plate)}" aria-pressed="${on}" aria-label="${on ? "取消收藏" : "收藏"} ${esc(it.plate)}">${HEART}</button></div>${tags ? `<div class="pl-tags">${tags}</div>` : ""}</li>`;
 }
 
@@ -1064,6 +1091,7 @@ const countHTML = (n, unit) => `<span class="nw"><b class="big">${fmtN(n)}</b><s
 
 function renderPick() {
   const tc = typeCount(state.type);
+  const tm = typeMeta(state.type);
   if (loaded && state.pattern === "流標牌" && !tc.tagged) state.pattern = "";
   const goneOfType = removed.filter(it => it.type === state.type);
   if (loaded && state.removedOnly && !goneOfType.length) state.removedOnly = false;
@@ -1079,22 +1107,22 @@ function renderPick() {
   let s;
   if (!loaded) s = "讀取中…";
   else if (!items.length) s = "—";
-  else if (state.removedOnly) s = countHTML(list.length, "面") + `<span class="nw">${md(meta.sourceDate)} 被選走</span>`;
+  else if (state.removedOnly) s = countHTML(list.length, "面") + `<span class="nw">${md(tm.date)} 被選走</span>`;
   else if (isFiltered()) s = countHTML(list.length, "面符合") + `<span class="nw">共 ${fmtN(tc.n)} 面</span>`;
-  else s = countHTML(list.length, "面可選") + (meta.prevDate && newCount ? `<span class="nw plus">${md(meta.sourceDate)} 新增 ${fmtN(newCount)}</span>` : "");
+  else s = countHTML(list.length, "面可選") + (tm.prevDate && newCount ? `<span class="nw plus">${md(tm.date)} 新增 ${fmtN(newCount)}</span>` : "");
   $("summaryText").innerHTML = s;
   const goneBtn = $("removedOnly");
   goneBtn.hidden = !goneOfType.length && !state.removedOnly;
-  goneBtn.innerHTML = `${md(meta.sourceDate)} 被選走<span class="cnt">${fmtN(goneOfType.length)}</span>`;
+  goneBtn.innerHTML = `${md(tm.date)} 被選走<span class="cnt">${fmtN(goneOfType.length)}</span>`;
   goneBtn.setAttribute("aria-pressed", String(state.removedOnly));
   const newBtn = $("newOnly");
-  newBtn.hidden = !meta.prevDate;
-  newBtn.innerHTML = `${md(meta.sourceDate)} 新增<span class="cnt">${fmtN(newCount)}</span>`;
+  newBtn.hidden = !tm.prevDate;
+  newBtn.innerHTML = `${md(tm.date)} 新增<span class="cnt">${fmtN(newCount)}</span>`;
   newBtn.setAttribute("aria-pressed", String(state.newOnly));
   newBtn.classList.toggle("zero", !newCount);
   $("favOnly").setAttribute("aria-pressed", String(state.favOnly));
   renderChips(base);
-  $("newHint").hidden = !(loaded && items.length && !meta.prevDate);
+  $("newHint").hidden = !(loaded && items.length && !tm.prevDate);
   $("reset").hidden = !isFiltered();
   $("emptyReset").hidden = !isFiltered();
   renderFavs();
@@ -1215,7 +1243,14 @@ function updateTabCounts() {
   });
 }
 
+function showDataTime() {
+  const t = typeMeta(state.type).time;
+  if (t) $("dataTime").innerHTML = `更新時間：<b>${fmtTime(t)}</b>`;
+  $("checkNow").disabled = !loaded || checkingNow;
+}
+
 function render() {
+  showDataTime();
   const bid = state.view === "bid";
   $("pickView").hidden = bid;
   $("bidView").hidden = !bid;
@@ -1390,9 +1425,9 @@ function closeFavs() {
   document.documentElement.classList.remove("lock");
 }
 
-async function refreshData(force) {
-  if (checking || document.hidden || !navigator.onLine) return;
-  if (!force && Date.now() - lastCheck < CHECK_EVERY) return;
+async function refreshData(force, quiet) {
+  if (checking || document.hidden || !navigator.onLine) return false;
+  if (!force && Date.now() - lastCheck < CHECK_EVERY) return false;
   checking = true;
   lastCheck = Date.now();
   let changed = false;
@@ -1405,15 +1440,155 @@ async function refreshData(force) {
       const next = prepare(data);
       if (cur.sig && next.sig === cur.sig) continue;
       store[g] = next;
+      GROUPS[g].forEach(t => delete liveMeta[t]);
       changed = true;
     }
   } finally {
     checking = false;
   }
-  if (!changed) return;
+  if (!changed) return false;
   keepShown = shown;
   useGroup();
-  if (meta.sourceUpdated) toast(`已更新到 ${fmtTime(meta.sourceUpdated)}`);
+  if (!quiet && meta.sourceUpdated) toast(`已更新到 ${fmtTime(meta.sourceUpdated)}`);
+  return true;
+}
+
+const CAR16 = "https://strapi.car16.com/api/";
+const LIVE_PAGE = 1000;
+let checkingNow = false;
+
+async function car16(path, body) {
+  const r = await fetch(CAR16 + path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+    cache: "no-store"
+  });
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  return r.json();
+}
+
+const finderBody = (type, page, size) => ({
+  plate_number: "",
+  car_type: type,
+  motor_vehicles_office: "",
+  start_with_number: false,
+  end_with_number: false,
+  special: "不限",
+  alphabet_sort: "asc",
+  number_sort: "asc",
+  page: page,
+  page_size: size,
+  alphabet: "",
+  random_seed: 0
+});
+
+const normOffice = o => String(o || "").trim().replace(/台/g, "臺");
+
+function tpeParts(ms) {
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Taipei", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date(ms)).map(x => [x.type, x.value]));
+  return { date: `${p.year}-${p.month}-${p.day}`, hm: `${p.hour}:${p.minute}` };
+}
+
+function setChecking(on, label) {
+  const b = $("checkNow");
+  b.classList.toggle("busy", on);
+  b.disabled = on || !loaded;
+  $("checkLabel").textContent = label || "更新";
+}
+
+async function fetchAuctions(type) {
+  const list = [];
+  for (let page = 1; page <= 5; page++) {
+    const d = await car16("car-plate-ann", { car_type: type, motor_vehicles_office: "", page: page, page_size: 100 });
+    list.push(...(d.data && d.data.carPlateAnns || []));
+    if (page >= ((d.meta && d.meta.pageCount) || 1)) break;
+  }
+  return list.map(a => ({
+    type: type,
+    office: normOffice(a.motor_vehicles_office),
+    plates: String(a.plates || "").trim(),
+    start: Date.parse(a.start_time),
+    end: Date.parse(a.end_time)
+  })).filter(a => a.office && a.plates && !isNaN(a.start) && !isNaN(a.end));
+}
+
+function applyLive(type, time, rows, aucs) {
+  const g = groupOf(type), d = store[g];
+  if (!d) return false;
+  const base = typeMeta(type);
+  const { date, hm } = tpeParts(time);
+  const sameDay = date === base.date;
+  const prev = new Map(d.items.filter(it => it.type === type).map(it => [it.plate, it]));
+  const seen = new Set, next = [];
+  for (const x of rows) {
+    const plate = String(x.plate_number || "").trim().toUpperCase();
+    if (!PLATE_RE.test(plate) || seen.has(plate)) continue;
+    seen.add(plate);
+    const old = prev.get(plate);
+    const digits = plate.match(/(\d+)$/)[1];
+    const pg = String(x.page_number == null ? "" : x.page_number).trim();
+    next.push({
+      plate: plate,
+      digits: digits,
+      kind: kindOf(digits),
+      type: type,
+      office: normOffice(x.motor_vehicles_office),
+      isNew: old ? sameDay && old.isNew : true,
+      newTime: old ? (sameDay && old.isNew ? old.newTime : "") : hm,
+      tag: pg && !/^\d+$/.test(pg) ? pg : ""
+    });
+  }
+  const goneNow = [...prev.values()].filter(it => !seen.has(it.plate));
+  if (prev.size > 20 && goneNow.length > prev.size / 2) return false;
+  const gone = goneNow.map(it => ({ ...it, gone: true, isNew: false, newTime: "", tag: "", goneTime: hm }));
+  const keep = sameDay ? (d.removed || []).filter(it => it.type === type && !seen.has(it.plate) && !prev.has(it.plate)) : [];
+  d.items = d.items.filter(it => it.type !== type).concat(next);
+  d.removed = (d.removed || []).filter(it => it.type !== type).concat(keep, gone);
+  if (aucs) d.auctions = d.auctions.filter(a => a.type !== type).concat(aucs);
+  d.counts = countTypes(d.items);
+  liveMeta[type] = { date: date, prevDate: sameDay ? base.prevDate : base.date, time: time };
+  return true;
+}
+
+async function checkNow() {
+  if (checkingNow || !loaded) return;
+  const type = state.type;
+  checkingNow = true;
+  setChecking(true, "檢查中");
+  try {
+    const own = await refreshData(true, true);
+    const head = await car16("car-plate-finder", finderBody(type, 1, 1));
+    const time = Date.parse(head.data && head.data.updatedTime);
+    const total = head.meta && head.meta.total;
+    const have = typeMeta(type).time;
+    if (!time || (have && time <= have)) {
+      toast(own ? `已更新到 ${fmtTime(have)}` : "無最新資料");
+      return;
+    }
+    const pages = Math.max(1, Math.ceil(total / LIVE_PAGE));
+    const rows = [];
+    for (let p = 1; p <= pages; p++) {
+      setChecking(true, pages > 1 ? `${p}/${pages}` : "讀取中");
+      const d = await car16("car-plate-finder", finderBody(type, p, LIVE_PAGE));
+      rows.push(...(d.data && d.data.carPlates || []));
+    }
+    if (rows.length !== total) throw new Error("count");
+    const aucs = await fetchAuctions(type).catch(() => null);
+    if (!applyLive(type, time, rows, aucs)) {
+      toast("car16 的資料看起來不完整，先不更新");
+      return;
+    }
+    keepShown = shown;
+    useGroup();
+    toast(`已更新到 ${fmtTime(time)}`);
+  } catch (e) {
+    toast("car16 暫時連不上，請稍後再試");
+  } finally {
+    checkingNow = false;
+    setChecking(false);
+    showDataTime();
+  }
 }
 
 document.querySelectorAll(".views button").forEach(b => b.addEventListener("click", () => {
@@ -1474,6 +1649,7 @@ $("grid").addEventListener("click", e => {
   if (b) toggleFav(b.dataset.plate);
 });
 $("favOpen").addEventListener("click", openFavs);
+$("checkNow").addEventListener("click", checkNow);
 $("favClose").addEventListener("click", closeFavs);
 $("favSheet").addEventListener("click", e => {
   if (e.target === e.currentTarget) closeFavs();
