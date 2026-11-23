@@ -109,16 +109,46 @@ def validate(items, totals):
             errors.append(f"{t} 筆數不符：抓到 {n}，來源標示 {totals[t]}")
     if sum(totals.values()) == 0:
         errors.append("所有車種都是 0 筆，來源可能異常")
-    seen = set()
     for i in items:
         if not PLATE_RE.match(i["plate"]):
             errors.append(f"號碼格式不對：{i['plate']}")
         if not i["office"]:
             errors.append(f"{i['plate']} 沒有監理站")
-        if i["plate"] in seen:
-            errors.append(f"號碼重複：{i['plate']}")
-        seen.add(i["plate"])
     return errors
+
+
+def clean_duplicates(items, prev, warnings):
+    """car16 偶爾會把某個監理站的同一批號碼重複列出很多次（爬取出錯），那個監理站的資料也就不可信。
+    這種監理站這次沿用上一份資料；沒有上一份才只去掉重複。同一個號碼出現在不同監理站或車種則視為錯誤。"""
+    by_plate = {}
+    for i in items:
+        by_plate.setdefault(i["plate"], []).append(i)
+    conflicts = [p for p, v in by_plate.items() if len({(x["type"], x["office"]) for x in v}) > 1]
+    if conflicts:
+        return items, [f"號碼同時出現在不同監理站或車種：{p}" for p in conflicts]
+    bad = {}
+    for v in by_plate.values():
+        if len(v) > 1:
+            key = (v[0]["type"], v[0]["office"])
+            n, extra = bad.get(key, (0, 0))
+            bad[key] = (n + 1, extra + len(v) - 1)
+    if not bad:
+        return items, []
+    out = [i for i in items if (i["type"], i["office"]) not in bad]
+    for (t, o), (n, extra) in sorted(bad.items()):
+        old = [{k: v for k, v in i.items() if k not in ("firstSeen", "firstSeenTime")}
+               for i in (prev["items"] if prev else []) if i["type"] == t and i["office"] == o]
+        if old:
+            out += old
+            warnings.append(f"car16 的{o}{t}資料有 {n} 個號碼重複出現（多了 {extra} 筆），這次沿用上一份的 {len(old)} 面")
+        else:
+            seen = set()
+            for i in items:
+                if (i["type"], i["office"]) == (t, o) and i["plate"] not in seen:
+                    seen.add(i["plate"])
+                    out.append(i)
+            warnings.append(f"car16 的{o}{t}資料有 {n} 個號碼重複出現（多了 {extra} 筆），已去掉重複")
+    return out, []
 
 
 def parse_time(iso):
@@ -245,6 +275,7 @@ def load_previous(path):
             "times": {str(i["plate"]): i["firstSeenTime"] for i in items if i.get("firstSeenTime")},
             "types": {i.get("type") for i in items},
             "byPlate": {str(i["plate"]): (i["type"], i["office"]) for i in items},
+            "items": items,
             "removed": removed,
             "auctions": [a for d in docs for a in (d.get("auctions") or [])],
             "signature": head.get("sourceSignature"),
@@ -325,15 +356,18 @@ def main():
             src_times.append(src_updated)
         time.sleep(1)
 
+    warnings = []
     errors = validate(items, totals)
+    if not errors:
+        items, errors = clean_duplicates(items, prev, warnings)
     if errors:
         print("資料檢查失敗，不更新檔案：", file=sys.stderr)
         for e in errors[:30]:
             print(" -", e, file=sys.stderr)
         sys.exit(1)
+    totals = {t: sum(1 for i in items if i["type"] == t) for t in TYPES}
 
     now = datetime.now(timezone.utc)
-    warnings = []
     try:
         auctions = fetch_auctions(now)
     except Exception as e:

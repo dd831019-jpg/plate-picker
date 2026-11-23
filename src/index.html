@@ -1520,10 +1520,23 @@ function applyLive(type, time, rows, aucs) {
   const { date, hm } = tpeParts(time);
   const sameDay = date === base.date;
   const prev = new Map(d.items.filter(it => it.type === type).map(it => [it.plate, it]));
-  const seen = new Set, next = [];
+  const where = new Map;
   for (const x of rows) {
     const plate = String(x.plate_number || "").trim().toUpperCase();
-    if (!PLATE_RE.test(plate) || seen.has(plate)) continue;
+    const office = normOffice(x.motor_vehicles_office);
+    const e = where.get(plate);
+    if (!e) where.set(plate, { office: office, n: 1 }); else if (e.office !== office) return false; else e.n++;
+  }
+  const bad = new Set([...where.values()].filter(e => e.n > 1).map(e => e.office));
+  const seen = new Set, next = [];
+  for (const it of prev.values()) {
+    if (!bad.has(it.office)) continue;
+    seen.add(it.plate);
+    next.push({ ...it, isNew: sameDay && it.isNew, newTime: sameDay && it.isNew ? it.newTime : "" });
+  }
+  for (const x of rows) {
+    const plate = String(x.plate_number || "").trim().toUpperCase();
+    if (!PLATE_RE.test(plate) || seen.has(plate) || bad.has(normOffice(x.motor_vehicles_office))) continue;
     seen.add(plate);
     const old = prev.get(plate);
     const digits = plate.match(/(\d+)$/)[1];
