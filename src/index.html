@@ -305,6 +305,63 @@ a { color: inherit }
 .chip-gone[aria-pressed=true] .cnt { color: #fff }
 .chip-reset { border-style: dashed; color: var(--muted) }
 
+.luck {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.luck-l { grid-row: 1; font-size: 13px; font-weight: 700; letter-spacing: .12em; white-space: nowrap }
+.luck .chips { grid-row: 2; grid-column: 1 / -1 }
+.luck-how {
+  height: 32px;
+  padding: 0 6px;
+  border: 0;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: underline;
+  text-decoration-color: var(--line2);
+  text-underline-offset: 4px;
+}
+.luck-how:hover { color: var(--text); text-decoration-color: var(--muted) }
+.switch {
+  grid-row: 1;
+  grid-column: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.switch i { position: relative; flex: none; width: 38px; height: 22px; border-radius: 999px; background: var(--s2); box-shadow: inset 0 0 0 1px var(--line2); transition: background .18s, box-shadow .18s }
+.switch i::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--muted); transition: transform .18s, background .18s }
+.switch[aria-checked=true] { color: var(--text) }
+.switch[aria-checked=true] i { background: var(--white); box-shadow: none }
+.switch[aria-checked=true] i::after { transform: translateX(16px); background: var(--ink) }
+
+.v-g { color: var(--green) }
+.v-b { color: var(--red-text) }
+.v-m { color: var(--amber) }
+.v-n { color: var(--faint) }
+.pl-luck, .fv-luck { display: flex; flex-wrap: wrap; gap: 1px 10px; font-size: 12px; line-height: 1.5; color: var(--faint) }
+.pl-luck { margin-top: 5px }
+.fv-luck { margin-top: 3px; column-gap: 9px }
+.lk { display: inline-flex; align-items: baseline; gap: 3px; white-space: nowrap }
+.lk i { font-style: normal; font-family: var(--num); font-size: 14px; font-weight: 600; line-height: 1; color: var(--muted) }
+.lk b { font-weight: 700 }
+.pl.gone .pl-luck { opacity: .5 }
+.no-luck .pl-luck, .no-luck .fv-luck { display: none }
+
 .main { min-width: 0 }
 .bar {
   position: sticky;
@@ -509,12 +566,29 @@ a { color: inherit }
 .fv .plate { width: 112px }
 .fv.is-gone .plate { filter: grayscale(.8) brightness(.55) }
 .fv-info { display: grid; min-width: 0; font-size: 13px; line-height: 1.45; color: var(--muted) }
-.fv-info b { overflow: hidden; font-size: 14px; font-weight: 600; color: var(--text); text-overflow: ellipsis; white-space: nowrap }
-.fv-info b.bad { color: var(--red-text) }
+.fv-info > b { overflow: hidden; font-size: 14px; font-weight: 600; color: var(--text); text-overflow: ellipsis; white-space: nowrap }
+.fv-info > b.bad { color: var(--red-text) }
 .fv-rm { height: 32px; padding: 0 12px; border: 1px solid var(--line2); border-radius: 999px; background: transparent; font-size: 13px; color: var(--muted) }
 .fv-rm:hover { color: var(--text); border-color: var(--muted) }
 .fv-empty { padding: 34px 6px; text-align: center; color: var(--muted) }
 .sheet-actions { display: flex; gap: 10px; margin-top: 16px }
+
+.how { flex: 1; margin: 4px -18px 0; padding: 0 18px 8px; overflow: auto; overscroll-behavior: contain; font-size: 14px; line-height: 1.7; color: var(--muted) }
+.how h3 { margin: 22px 0 6px; font-size: 15px; letter-spacing: .06em; color: var(--text) }
+.how p { margin: 0 0 10px }
+.how .how-lead { margin-top: 10px; color: var(--text) }
+.vgrid { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 4px; margin: 12px 0 16px }
+#m80Grid { grid-template-columns: repeat(10, minmax(0, 1fr)); margin-bottom: 10px }
+.vgrid span { display: grid; place-items: center; height: 30px; border-radius: 7px; font-family: var(--num); font-size: 16px; font-weight: 600 }
+.vgrid .v-g { background: rgba(63, 214, 140, .12) }
+.vgrid .v-b { background: rgba(255, 92, 114, .11) }
+.vgrid .v-m { background: rgba(242, 192, 20, .12) }
+.how .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px }
+.legend span::before { content: ""; display: inline-block; width: 9px; height: 9px; margin-right: 6px; border-radius: 3px; background: currentColor }
+.stars { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 6px 14px; margin: 12px 0 14px }
+.stars dt { font-weight: 700; letter-spacing: .06em }
+.stars dd { margin: 0; font-family: var(--num); font-size: 16px; font-weight: 600; letter-spacing: .03em; word-spacing: .4em; color: var(--text) }
+.how .how-note { margin-top: 18px; font-size: 12px; color: var(--faint) }
 
 .toast {
   position: fixed;
@@ -559,6 +633,9 @@ a { color: inherit }
   .types .t { font-size: 14px }
   .seg2 .gn { display: inline }
   .bar { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0 }
+  .luck { grid-template-columns: auto minmax(0, 1fr) auto; column-gap: 14px }
+  .luck .chips { grid-row: 1; grid-column: 2 }
+  .switch { grid-column: 3 }
   .wall { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px 18px }
   .aucs { grid-template-columns: repeat(2, minmax(0, 1fr)) }
 }
@@ -570,7 +647,7 @@ a { color: inherit }
   .layout { padding-top: 24px }
   .wrap { max-width: 1240px }
   #pickFilters { grid-template-columns: minmax(0, 1.25fr) minmax(0, 2.75fr) }
-  #pickFilters .chips { grid-column: 1 / -1 }
+  #pickFilters > .chips, #pickFilters > .luck { grid-column: 1 / -1 }
   .wall { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) }
   .sheet { width: 440px; max-width: 440px; height: 100vh; max-height: 100vh; margin: 0 0 0 auto; border-radius: 0; box-shadow: -24px 0 60px rgba(0, 0, 0, .6) }
   .sheet[open] { animation-name: sheet-in }
@@ -636,6 +713,17 @@ a { color: inherit }
         <button class="chip chip-fav" id="favOnly" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.3C.9 8.4 2.9 4.5 6.6 4.1c2.1-.2 3.9.9 5.4 2.8 1.5-1.9 3.3-3 5.4-2.8 3.7.4 5.7 4.3 4.2 7.6C19.5 16.4 12 21 12 21z"/></svg>只看收藏</button>
         <button class="chip chip-reset" id="reset" type="button" hidden>清除篩選</button>
       </div>
+      <div class="luck">
+        <span class="luck-l" id="luckLabel">只看吉</span>
+        <div class="chips" role="group" aria-labelledby="luckLabel">
+          <button class="chip" type="button" data-luck="s" aria-pressed="false">數字加總<span class="cnt"></span></button>
+          <button class="chip" type="button" data-luck="m" aria-pressed="false">80 數理<span class="cnt"></span></button>
+          <button class="chip" type="button" data-luck="l" aria-pressed="false">易經末兩碼<span class="cnt"></span></button>
+          <button class="chip" type="button" data-luck="a" aria-pressed="false">易經整組<span class="cnt"></span></button>
+          <button class="luck-how" id="luckHow" type="button" aria-haspopup="dialog">怎麼算</button>
+        </div>
+        <button class="switch" id="luckShow" type="button" role="switch" aria-checked="true">顯示吉凶<i aria-hidden="true"></i></button>
+      </div>
     </section>
 
     <section class="filters" id="bidFilters" aria-label="篩選標牌" hidden>
@@ -654,6 +742,7 @@ a { color: inherit }
             <option value="num-desc">號碼由大到小</option>
             <option value="office">依監理所站，北到南</option>
             <option value="new">新增的排前面</option>
+            <option value="luck">吉多的排前面</option>
           </select>
           <button class="icon-btn" id="sharePick" type="button" aria-label="分享目前的篩選"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg><span>分享</span></button>
         </div>
@@ -690,6 +779,31 @@ a { color: inherit }
     <div class="sheet-actions" id="favActions">
       <button class="btn primary" id="copyFavs" type="button">複製清單</button>
       <a class="btn line" id="lineShare" href="https://line.me/R/share" target="_blank" rel="noopener">用 LINE 傳送</a>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="sheet" id="howSheet" aria-labelledby="howTitle">
+  <div class="sheet-in">
+    <div class="grab" aria-hidden="true"></div>
+    <div class="sheet-head">
+      <h2 id="howTitle">吉凶怎麼算</h2>
+      <button class="x" id="howClose" type="button" aria-label="關閉"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="how">
+      <p class="how-lead">坊間的算法不只一種，同一個號碼常常這派說吉、那派說凶。這裡列出四種常見的，勾選幾種就只留下每一種都是吉的號碼。</p>
+      <h3>數字加總</h3>
+      <p>把車牌上的數字全部加起來，對照下表。例如 5678：5+6+7+8＝26，凶帶吉。37 以上只有五碼的微型電動二輪車會出現。</p>
+      <div class="vgrid" id="sumGrid"></div>
+      <h3>80 數理</h3>
+      <p>把數字當成一個數，除以 80 取餘數，查 81 數理表。例如 1368 除以 80 餘 8，吉。剛好整除的不論吉凶。</p>
+      <div class="vgrid" id="m80Grid"></div>
+      <p class="legend"><span class="v-g">吉</span><span class="v-m">吉帶凶、凶帶吉</span><span class="v-b">凶</span></p>
+      <h3>易經末兩碼、易經整組</h3>
+      <p>數字從左到右兩兩一組，對照八星磁場。末兩碼只看最後一組；整組要每一組都是吉星。例如 1368 是天醫、五鬼、天醫：末兩碼吉，整組不吉。</p>
+      <dl class="stars" id="starList"></dl>
+      <p>0 視同旁邊的數字，算伏位；5 在頭尾也視同旁邊的數字，在中間就跳過不算。</p>
+      <p class="how-note">以上整理自坊間流傳的說法，僅供參考。</p>
     </div>
   </div>
 </dialog>
@@ -757,8 +871,80 @@ const PATTERNS = {
   "流標牌": it => it.tag === "流標牌"
 };
 
+// 吉凶：g 吉、b 凶、x 凶帶吉、y 吉帶凶、n 不論
+const LUCK_KEYS = ["s", "m", "l", "a"];
+const LUCK_NAME = { s: "數字加總", m: "80 數理", l: "易經末兩碼", a: "易經整組" };
+const VERDICT = { g: "吉", b: "凶", x: "凶帶吉", y: "吉帶凶", n: "不論" };
+// 數字加總：1～36 用車牌四碼加總表，37～45（五碼的微型電動二輪車）接 81 數理表
+const SUM_T = " " + "gbgbggggbb" + "gbgbggggbb" + "gbgggxybgy" + "gggbgb" + "gxgygyybg";
+// 80 數理：號碼除以 80 的餘數查 81 數理表，整除不論
+const M80_T = " " + "gbgbggggbb" + "gbgbggggbb" + "gbgggbxbgb" + "gggbgbgxgy" + "gyybgbggby" + "ygybybgxbb" + "ybgbgbggbb" + "ybgbybyyby" + "g";
+const STARS = [
+  ["生氣", "14 41 67 76 39 93 28 82"],
+  ["天醫", "13 31 68 86 49 94 27 72"],
+  ["延年", "19 91 78 87 34 43 26 62"],
+  ["伏位", "11 22 33 44 66 77 88 99"],
+  ["絕命", "12 21 69 96 48 84 37 73"],
+  ["五鬼", "18 81 79 97 36 63 24 42"],
+  ["六煞", "16 61 47 74 38 83 29 92"],
+  ["禍害", "17 71 89 98 46 64 23 32"]
+];
+const GOOD_STARS = new Set(STARS.slice(0, 4).map(s => s[0]));
+const STAR_OF = {};
+STARS.forEach(([name, pairs]) => pairs.split(" ").forEach(p => STAR_OF[p] = name));
+const vClass = v => v === "x" || v === "y" ? "m" : v;
+
+// 數字易經：兩兩一組；0 視同旁邊的數字（伏位），5 在頭尾視同旁邊的數字、在中間跳過
+function starsOf(d) {
+  const a = [...d].map(Number).filter((x, i, all) => x !== 5 || i === 0 || i === all.length - 1);
+  const out = [];
+  for (let i = 0; i + 1 < a.length; i++) {
+    let x = a[i], y = a[i + 1];
+    const zx = x === 0 || x === 5, zy = y === 0 || y === 5;
+    if (zx && !zy) x = y; else if (zy && !zx) y = x;
+    const pair = `${x}${y}`;
+    out.push({ pair: pair, star: zx && zy ? "伏位" : STAR_OF[pair] });
+  }
+  return out;
+}
+
+function luckLine(d, L) {
+  const sumTip = `${[...d].join("+")} = ${L.sum}`;
+  const mTip = `${+d} ÷ 80 ${L.r ? "餘 " + L.r : "整除"}`;
+  const yTip = L.st.map(x => `${x.pair} ${x.star}`).join("、");
+  return `<span class="lk" title="${sumTip}">加總<i>${L.sum}</i><b class="v-${vClass(L.s)}">${VERDICT[L.s]}</b></span>` +
+    `<span class="lk" title="${mTip}">80數理<i>${L.r}</i><b class="v-${vClass(L.m)}">${VERDICT[L.m]}</b></span>` +
+    `<span class="lk" title="${yTip}">易經${L.st.map(x => `<b class="v-${GOOD_STARS.has(x.star) ? "g" : "b"}">${x.star}</b>`).join("")}</span>`;
+}
+
+const luckCache = new Map;
+
+function luckOf(d) {
+  let L = luckCache.get(d);
+  if (L) return L;
+  const sum = [...d].reduce((n, c) => n + +c, 0);
+  const r = +d % 80;
+  const st = starsOf(d);
+  const good = st.map(x => GOOD_STARS.has(x.star));
+  L = {
+    sum: sum,
+    r: r,
+    st: st,
+    s: sum > 0 && SUM_T[sum] || "n",
+    m: r > 0 && M80_T[r] || "n",
+    l: good.length && good[good.length - 1] ? "g" : "b",
+    a: good.length && good.every(Boolean) ? "g" : "b"
+  };
+  const pt = v => v === "g" ? 1 : v === "x" || v === "y" ? .5 : 0;
+  L.score = pt(L.s) + pt(L.m) + pt(L.l) + pt(L.a);
+  L.html = luckLine(d, L);
+  luckCache.set(d, L);
+  return L;
+}
+
 const FAV_KEY = "ev-plates-favs";
 const TYPE_KEY = "ev-plates-type";
+const LUCK_KEY = "ev-plates-luck";
 const CHUNK = 120;
 const CHECK_EVERY = 10 * 60 * 1000;
 
@@ -771,6 +957,7 @@ const state = {
   starts: "",
   ends: "",
   pattern: "",
+  luck: [],
   sort: "num-asc",
   favOnly: false,
   newOnly: false,
@@ -789,6 +976,11 @@ let loaded = false;
 let currentList = [], shown = 0, keepShown = 0;
 let lastCheck = 0, checking = false;
 let favs = [];
+let showLuck = true;
+
+try {
+  showLuck = localStorage.getItem(LUCK_KEY) !== "0";
+} catch (e) {}
 
 try {
   favs = JSON.parse(localStorage.getItem(FAV_KEY) || "[]").filter(p => typeof p === "string");
@@ -878,6 +1070,7 @@ function normalizeRemoved(list) {
       plate: plate,
       digits: digits,
       kind: kindOf(digits),
+      luck: luckOf(digits),
       type: it.type,
       office: String(it.office),
       goneTime: /^\d{2}:\d{2}$/.test(it.time || "") ? it.time : "",
@@ -902,6 +1095,7 @@ function normalize(list, m) {
       plate: plate,
       digits: digits,
       kind: kindOf(digits),
+      luck: luckOf(digits),
       type: it.type,
       office: String(it.office),
       isNew: isNew,
@@ -1026,10 +1220,12 @@ function matchesBase(it) {
 }
 
 const matchesPattern = it => !state.pattern || PATTERNS[state.pattern](it);
+const matchesLuck = it => state.luck.every(k => it.luck[k] === "g");
 
 function sorted(list) {
   const byNum = (a, b) => a.digits.localeCompare(b.digits) || a.plate.localeCompare(b.plate);
   if (state.sort === "num-desc") return list.sort((a, b) => byNum(b, a));
+  if (state.sort === "luck") return list.sort((a, b) => b.luck.score - a.luck.score || byNum(a, b));
   if (state.sort === "office") return list.sort((a, b) => orderOf(a.office) - orderOf(b.office) || a.office.localeCompare(b.office) || byNum(a, b));
   if (state.sort === "new") return list.sort((a, b) => b.isNew - a.isNew || b.newTime.localeCompare(a.newTime) || byNum(a, b));
   return list.sort(byNum);
@@ -1061,20 +1257,22 @@ function buildPlaceSelect() {
   if (loaded) state.place = sel.value;
 }
 
+const luckHTML = (L, cls) => `<div class="${cls}">${L.html}</div>`;
+
 function cardHTML(it) {
   const kind = it.kind && it.kind !== "一對" ? `<span class="tg-kind">${esc(it.kind)}</span>` : "";
   if (it.gone) {
-    return `<li class="pl gone"><div class="pl-art">${plateHTML(it.plate, it.type)}<span class="stamp">已被選走${it.goneTime ? `<b>${esc(it.goneTime)}</b>` : ""}</span></div><div class="pl-cap"><span class="pl-office">${esc(it.office)}</span></div>${kind ? `<div class="pl-tags">${kind}</div>` : ""}</li>`;
+    return `<li class="pl gone"><div class="pl-art">${plateHTML(it.plate, it.type)}<span class="stamp">已被選走${it.goneTime ? `<b>${esc(it.goneTime)}</b>` : ""}</span></div><div class="pl-cap"><span class="pl-office">${esc(it.office)}</span></div>${kind ? `<div class="pl-tags">${kind}</div>` : ""}${luckHTML(it.luck, "pl-luck")}</li>`;
   }
   const on = favs.includes(it.plate);
   const tags = (it.isNew ? `<span class="tg-new">${md(typeMeta(it.type).date)}${it.newTime ? " " + esc(it.newTime) : ""} 新增</span>` : "") + kind + (it.tag ? `<span class="tg-tag">${esc(it.tag)}</span>` : "");
-  return `<li class="pl${it.isNew ? " is-new" : ""}"><div class="pl-art">${plateHTML(it.plate, it.type)}</div><div class="pl-cap"><span class="pl-office">${esc(it.office)}</span><button class="fav" type="button" data-plate="${esc(it.plate)}" aria-pressed="${on}" aria-label="${on ? "取消收藏" : "收藏"} ${esc(it.plate)}">${HEART}</button></div>${tags ? `<div class="pl-tags">${tags}</div>` : ""}</li>`;
+  return `<li class="pl${it.isNew ? " is-new" : ""}"><div class="pl-art">${plateHTML(it.plate, it.type)}</div><div class="pl-cap"><span class="pl-office">${esc(it.office)}</span><button class="fav" type="button" data-plate="${esc(it.plate)}" aria-pressed="${on}" aria-label="${on ? "取消收藏" : "收藏"} ${esc(it.plate)}">${HEART}</button></div>${tags ? `<div class="pl-tags">${tags}</div>` : ""}${luckHTML(it.luck, "pl-luck")}</li>`;
 }
 
 const SKELETON = Array.from({ length: 8 }, () => '<li class="pl sk" aria-hidden="true"><div class="plate"></div><div class="sk-line"></div></li>').join("");
 
 function isFiltered() {
-  return !!(state.place || state.q || state.starts || state.ends || state.pattern || state.favOnly || state.newOnly || state.removedOnly);
+  return !!(state.place || state.q || state.starts || state.ends || state.pattern || state.luck.length || state.favOnly || state.newOnly || state.removedOnly);
 }
 
 function renderChips(base) {
@@ -1087,6 +1285,24 @@ function renderChips(base) {
   document.querySelector('[data-pattern="流標牌"]').hidden = !typeCount(state.type).tagged;
 }
 
+// 每個吉凶按鈕的數字：再加上這一種算法之後，會剩幾面
+function renderLuckChips(pool) {
+  document.querySelectorAll("[data-luck]").forEach(c => {
+    const k = c.dataset.luck;
+    const on = state.luck.includes(k);
+    const need = on ? state.luck : state.luck.concat(k);
+    const n = pool.filter(it => need.every(j => it.luck[j] === "g")).length;
+    c.querySelector(".cnt").textContent = fmtN(n);
+    c.classList.toggle("zero", n === 0);
+    c.setAttribute("aria-pressed", String(on));
+  });
+}
+
+function applyLuckShow() {
+  document.documentElement.classList.toggle("no-luck", !showLuck);
+  $("luckShow").setAttribute("aria-checked", String(showLuck));
+}
+
 const countHTML = (n, unit) => `<span class="nw"><b class="big">${fmtN(n)}</b><span class="u">${unit}</span></span>`;
 
 function renderPick() {
@@ -1096,7 +1312,9 @@ function renderPick() {
   const goneOfType = removed.filter(it => it.type === state.type);
   if (loaded && state.removedOnly && !goneOfType.length) state.removedOnly = false;
   const base = state.removedOnly ? removed.filter(matchesText) : items.filter(matchesBase);
-  const list = state.removedOnly ? base.filter(matchesPattern).sort((a, b) => b.goneTime.localeCompare(a.goneTime) || a.digits.localeCompare(b.digits)) : sorted(base.filter(matchesPattern));
+  const pat = base.filter(matchesPattern);
+  const hits = state.luck.length ? pat.filter(matchesLuck) : pat;
+  const list = state.removedOnly ? hits.sort((a, b) => b.goneTime.localeCompare(a.goneTime) || a.digits.localeCompare(b.digits)) : sorted(hits);
   const newCount = tc.nNew;
   currentList = list;
   shown = Math.min(Math.max(CHUNK, keepShown), list.length);
@@ -1121,7 +1339,8 @@ function renderPick() {
   newBtn.setAttribute("aria-pressed", String(state.newOnly));
   newBtn.classList.toggle("zero", !newCount);
   $("favOnly").setAttribute("aria-pressed", String(state.favOnly));
-  renderChips(base);
+  renderChips(state.luck.length ? base.filter(matchesLuck) : base);
+  renderLuckChips(pat);
   $("newHint").hidden = !(loaded && items.length && !tm.prevDate);
   $("reset").hidden = !isFiltered();
   $("emptyReset").hidden = !isFiltered();
@@ -1146,7 +1365,11 @@ function renderFavs() {
   $("favCount").textContent = favs.length ? String(favs.length) : "";
   $("favOpen").classList.toggle("alert", alert);
   $("favOpen").setAttribute("aria-label", `我的收藏，${favs.length} 個` + (alert ? "，有號碼已經不在清單裡" : ""));
-  $("favList").innerHTML = favs.length ? list.map(([p, s]) => `<li class="fv${s.alert ? " is-gone" : ""}">${plateHTML(p, s.type)}<div class="fv-info">${s.html}</div><button class="fv-rm" type="button" data-remove="${esc(p)}" aria-label="移除 ${esc(p)}">移除</button></li>`).join("") : `<li class="fv-empty">還沒有收藏。點號碼旁的愛心，就會加到這裡。</li>`;
+  const luck = p => {
+    const m = /(\d+)$/.exec(p);
+    return m ? luckHTML(luckOf(m[1]), "fv-luck") : "";
+  };
+  $("favList").innerHTML = favs.length ? list.map(([p, s]) => `<li class="fv${s.alert ? " is-gone" : ""}">${plateHTML(p, s.type)}<div class="fv-info">${s.html}${luck(p)}</div><button class="fv-rm" type="button" data-remove="${esc(p)}" aria-label="移除 ${esc(p)}">移除</button></li>`).join("") : `<li class="fv-empty">還沒有收藏。點號碼旁的愛心，就會加到這裡。</li>`;
   $("favActions").hidden = !favs.length;
   $("lineShare").href = "https://line.me/R/share?text=" + encodeURIComponent(shareText());
 }
@@ -1304,7 +1527,7 @@ function setGroup(g) {
   ensureGroup(g);
 }
 
-const SORTS = ["num-asc", "num-desc", "office", "new"];
+const SORTS = ["num-asc", "num-desc", "office", "new", "luck"];
 
 function stateToQuery() {
   const q = new URLSearchParams;
@@ -1318,6 +1541,7 @@ function stateToQuery() {
     if (state.starts) q.set("s", state.starts);
     if (state.ends) q.set("e", state.ends);
     if (state.pattern) q.set("k", state.pattern);
+    if (state.luck.length) q.set("j", state.luck.join(""));
     if (state.sort !== "num-asc") q.set("o", state.sort);
     if (state.newOnly) q.set("n", "1");
     if (state.removedOnly) q.set("r", "1");
@@ -1346,6 +1570,8 @@ function readUrl() {
   state.ends = (q.get("e") || "").replace(/\D/g, "").slice(0, 5);
   const k = q.get("k");
   state.pattern = k && PATTERNS[k] ? k : "";
+  const j = q.get("j") || "";
+  state.luck = LUCK_KEYS.filter(x => j.includes(x));
   const o = q.get("o");
   if (SORTS.includes(o)) state.sort = o;
   state.newOnly = q.get("n") === "1";
@@ -1366,6 +1592,7 @@ function describeState() {
     if (state.ends) parts.push(`結尾 ${state.ends}`);
     if (state.q) parts.push(`含 ${state.q}`);
     if (state.pattern) parts.push(state.pattern === "無0" ? "不含 0" : state.pattern);
+    if (state.luck.length) parts.push("吉：" + state.luck.map(k => LUCK_NAME[k].replace(" ", "")).join("、"));
     if (state.newOnly) parts.push("新增");
     if (state.removedOnly) parts.push("今天被選走");
   }
@@ -1405,24 +1632,38 @@ async function shareCurrent() {
 }
 
 function resetFilters() {
-  Object.assign(state, { place: "", q: "", starts: "", ends: "", pattern: "", favOnly: false, newOnly: false, removedOnly: false });
+  Object.assign(state, { place: "", q: "", starts: "", ends: "", pattern: "", luck: [], favOnly: false, newOnly: false, removedOnly: false });
   ["q", "starts", "ends"].forEach(id => $(id).value = "");
   $("place").value = "";
   render();
 }
 
-function openFavs() {
-  renderFavs();
-  const d = $("favSheet");
+function openSheet(d) {
   if (d.open) return;
   document.documentElement.classList.add("lock");
   if (typeof d.showModal === "function") d.showModal(); else d.setAttribute("open", "");
 }
 
-function closeFavs() {
-  const d = $("favSheet");
+function closeSheet(d) {
   if (typeof d.close === "function") d.close(); else d.removeAttribute("open");
   document.documentElement.classList.remove("lock");
+}
+
+function openFavs() {
+  renderFavs();
+  openSheet($("favSheet"));
+}
+
+const closeFavs = () => closeSheet($("favSheet"));
+
+function openHow() {
+  if (!$("sumGrid").childElementCount) {
+    const cell = (n, v) => `<span class="v-${vClass(v)}" title="${n}：${VERDICT[v]}">${n}</span>`;
+    $("sumGrid").innerHTML = Array.from({ length: 45 }, (_, i) => cell(i + 1, SUM_T[i + 1])).join("");
+    $("m80Grid").innerHTML = Array.from({ length: 79 }, (_, i) => cell(i + 1, M80_T[i + 1])).join("");
+    $("starList").innerHTML = STARS.map(([n, p]) => `<dt class="v-${GOOD_STARS.has(n) ? "g" : "b"}">${n}</dt><dd>${p}</dd>`).join("");
+  }
+  openSheet($("howSheet"));
 }
 
 async function refreshData(force, quiet) {
@@ -1545,6 +1786,7 @@ function applyLive(type, time, rows, aucs) {
       plate: plate,
       digits: digits,
       kind: kindOf(digits),
+      luck: luckOf(digits),
       type: type,
       office: normOffice(x.motor_vehicles_office),
       isNew: old ? sameDay && old.isNew : true,
@@ -1635,6 +1877,24 @@ document.querySelectorAll("[data-pattern]").forEach(c => c.addEventListener("cli
   state.pattern = state.pattern === c.dataset.pattern ? "" : c.dataset.pattern;
   render();
 }));
+document.querySelectorAll("[data-luck]").forEach(c => c.addEventListener("click", () => {
+  const k = c.dataset.luck;
+  state.luck = state.luck.includes(k) ? state.luck.filter(x => x !== k) : LUCK_KEYS.filter(x => x === k || state.luck.includes(x));
+  render();
+}));
+$("luckShow").addEventListener("click", () => {
+  showLuck = !showLuck;
+  try {
+    localStorage.setItem(LUCK_KEY, showLuck ? "1" : "0");
+  } catch (e) {}
+  applyLuckShow();
+});
+$("luckHow").addEventListener("click", openHow);
+$("howClose").addEventListener("click", () => closeSheet($("howSheet")));
+$("howSheet").addEventListener("click", e => {
+  if (e.target === e.currentTarget) closeSheet($("howSheet"));
+});
+$("howSheet").addEventListener("close", () => document.documentElement.classList.remove("lock"));
 $("newOnly").addEventListener("click", () => {
   state.newOnly = !state.newOnly;
   if (state.newOnly) state.removedOnly = false;
@@ -1687,6 +1947,7 @@ window.addEventListener("online", () => refreshData(true));
 setInterval(() => refreshData(false), CHECK_EVERY + 5000);
 
 readUrl();
+applyLuckShow();
 render();
 ensureGroup(state.group);
 
