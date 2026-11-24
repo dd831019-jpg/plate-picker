@@ -364,9 +364,6 @@ a { color: inherit }
 .lk i { font-style: normal; font-family: var(--num); font-size: 14px; font-weight: 600; line-height: 1; color: var(--muted) }
 .lk b { font-weight: 700 }
 .pl.gone .pl-luck { opacity: .5 }
-.lk-b { gap: 0 }
-.lk-b b { font-family: var(--num); font-size: 14px; letter-spacing: .03em }
-.lk-b b:first-of-type { margin-left: 4px }
 .chip-birth { border-color: var(--line2); background: var(--s2); color: var(--text) }
 .chip-birth::before { content: ""; width: 7px; height: 7px; border-radius: 2px; background: var(--amber); transform: rotate(45deg) }
 
@@ -408,7 +405,19 @@ a { color: inherit }
 .bz-acts .btn { flex-direction: column; gap: 1px; height: auto; min-height: 52px; padding: 7px 14px; white-space: normal }
 .bz-acts .btn small { font-size: 12px; font-weight: 600; opacity: .68 }
 .bz-acts .btn[disabled] { opacity: .45; cursor: default }
-.how .bz-day { margin: 0; font-size: 13px; text-align: center }
+.how .bz-day { margin: 12px 0 0; font-size: 12px; color: var(--faint) }
+.bz-day .bz-reset { font-size: 12px }
+.how .bz-flow { margin: 14px 0 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--s1); font-size: 13px; color: var(--text) }
+.bz-rule { margin: 12px 0 2px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--s1) }
+.how .bz-rule p { margin: 0 0 3px; font-size: 13px; color: var(--text) }
+.bz-rule b { display: inline-block; min-width: 3em; font-weight: 700 }
+.how .bz-rule .bz-rule-n { margin: 7px 0 0; color: var(--muted) }
+.bz-top { display: grid; gap: 6px; margin: 8px 0 2px; padding: 0; list-style: none }
+.bz-top button { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; align-items: center; width: 100%; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--s1); color: var(--text); text-align: left }
+.bz-top button:hover { border-color: var(--muted) }
+.bz-top b { grid-row: 1 / span 2; font-family: var(--num); font-size: 21px; letter-spacing: .03em }
+.bz-top .bz-o { overflow: hidden; font-size: 12px; color: var(--muted); text-overflow: ellipsis; white-space: nowrap }
+.bz-top .bz-d { font-size: 13px; font-weight: 600 }
 .bz-clear { display: block; margin: 12px 0 4px; padding: 0; border: 0; background: none; font-size: 13px; color: var(--red-text); text-decoration: underline; text-underline-offset: 3px }
 .no-luck .pl-luck, .no-luck .fv-luck { display: none }
 
@@ -430,7 +439,7 @@ a { color: inherit }
 .summary { flex: 1; min-width: 0; min-height: 34px; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 12px; margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted) }
 .summary .big { font-family: var(--num); font-size: 28px; font-weight: 700; line-height: 1.1; letter-spacing: .01em; color: var(--text) }
 .summary .u { margin-left: 4px; font-size: 14px; color: var(--text) }
-.summary .plus { color: var(--green) }
+.summary .plus, .summary .xi { color: var(--green) }
 .bar-tools { flex: none; display: flex; align-items: center; gap: 8px }
 .mini-select {
   max-width: 128px;
@@ -815,7 +824,7 @@ a { color: inherit }
           <button class="chip" type="button" data-luck="m" aria-pressed="false">80 數理<span class="cnt"></span></button>
           <button class="chip" type="button" data-luck="l" aria-pressed="false">易經末兩碼<span class="cnt"></span></button>
           <button class="chip" type="button" data-luck="a" aria-pressed="false">易經整組<span class="cnt"></span></button>
-          <button class="chip" id="birthOnly" type="button" aria-pressed="false" hidden>合生辰<span class="cnt"></span></button>
+          <button class="chip" id="birthOnly" type="button" aria-pressed="false" hidden>合喜用<span class="cnt"></span></button>
           <button class="chip chip-birth" id="birthOpen" type="button" aria-haspopup="dialog">依生辰推薦</button>
           <button class="luck-how" id="luckHow" type="button" aria-haspopup="dialog">怎麼算</button>
         </div>
@@ -928,8 +937,8 @@ a { color: inherit }
       <p>八字以立春換年、節氣換月，晚上 11 點以後算隔天的子時。出生在台灣夏令時間（或 1937～1945 年）會自動減 1 小時；沒有另外校正真太陽時。</p>
       <p>身強身弱：日主以外的七個字依位置給分，月支 40、月干 12、日支 12、時干 12、時支 12、年干 8、年支 4（地支只看本氣）。和日主同五行、或生日主的五行，合計過半就算身強。</p>
       <p>喜忌：身強喜剋、洩、耗（官殺、食傷、財），身弱喜生、扶（印、比劫），其餘當忌。數字五行是 1、6 水，2、7 火，3、8 木，4、9 金，5、0 土。</p>
-      <p>合生辰：尾數是喜，而且喜的數字比忌的多。排序時喜 +1、忌 −1，尾數算兩倍。</p>
-      <p class="how-note">這是簡化算法，命理師算的喜用神常常不同，可以直接點上面的五行改成你的。排序選「依生辰推薦」時，合生辰分數高的排前面，同分再看四種吉凶。</p>
+      <p>合喜用：尾數是喜用數字，而且喜用數字比忌的多。排序時喜用 +1、忌 −1，尾數算兩倍。</p>
+      <p class="how-note">這是簡化算法，命理師算的喜用神常常不同，可以直接點上面的五行改成你的。排序選「依生辰推薦」時，喜用分數高的排前面，同分再看四種吉凶。</p>
       <button class="bz-clear" id="birthClear" type="button" hidden>清除生辰</button>
     </div>
   </div>
@@ -1195,10 +1204,11 @@ function birthOf(d) {
     if (x > 0) good++; else if (x < 0) bad++;
     return x;
   });
+  const ok = v[v.length - 1] > 0 && good > bad;
   r = {
     score: score,
-    ok: v[v.length - 1] > 0 && good > bad,
-    html: `<span class="lk lk-b" title="喜 ${good}、忌 ${bad}">生辰${v.map((x, i) => `<b class="v-${x > 0 ? "g" : x < 0 ? "b" : "n"}">${d[i]}</b>`).join("")}</span>`
+    ok: ok,
+    html: `<span class="lk" title="${[...d].map(c => c + ELEMENTS[DIGIT_EL[+c]]).join(" ")}：喜用 ${good}、忌 ${bad}">喜用<i>${good}/${d.length}</i><b class="v-${ok ? "g" : "b"}">${ok ? "合" : "不合"}</b></span>`
   };
   birthCache.set(d, r);
   return r;
@@ -1612,7 +1622,7 @@ function renderPick() {
   if (!loaded) s = "讀取中…";
   else if (!items.length) s = "—";
   else if (state.removedOnly) s = countHTML(list.length, "面") + `<span class="nw">${md(tm.date)} 被選走</span>`;
-  else if (isFiltered()) s = countHTML(list.length, "面符合") + `<span class="nw">共 ${fmtN(tc.n)} 面</span>`;
+  else if (isFiltered()) s = countHTML(list.length, "面符合") + `<span class="nw">共 ${fmtN(tc.n)} 面</span>` + (birthOn() ? `<span class="nw xi">合喜用 ${xiNames(1)}</span>` : "");
   else s = countHTML(list.length, "面可選") + (tm.prevDate && newCount ? `<span class="nw plus">${md(tm.date)} 新增 ${fmtN(newCount)}</span>` : "");
   $("summaryText").innerHTML = s;
   // 資料還沒到之前先佔好「新增」「被選走」的位置，資料到了才不會把下面擠下去
@@ -1934,9 +1944,13 @@ function openSheet(d) {
   if (typeof d.showModal === "function") d.showModal(); else d.setAttribute("open", "");
 }
 
+function unlockIfNone() {
+  if (!document.querySelector("dialog.sheet[open]")) document.documentElement.classList.remove("lock");
+}
+
 function closeSheet(d) {
   if (typeof d.close === "function") d.close(); else d.removeAttribute("open");
-  document.documentElement.classList.remove("lock");
+  unlockIfNone();
 }
 
 function openFavs() {
@@ -1958,6 +1972,7 @@ function openHow() {
 
 const PILLAR_NAMES = ["年柱", "月柱", "日柱", "時柱"];
 const XI_LABEL = x => x > 0 ? "喜" : x < 0 ? "忌" : "不論";
+const xiNames = v => XI ? [0, 1, 2, 3, 4].filter(e => XI[e] === v).map(e => ELEMENTS[e]).join("") : "";
 
 function setXI(xi) {
   XI = xi ? xi.slice() : null;
@@ -2008,21 +2023,34 @@ function renderBirthOut() {
     const v = birth.xi[e];
     return `<button class="bz-el is-${v > 0 ? "g" : v < 0 ? "b" : "n"}" type="button" data-el="${e}" aria-label="${ELEMENTS[e]}，${XI_LABEL(v)}，點一下切換"><b>${ELEMENTS[e]}</b><span>${EL_DIGITS[e]}</span><em>${XI_LABEL(v)}</em></button>`;
   }).join("");
-  const nFit = items.filter(it => matchesBase(it) && matchesPattern(it) && luckOk(it, state.luck, true)).length;
+  const fit = items.filter(it => matchesBase(it) && matchesPattern(it) && luckOk(it, state.luck, true));
+  const top = fit.sort((a, b) => birthOf(b.digits).score - birthOf(a.digits).score || LK(b).score - LK(a).score || a.digits.localeCompare(b.digits) || a.plate.localeCompare(b.plate)).slice(0, 6);
   const md4 = r.birthday;
   const nDay = md4.includes("4") ? -1 : items.filter(it => it.type === state.type && inPlace(it, state.place) && it.digits.includes(md4)).length;
   const where = (state.place ? state.place.slice(2) + " " : "") + state.type;
-  out.innerHTML = `<div class="bz-pillars">${[r.y, r.m, r.d, r.h].map(col).join("")}</div>` +
+  const group = v => [0, 1, 2, 3, 4].filter(e => birth.xi[e] === v).map(e => `${ELEMENTS[e]} ${EL_DIGITS[e]}`).join("、");
+  const elDigits = d => [...d].map(c => {
+    const x = XI[DIGIT_EL[+c]];
+    return `<span class="v-${x > 0 ? "g" : x < 0 ? "b" : "n"}">${c}${ELEMENTS[DIGIT_EL[+c]]}</span>`;
+  }).join(" ");
+  out.innerHTML = `<p class="bz-flow">生辰用來排八字、判斷身強身弱，算出哪些五行對你有利（喜用），再把喜用五行換成數字來挑號碼。</p>` +
+    `<div class="bz-pillars">${[r.y, r.m, r.d, r.h].map(col).join("")}</div>` +
     `<p class="bz-sum">屬${r.zodiac}，日主${STEMS[r.d[0]]}${ELEMENTS[r.dm]}，${r.strong ? "身強" : "身弱"}</p>` +
     `<div class="bz-meter" role="img" aria-label="同類 ${r.pct}%，異類 ${100 - r.pct}%"><i style="width:${r.pct}%"></i></div>` +
     `<p class="bz-meter-l"><span>同類（${ELEMENTS[r.dm]}、${ELEMENTS[(r.dm + 4) % 5]}）${r.pct}%</span><span>異類 ${100 - r.pct}%</span></p>` +
     `<p class="bz-count">八個字的五行：${[...ELEMENTS].map((e, i) => `${e} ${r.count[i]}`).join("、")}${miss.length ? `，缺${miss.join("、")}` : ""}</p>` +
     [r.shift, r.edge].filter(Boolean).map(t => `<p class="bz-note">${t}</p>`).join("") +
     `<h3>喜忌五行</h3><div class="bz-els">${els}</div>` +
-    `<p class="bz-hint">點五行可以切換喜、忌、不論。${custom ? `<button class="bz-reset" id="bzReset" type="button">還原成算出來的</button>` : ""}</p>` +
-    `<div class="bz-acts"><button class="btn primary" id="birthApply" type="button">只看合生辰的號碼<small>${esc(where)} ${fmtN(nFit)} 面</small></button>` +
-    (nDay < 0 ? `<p class="bz-day">生日 ${md4} 有 4，新式車牌沒有這組數字</p>` : `<button class="btn" id="birthDay" type="button"${nDay ? "" : " disabled"}>號碼含生日 ${md4}<small>${fmtN(nDay)} 面</small></button>`) +
-    `</div>`;
+    `<p class="bz-hint">點五行可以切換喜、忌、不論；命理師幫你算過喜用神的話，可以直接改成那個。${custom ? `<button class="bz-reset" id="bzReset" type="button">還原成算出來的</button>` : ""}</p>` +
+    `<div class="bz-rule">` +
+    (group(1) ? `<p><b class="v-g">喜用</b>${group(1)}：號碼裡越多越好，尾數最好是</p>` : `<p><b class="v-g">喜用</b>沒有選，至少要有一個喜用才挑得出號碼</p>`) +
+    (group(-1) ? `<p><b class="v-b">忌</b>${group(-1)}：越少越好</p>` : "") +
+    (group(0) ? `<p><b class="v-n">不論</b>${group(0)}</p>` : "") +
+    `<p class="bz-rule-n">合喜用＝尾數是喜用數字，而且喜用數字比忌的多。</p></div>` +
+    `<h3>${top.length ? `${esc(where)}最合的號碼` : "目前沒有合喜用的號碼"}</h3>` +
+    (top.length ? `<ul class="bz-top">${top.map(it => `<li><button type="button" data-open="${esc(it.plate)}"><b>${esc(it.plate)}</b><span class="bz-o">${esc(it.office)}</span><span class="bz-d">${elDigits(it.digits)}</span></button></li>`).join("")}</ul>` : "") +
+    `<div class="bz-acts"><button class="btn primary" id="birthApply" type="button"${fit.length ? "" : " disabled"}>只看合喜用的號碼<small>${esc(where)} ${fmtN(fit.length)} 面，合的排前面</small></button></div>` +
+    `<p class="bz-day">另外，跟五行無關：${nDay < 0 ? `生日 ${md4} 有 4，新式車牌沒有這組數字。` : nDay ? `號碼裡有生日 ${md4} 的有 ${fmtN(nDay)} 面。<button class="bz-reset" id="birthDay" type="button">看這 ${fmtN(nDay)} 面</button>` : `號碼裡有生日 ${md4} 的，目前沒有。`}</p>`;
   out.hidden = false;
 }
 
@@ -2039,8 +2067,8 @@ function openBirth() {
   openSheet($("birthSheet"));
 }
 
-function showResults(d) {
-  closeSheet(d || $("birthSheet"));
+function showResults() {
+  document.querySelectorAll("dialog.sheet[open]").forEach(closeSheet);
   render();
   const v = $("pickView");
   if (v.scrollIntoView) v.scrollIntoView({ block: "start" });
@@ -2076,10 +2104,10 @@ function renderPlate() {
   let birthRow = "";
   if (XI) {
     const b = birthOf(d);
-    birthRow = row("生辰", [...d].map(c => {
+    birthRow = row("喜用五行", [...d].map(c => {
       const x = XI[DIGIT_EL[+c]];
       return `<span class="v-${x > 0 ? "g" : x < 0 ? "b" : "n"}">${c}${ELEMENTS[DIGIT_EL[+c]]}</span>`;
-    }).join(" "), b.ok ? "合生辰" : "不合生辰", b.ok ? "v-g" : "v-b");
+    }).join(" "), b.ok ? "合喜用" : "不合喜用", b.ok ? "v-g" : "v-b");
   }
   const tm = typeMeta(it.type);
   const st = live
@@ -2386,7 +2414,7 @@ $("birthClose").addEventListener("click", () => closeSheet($("birthSheet")));
 $("birthSheet").addEventListener("click", e => {
   if (e.target === e.currentTarget) closeSheet($("birthSheet"));
 });
-$("birthSheet").addEventListener("close", () => document.documentElement.classList.remove("lock"));
+$("birthSheet").addEventListener("close", unlockIfNone);
 $("bNoTime").addEventListener("change", () => $("bTime").disabled = $("bNoTime").checked);
 $("bKeep").addEventListener("change", () => {
   if (birth) {
@@ -2418,6 +2446,8 @@ $("birthOut").addEventListener("click", e => {
   } else if (e.target.closest("#bzReset")) {
     birth.xi = birth.r.xi.slice();
     changeBirth();
+  } else if (e.target.closest("[data-open]")) {
+    openPlate(e.target.closest("[data-open]").dataset.open);
   } else if (e.target.closest("#birthApply")) {
     state.birthOnly = true;
     state.sort = "birth";
@@ -2475,7 +2505,7 @@ $("grid").addEventListener("keydown", e => {
   }
 });
 $("pdClose").addEventListener("click", () => closeSheet($("plateSheet")));
-$("plateSheet").addEventListener("close", () => document.documentElement.classList.remove("lock"));
+$("plateSheet").addEventListener("close", unlockIfNone);
 $("plateSheet").addEventListener("click", e => {
   if (e.target === e.currentTarget) return closeSheet($("plateSheet"));
   const o = e.target.closest("[data-open]");
@@ -2487,7 +2517,7 @@ $("plateSheet").addEventListener("click", e => {
   } else if (q) {
     state.q = q.dataset.q;
     $("q").value = state.q;
-    showResults($("plateSheet"));
+    showResults();
   } else if (e.target.closest("#pdCopy")) {
     copyText(pdPlate);
   } else if (e.target.closest("#pdFav")) {
