@@ -360,6 +360,52 @@ a { color: inherit }
 .lk i { font-style: normal; font-family: var(--num); font-size: 14px; font-weight: 600; line-height: 1; color: var(--muted) }
 .lk b { font-weight: 700 }
 .pl.gone .pl-luck { opacity: .5 }
+.lk-b { gap: 0 }
+.lk-b b { font-family: var(--num); font-size: 14px; letter-spacing: .03em }
+.lk-b b:first-of-type { margin-left: 4px }
+.chip-birth { border-color: var(--line2); background: var(--s2); color: var(--text) }
+.chip-birth::before { content: ""; width: 7px; height: 7px; border-radius: 2px; background: var(--amber); transform: rotate(45deg) }
+
+.bz-form { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 8px; margin-top: 12px }
+.bz-form .field input { min-height: 28px; font-family: var(--num); font-size: 19px; font-weight: 600; letter-spacing: .04em; color-scheme: dark }
+.bz-form .field input::-webkit-date-and-time-value { text-align: left }
+.bz-form .field input:disabled { opacity: .35 }
+.bz-chk { grid-column: 1 / -1; display: flex; align-items: center; gap: 9px; min-height: 30px; font-size: 14px; color: var(--text); cursor: pointer }
+.bz-chk input { width: 18px; height: 18px; margin: 0; accent-color: var(--white) }
+.bz-err { grid-column: 1 / -1; margin: 0; font-size: 13px; color: var(--red-text) }
+.bz-form .btn { grid-column: 1 / -1; margin-top: 2px }
+.how .bz-privacy { margin-top: 10px; font-size: 12px; color: var(--faint) }
+.bz-pillars { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 16px 0 12px }
+.bz-col { display: grid; justify-items: center; gap: 1px; padding: 9px 4px 8px; border: 1px solid var(--line); border-radius: 12px; background: var(--s1) }
+.bz-col span { font-size: 12px; color: var(--muted) }
+.bz-col b { font-size: 26px; line-height: 1.25; color: var(--text) }
+.bz-col small { font-size: 12px; color: var(--faint) }
+.bz-col.me { border-color: var(--muted) }
+.bz-col.none b { color: var(--line2) }
+.how .bz-sum { margin: 0 0 10px; font-size: 16px; font-weight: 700; color: var(--text) }
+.bz-meter { position: relative; height: 8px; overflow: hidden; border-radius: 999px; background: var(--s2) }
+.bz-meter i { display: block; height: 100%; border-radius: inherit; background: var(--text) }
+.bz-meter::after { content: ""; position: absolute; top: 0; bottom: 0; left: calc(50% - 1px); width: 2px; background: var(--bg) }
+.how .bz-meter-l { display: flex; justify-content: space-between; gap: 10px; margin: 5px 0 8px; font-size: 12px }
+.how .bz-count { font-size: 13px }
+.how .bz-note { padding: 8px 11px; border-radius: 9px; background: rgba(242, 192, 20, .08); font-size: 13px; color: var(--amber) }
+.bz-els { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin: 10px 0 8px }
+.bz-el { display: grid; justify-items: center; gap: 1px; padding: 8px 2px 7px; border: 1px solid var(--line2); border-radius: 12px; background: transparent; color: var(--text) }
+.bz-el b { font-size: 20px; line-height: 1.25 }
+.bz-el span { font-family: var(--num); font-size: 15px; font-weight: 600; letter-spacing: .06em; color: var(--muted) }
+.bz-el em { font-size: 12px; font-style: normal; font-weight: 700; color: var(--faint) }
+.bz-el.is-g { border-color: rgba(63, 214, 140, .55); background: rgba(63, 214, 140, .08) }
+.bz-el.is-g em { color: var(--green) }
+.bz-el.is-b { border-color: rgba(255, 92, 114, .5); background: rgba(255, 92, 114, .07) }
+.bz-el.is-b em { color: var(--red-text) }
+.how .bz-hint { font-size: 12px; color: var(--faint) }
+.bz-reset { margin-left: 6px; padding: 0; border: 0; background: none; font-size: 12px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px }
+.bz-acts { display: grid; gap: 8px; margin: 14px 0 4px }
+.bz-acts .btn { flex-direction: column; gap: 1px; height: auto; min-height: 52px; padding: 7px 14px; white-space: normal }
+.bz-acts .btn small { font-size: 12px; font-weight: 600; opacity: .68 }
+.bz-acts .btn[disabled] { opacity: .45; cursor: default }
+.how .bz-day { margin: 0; font-size: 13px; text-align: center }
+.bz-clear { display: block; margin: 12px 0 4px; padding: 0; border: 0; background: none; font-size: 13px; color: var(--red-text); text-decoration: underline; text-underline-offset: 3px }
 .no-luck .pl-luck, .no-luck .fv-luck { display: none }
 
 .main { min-width: 0 }
@@ -720,6 +766,8 @@ a { color: inherit }
           <button class="chip" type="button" data-luck="m" aria-pressed="false">80 數理<span class="cnt"></span></button>
           <button class="chip" type="button" data-luck="l" aria-pressed="false">易經末兩碼<span class="cnt"></span></button>
           <button class="chip" type="button" data-luck="a" aria-pressed="false">易經整組<span class="cnt"></span></button>
+          <button class="chip" id="birthOnly" type="button" aria-pressed="false" hidden>合生辰<span class="cnt"></span></button>
+          <button class="chip chip-birth" id="birthOpen" type="button" aria-haspopup="dialog">依生辰推薦</button>
           <button class="luck-how" id="luckHow" type="button" aria-haspopup="dialog">怎麼算</button>
         </div>
         <button class="switch" id="luckShow" type="button" role="switch" aria-checked="true">顯示吉凶<i aria-hidden="true"></i></button>
@@ -743,6 +791,7 @@ a { color: inherit }
             <option value="office">依監理所站，北到南</option>
             <option value="new">新增的排前面</option>
             <option value="luck">吉多的排前面</option>
+            <option value="birth" id="sortBirth" hidden disabled>依生辰推薦</option>
           </select>
           <button class="icon-btn" id="sharePick" type="button" aria-label="分享目前的篩選"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg><span>分享</span></button>
         </div>
@@ -804,6 +853,35 @@ a { color: inherit }
       <dl class="stars" id="starList"></dl>
       <p>0 視同旁邊的數字，算伏位；5 在頭尾也視同旁邊的數字，在中間就跳過不算。</p>
       <p class="how-note">以上整理自坊間流傳的說法，僅供參考。</p>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="sheet" id="birthSheet" aria-labelledby="birthTitle">
+  <div class="sheet-in">
+    <div class="grab" aria-hidden="true"></div>
+    <div class="sheet-head">
+      <h2 id="birthTitle">依生辰推薦</h2>
+      <button class="x" id="birthClose" type="button" aria-label="關閉"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="how bz">
+      <form class="bz-form" id="birthForm" novalidate>
+        <label class="field"><span class="fl">出生日期（國曆）</span><input id="bDate" type="date" min="1920-01-01" max="2030-12-31" required></label>
+        <label class="field"><span class="fl">出生時間</span><input id="bTime" type="time"></label>
+        <label class="bz-chk"><input id="bNoTime" type="checkbox">不知道出生時間</label>
+        <label class="bz-chk"><input id="bKeep" type="checkbox" checked>記在這台裝置</label>
+        <p class="bz-err" id="bErr" role="alert" hidden></p>
+        <button class="btn primary" type="submit">看分析</button>
+      </form>
+      <p class="bz-privacy">生辰只在你的瀏覽器裡計算，不會上傳，分享連結也不會帶出去。</p>
+      <div id="birthOut" hidden></div>
+      <h3>怎麼判斷</h3>
+      <p>八字以立春換年、節氣換月，晚上 11 點以後算隔天的子時。出生在台灣夏令時間（或 1937～1945 年）會自動減 1 小時；沒有另外校正真太陽時。</p>
+      <p>身強身弱：日主以外的七個字依位置給分，月支 40、月干 12、日支 12、時干 12、時支 12、年干 8、年支 4（地支只看本氣）。和日主同五行、或生日主的五行，合計過半就算身強。</p>
+      <p>喜忌：身強喜剋、洩、耗（官殺、食傷、財），身弱喜生、扶（印、比劫），其餘當忌。數字五行是 1、6 水，2、7 火，3、8 木，4、9 金，5、0 土。</p>
+      <p>合生辰：尾數是喜，而且喜的數字比忌的多。排序時喜 +1、忌 −1，尾數算兩倍。</p>
+      <p class="how-note">這是簡化算法，命理師算的喜用神常常不同，可以直接點上面的五行改成你的。排序選「依生辰推薦」時，合生辰分數高的排前面，同分再看四種吉凶。</p>
+      <button class="bz-clear" id="birthClear" type="button" hidden>清除生辰</button>
     </div>
   </div>
 </dialog>
@@ -942,6 +1020,121 @@ function luckOf(d) {
   return L;
 }
 
+// 生辰八字：立春換年、節換月，23:00 起算隔天；台灣夏令時間與 1937～1945 年的 UTC+9 先換回 UTC+8
+const JQ_FIRST = 491738;
+const JQ_ENC = "0br0cx0o116c1r82932it2hf25h1me11o0kp0bs0cy0o116c1r72912iq2hc25f1md11n0kp0bu0d10o416c1r72912ir2hg25h1mf11o0kq0br0cy0o016a1r42902is2hi25l1mi11p0kp0bp0cw0ny1691r52902ir2hj25m1mi11p0ko0bo0cw0nz16a1r82922it2hi25l1mj11r0kq0bq0cw0ny1661r228y2io2he25k1ml11v0kv0bu0cx0nw1641qz28w2ip2hh25m1mm11u0kt0bt0cx0nx1661r028y2ir2hk25m1mk11s0kr0bt0cz0nz1671r128v2il2hd25j1mj11s0kt0bv0d00o21681r228v2im2hd25j1ml11v0kv0bt0cx0nx1661r228w2io2hf25k1mm11v0ku0bt0cw0nw1651r128x2io2hg25j1mj11s0ks0bt0cy0ny1671r428z2ir2hi25j1mj11r0ks0bt0d00ny1661qz28u2in2hg25k1ml11u0ku0bt0cz0nx1641qy28u2io2hi25o1mo11u0kr0bq0cu0nw1661r128z2ir2hl25q1mn11v0kr0bq0cu0nu1651r228w2in2hf25m1mo11w0kv0bt0cw0nv1631qy28w2io2hi25n1mp11z0ky0bu0cu0ns15z1qw28v2iq2hl25r1mr11z0kx0bv0cw0ns15z1qt28s2io2hj25q1mp11x0kv0bu0cy0nw1631qx28t2io2hj25q1mq11y0kw0bu0cz0nw1631qv28q2ij2he25o1ms1210l00bw0cx0nu1611qu28q2ik2hf25p1mr1210ky0bu0cw0nt1621qy28v2ip2hj25p1mp11y0kx0bu0cx0nv1621qx28s2im2he25l1mn11x0ky0bw0d00nx1621qu28s2im2hh25n1mq11y0kx0bu0cw0nu1601qv28s2ip2hl25s1ms11z0kw0bs0cu0ns15z1qv28s2in2hj25r1mr11z0kv0br0cu0ns1611qx28u2ip2hj25r1mt1210kx0bu0cu0nq15x1qt28q2im2hi25r1mu1240l20bw0cv0nq15u1qo28o2il2hj25t1mu1230kz0bw0cv0nq15w1qr28q2ip2hm25v1mu1220ky0bu0cw0ns15z1qr28o2ij2hg25q1mt1230l00bw0cy0nu15y1qr28n2ii2hg25r1mv1260l10bw0cu0np15w1qr28p2in2hk25u1mw1250l20bv0cu0no15v1qr28q2im2hi25r1mt1220l00bw0cx0nr15x1qr28r2in2hk25s1mu1220l00bw0cx0ns15v1qp28n2il2hk25u1mw1250l20bw0cw0nr15u1qo28l2ik2hk25w1my1240kz0bt0ct0np15w1qr28q2io2hn25x1n01250l00bt0cr0np15v1qr28p2il2hh25t1my1270l40bx0cu0no15t1qn28m2ik2hj25t1mz1290l60bx0cu0nl15q1ql28m2io2hn25z1n01280l50bx0cv0nn15q1ql28l2ik2hk25v1mz1250l20bx0cw0nr15u1qn28k2ij2hk25v1mz1280l30bw0cw0np15t1qm28k2ih2hi25v1n112a0l70by0cv0nn15r1qk28j2ih2hi25v1mz1280l40bx0ct0nn15r1qn28n2in2hl25w1mz1270l30bx0cu0no15s1qn28l2il2hi25t1my1260l40bz0cw0no15s1qk28i2ij2hj25w1n01280l30bw0cs0nm15p1qk28l2im2hp2621n512a0l30bu0cq0nk15p1qk28l2il2hl25z1n31290l40bu0cr0nl15p1qk28l2ik2hm25y1n412d0l60by0cs0nj15m1qh28i2ij2hm2601n612f0lb0c10ct0nj15k1qd28f2ih2hm2601n512d0l70bz0cu0nl15m1qg28h2ik2hn2621n612d0l60by0cu0nn15q1qi28g2ig2hi25y1n412e0l90c00cw0nn15p1qi28e2ie2hh25w1n512f0la0c00cs0nk15m1qh28i2ik2hm2611n612f0l90bz0cs0nj15n1qh28k2ik2hk25x1n212b0l70c00cu0nm15o1qi28i2ij2hl25y1n312a0l70c00cu0nm15m1qf28g2ij2hn2621n612e0l80bz0ct0nj15l1qf28f2ih2hn2621n712d0l60bv0cq0ni15l1qh28i2ik2hp2641n912f0l60bv0cp0ng15m1qh28h2ij2hl2611n812g0lb0c00cs0ng15i1qd28d2ih2hl2611n812i0lc0c00cr0ne15e1qa28d2ik2hq2671nc12i0la0c00cr0ng15g1qb28d2ii2hn2641n812h0l90c00ct0nj15k1qc28b2ie2hl2621n912j0lb0c00ct0nh15i1qa28b2ie2hm2631nd12m0le0c20cs0ng15h1qa28b2if2hk2621na12j0lc0c10cr0ng15h1qc28d2ii2hn2631n912i0lb0c10cs0ni15i1qd28d2ih2hm2621n812i0lc0c20cv0nj15i1qa28b2ie2hl2631na12j0lb0bz0cr0nf15g1qa28c2ij2hr2691ne12l0la0bx0cp0ne15g1qc28f2ij2hp2651nd12k0lb0by0cq0ne15g1qb28e2ig2hn2651nc12m0le0c10cr0nc15c1q628a2ih2hq2681ng12o0li0c30cs0nd15b1q42882ig2hp2681ne12m0ld0c20cr0nf15d1q62892if2hp2681nf12m0ld0c00cs0nf15g1q92892id2hl2661nf12o0lg0c30cs0ng15e1q72882ib2hj2641ne12p0lg0c20cp0nc15b1q628a2ig2ho2681nh12o0lg0c20cp0nc15b1q728c2ih2hp2651nc12m0le0c20cs0ne15d1q72892if2hm2661nc12l0lf0c20cs0ne15b1q32862ie2hq26a1ni12q0lg0c10cq0nc15b1q32872if2hp26a1ni12p0le0bz0cn0nb15b1q52892if2hp26a1nj12q0lf0c00co0na15a1q52882ie2ho2691ni12s0lk0c50cr0na1581q22852id2hn2681nh12s0lk0c50cq0n91561pz2842if2hr26d1nl12s0li0c30cq0nb1591q22862if2hq26a1nj12q0lh0c30cr0ne15b1q42852ic2hl2681ni12s0lj0c30cr0nb1591q02842ic2hn26b1nn12v0ll0c50cp0na1571q22852ie2hp26b1nj12s0li0c30cq0na1581q22862if2hq26a1ni12r0lh0c30cq0nb1581q22862ie2hp26b1nj12s0lj0c40cr0nc1591q02842id2hp26b1nl12t0li0c10cn0n81551q02832if2hs26g1np12u0li0c00cl0n61551q12872ig2hs26e1nn12v0lk0c10co0n71551q02852id2hp26b1nm12w0lm0c50cp0n51501pu2802ic2hr26f1nq1300lo0c70cq0n51511pu27z2id2hs26g1np12w0ll0c40cq0n81531pw2802ia2hp26e1np12w0ll0c40cp0n91561pw2802i82hn26c1np12z0lp0c60cr0n91551px27z2i92hm26a1no12z0lp0c50co0n61521pv2812ib2hq26d1np12y0ln0c50co0n61521px2842ie2hr26d1nn12u0lm0c50cr0n91541py2822ic2hq26c1nm12v0ll0c50cp0n71521pt27y2ib2hs26i1ns1300ln0c30cn";
+const CNY_ENC = "vj8rg4od3lash6pf4mbuj7qg5od2l9sh7pe4nbtj8qg5od1kash7qe3mbti8rg5odvk9sh7qf3lbui8rg4nc2k9ti6pe3lbuj8rg5nc2l9sh6oe";
+const TW_SHIFT = [[9861180,14054400],[14394300,14594340],[14876700,15164580],[15426780,15646980],[15952380,16172580],[16477980,16698180],[17003580,17223780],[17442780,17795460],[18013020,18321060],[18538620,18846660],[19064220,19327620],[19591260,19854660],[20116860,20380260],[20642460,20905860],[21168060,21431460],[21782940,21958500],[22308540,22484100],[29057820,29321220],[29583420,29846820],[31818300,31950660]];
+const STEMS = "甲乙丙丁戊己庚辛壬癸";
+const BRANCHES = "子丑寅卯辰巳午未申酉戌亥";
+const ZODIAC = "鼠牛虎兔龍蛇馬羊猴雞狗豬";
+const ELEMENTS = "木火土金水";
+const STEM_EL = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4];
+const BRANCH_EL = [4, 2, 0, 0, 2, 1, 1, 2, 3, 3, 2, 4];
+const DIGIT_EL = [2, 4, 1, 0, 3, 2, 4, 1, 0, 3];
+const EL_DIGITS = ["3 8", "2 7", "5 0", "9", "1 6"];
+// 日主以外七個字的位置分數：年干、年支、月干、月支、日支、時干、時支
+const BZ_WEIGHT = [8, 4, 12, 40, 12, 12, 12];
+const BZ_BASE = Date.UTC(1919, 0, 1);
+const JQ_JIE0 = 10;
+let jqTimes = null;
+
+function jieTimes() {
+  if (!jqTimes) {
+    jqTimes = [JQ_FIRST];
+    for (let i = 0; i < JQ_ENC.length; i += 3) jqTimes.push(jqTimes[jqTimes.length - 1] + 42000 + parseInt(JQ_ENC.substr(i, 3), 36));
+  }
+  return jqTimes;
+}
+
+const bzYear = t => new Date(BZ_BASE + t * 60000).getUTCFullYear();
+
+function bazi(date, time) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date || "");
+  if (!m) return { error: "請先選出生日期" };
+  const y = +m[1], mo = +m[2], d = +m[3];
+  if (y < 1920 || y > 2030) return { error: "目前只能算 1920 到 2030 年出生的" };
+  const tm = /^(\d{2}):(\d{2})/.exec(time || "");
+  const civil = (Date.UTC(y, mo - 1, d, tm ? +tm[1] : 12, tm ? +tm[2] : 0) - BZ_BASE) / 60000;
+  const span = TW_SHIFT.findIndex(([a, b]) => civil >= a && civil < b);
+  const t = tm && span >= 0 ? civil - 60 : civil;
+  const J = jieTimes();
+  let lo = 0, hi = J.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi + 1) >> 1;
+    if (J[mid] <= t) lo = mid; else hi = mid - 1;
+  }
+  const k = (JQ_JIE0 + lo) % 12;
+  const yi = ((((lo - k >= 0 ? bzYear(J[lo - k]) : 1919) - 4) % 60) + 60) % 60;
+  const hour = Math.floor(t / 60) % 24;
+  const di = ((Math.floor(t / 1440) + 49 + (tm && hour === 23 ? 1 : 0)) % 60 + 60) % 60;
+  const hb = tm ? Math.floor((hour + 1) / 2) % 12 : -1;
+  const p = {
+    y: [yi % 10, yi % 12],
+    m: [((yi % 10) % 5 * 2 + 2 + k) % 10, (k + 2) % 12],
+    d: [di % 10, di % 12],
+    h: tm ? [((di % 10) % 5 * 2 + hb) % 10, hb] : null
+  };
+  const cny = Date.UTC(y, 0, 20 + parseInt(CNY_ENC[y - 1920], 36));
+  const ly = Date.UTC(y, mo - 1, d) < cny ? y - 1 : y;
+  p.zodiac = ZODIAC[((ly - 4) % 12 + 12) % 12];
+  p.shift = tm && span >= 0 ? (span === 0 ? "當時台灣時間比現在快 1 小時，已減 1 小時計算" : "出生當天是夏令時間，已減 1 小時計算") : "";
+  p.edge = !tm && J.some(x => Math.floor(x / 1440) === Math.floor(t / 1440)) ? "這天是節氣交接日，沒有出生時間無法確定月柱，暫以中午計算" : "";
+  p.birthday = `${m[2]}${m[3]}`;
+  return Object.assign(p, bzAnalyze(p));
+}
+
+function bzAnalyze(p) {
+  const dm = STEM_EL[p.d[0]];
+  const parts = [STEM_EL[p.y[0]], BRANCH_EL[p.y[1]], STEM_EL[p.m[0]], BRANCH_EL[p.m[1]], BRANCH_EL[p.d[1]]];
+  if (p.h) parts.push(STEM_EL[p.h[0]], BRANCH_EL[p.h[1]]);
+  let total = 0, same = 0;
+  const yin = (dm + 4) % 5;
+  parts.forEach((e, i) => {
+    total += BZ_WEIGHT[i];
+    if (e === dm || e === yin) same += BZ_WEIGHT[i];
+  });
+  const strong = same * 2 >= total;
+  const count = [0, 0, 0, 0, 0];
+  [p.y, p.m, p.d, p.h].forEach(x => {
+    if (x) {
+      count[STEM_EL[x[0]]]++;
+      count[BRANCH_EL[x[1]]]++;
+    }
+  });
+  return {
+    dm: dm,
+    strong: strong,
+    pct: Math.round(same / total * 100),
+    count: count,
+    xi: [0, 1, 2, 3, 4].map(e => (e === dm || e === yin) !== strong ? 1 : -1)
+  };
+}
+
+const BIRTH_KEY = "ev-plates-birth";
+let birth = null;
+let XI = null;
+const birthCache = new Map;
+
+function birthOf(d) {
+  let r = birthCache.get(d);
+  if (r) return r;
+  let score = 0, good = 0, bad = 0;
+  const v = [...d].map((c, i) => {
+    const x = XI[DIGIT_EL[+c]];
+    score += x * (i === d.length - 1 ? 2 : 1);
+    if (x > 0) good++; else if (x < 0) bad++;
+    return x;
+  });
+  r = {
+    score: score,
+    ok: v[v.length - 1] > 0 && good > bad,
+    html: `<span class="lk lk-b" title="喜 ${good}、忌 ${bad}">生辰${v.map((x, i) => `<b class="v-${x > 0 ? "g" : x < 0 ? "b" : "n"}">${d[i]}</b>`).join("")}</span>`
+  };
+  birthCache.set(d, r);
+  return r;
+}
+
 const FAV_KEY = "ev-plates-favs";
 const TYPE_KEY = "ev-plates-type";
 const LUCK_KEY = "ev-plates-luck";
@@ -958,6 +1151,7 @@ const state = {
   ends: "",
   pattern: "",
   luck: [],
+  birthOnly: false,
   sort: "num-asc",
   favOnly: false,
   newOnly: false,
@@ -1220,12 +1414,15 @@ function matchesBase(it) {
 }
 
 const matchesPattern = it => !state.pattern || PATTERNS[state.pattern](it);
-const matchesLuck = it => state.luck.every(k => it.luck[k] === "g");
+const birthOn = () => state.birthOnly && !!XI;
+const luckOk = (it, keys, b) => keys.every(k => it.luck[k] === "g") && (!b || birthOf(it.digits).ok);
+const matchesLuck = it => luckOk(it, state.luck, birthOn());
 
 function sorted(list) {
   const byNum = (a, b) => a.digits.localeCompare(b.digits) || a.plate.localeCompare(b.plate);
   if (state.sort === "num-desc") return list.sort((a, b) => byNum(b, a));
   if (state.sort === "luck") return list.sort((a, b) => b.luck.score - a.luck.score || byNum(a, b));
+  if (state.sort === "birth" && XI) return list.sort((a, b) => birthOf(b.digits).score - birthOf(a.digits).score || b.luck.score - a.luck.score || byNum(a, b));
   if (state.sort === "office") return list.sort((a, b) => orderOf(a.office) - orderOf(b.office) || a.office.localeCompare(b.office) || byNum(a, b));
   if (state.sort === "new") return list.sort((a, b) => b.isNew - a.isNew || b.newTime.localeCompare(a.newTime) || byNum(a, b));
   return list.sort(byNum);
@@ -1257,22 +1454,22 @@ function buildPlaceSelect() {
   if (loaded) state.place = sel.value;
 }
 
-const luckHTML = (L, cls) => `<div class="${cls}">${L.html}</div>`;
+const luckHTML = (L, cls, d) => `<div class="${cls}">${L.html}${XI && d ? birthOf(d).html : ""}</div>`;
 
 function cardHTML(it) {
   const kind = it.kind && it.kind !== "一對" ? `<span class="tg-kind">${esc(it.kind)}</span>` : "";
   if (it.gone) {
-    return `<li class="pl gone"><div class="pl-art">${plateHTML(it.plate, it.type)}<span class="stamp">已被選走${it.goneTime ? `<b>${esc(it.goneTime)}</b>` : ""}</span></div><div class="pl-cap"><span class="pl-office">${esc(it.office)}</span></div>${kind ? `<div class="pl-tags">${kind}</div>` : ""}${luckHTML(it.luck, "pl-luck")}</li>`;
+    return `<li class="pl gone"><div class="pl-art">${plateHTML(it.plate, it.type)}<span class="stamp">已被選走${it.goneTime ? `<b>${esc(it.goneTime)}</b>` : ""}</span></div><div class="pl-cap"><span class="pl-office">${esc(it.office)}</span></div>${kind ? `<div class="pl-tags">${kind}</div>` : ""}${luckHTML(it.luck, "pl-luck", it.digits)}</li>`;
   }
   const on = favs.includes(it.plate);
   const tags = (it.isNew ? `<span class="tg-new">${md(typeMeta(it.type).date)}${it.newTime ? " " + esc(it.newTime) : ""} 新增</span>` : "") + kind + (it.tag ? `<span class="tg-tag">${esc(it.tag)}</span>` : "");
-  return `<li class="pl${it.isNew ? " is-new" : ""}"><div class="pl-art">${plateHTML(it.plate, it.type)}</div><div class="pl-cap"><span class="pl-office">${esc(it.office)}</span><button class="fav" type="button" data-plate="${esc(it.plate)}" aria-pressed="${on}" aria-label="${on ? "取消收藏" : "收藏"} ${esc(it.plate)}">${HEART}</button></div>${tags ? `<div class="pl-tags">${tags}</div>` : ""}${luckHTML(it.luck, "pl-luck")}</li>`;
+  return `<li class="pl${it.isNew ? " is-new" : ""}"><div class="pl-art">${plateHTML(it.plate, it.type)}</div><div class="pl-cap"><span class="pl-office">${esc(it.office)}</span><button class="fav" type="button" data-plate="${esc(it.plate)}" aria-pressed="${on}" aria-label="${on ? "取消收藏" : "收藏"} ${esc(it.plate)}">${HEART}</button></div>${tags ? `<div class="pl-tags">${tags}</div>` : ""}${luckHTML(it.luck, "pl-luck", it.digits)}</li>`;
 }
 
 const SKELETON = Array.from({ length: 8 }, () => '<li class="pl sk" aria-hidden="true"><div class="plate"></div><div class="sk-line"></div></li>').join("");
 
 function isFiltered() {
-  return !!(state.place || state.q || state.starts || state.ends || state.pattern || state.luck.length || state.favOnly || state.newOnly || state.removedOnly);
+  return !!(state.place || state.q || state.starts || state.ends || state.pattern || state.luck.length || birthOn() || state.favOnly || state.newOnly || state.removedOnly);
 }
 
 function renderChips(base) {
@@ -1291,11 +1488,22 @@ function renderLuckChips(pool) {
     const k = c.dataset.luck;
     const on = state.luck.includes(k);
     const need = on ? state.luck : state.luck.concat(k);
-    const n = pool.filter(it => need.every(j => it.luck[j] === "g")).length;
+    const n = pool.filter(it => luckOk(it, need, birthOn())).length;
     c.querySelector(".cnt").textContent = fmtN(n);
     c.classList.toggle("zero", n === 0);
     c.setAttribute("aria-pressed", String(on));
   });
+  const bc = $("birthOnly");
+  bc.hidden = !XI;
+  if (XI) {
+    const n = pool.filter(it => luckOk(it, state.luck, true)).length;
+    bc.querySelector(".cnt").textContent = fmtN(n);
+    bc.classList.toggle("zero", n === 0);
+    bc.setAttribute("aria-pressed", String(birthOn()));
+  }
+  const open = $("birthOpen");
+  open.textContent = XI ? "我的生辰" : "依生辰推薦";
+  open.className = XI ? "luck-how" : "chip chip-birth";
 }
 
 function applyLuckShow() {
@@ -1313,7 +1521,7 @@ function renderPick() {
   if (loaded && state.removedOnly && !goneOfType.length) state.removedOnly = false;
   const base = state.removedOnly ? removed.filter(matchesText) : items.filter(matchesBase);
   const pat = base.filter(matchesPattern);
-  const hits = state.luck.length ? pat.filter(matchesLuck) : pat;
+  const hits = state.luck.length || birthOn() ? pat.filter(matchesLuck) : pat;
   const list = state.removedOnly ? hits.sort((a, b) => b.goneTime.localeCompare(a.goneTime) || a.digits.localeCompare(b.digits)) : sorted(hits);
   const newCount = tc.nNew;
   currentList = list;
@@ -1339,7 +1547,7 @@ function renderPick() {
   newBtn.setAttribute("aria-pressed", String(state.newOnly));
   newBtn.classList.toggle("zero", !newCount);
   $("favOnly").setAttribute("aria-pressed", String(state.favOnly));
-  renderChips(state.luck.length ? base.filter(matchesLuck) : base);
+  renderChips(state.luck.length || birthOn() ? base.filter(matchesLuck) : base);
   renderLuckChips(pat);
   $("newHint").hidden = !(loaded && items.length && !tm.prevDate);
   $("reset").hidden = !isFiltered();
@@ -1367,7 +1575,7 @@ function renderFavs() {
   $("favOpen").setAttribute("aria-label", `我的收藏，${favs.length} 個` + (alert ? "，有號碼已經不在清單裡" : ""));
   const luck = p => {
     const m = /(\d+)$/.exec(p);
-    return m ? luckHTML(luckOf(m[1]), "fv-luck") : "";
+    return m ? luckHTML(luckOf(m[1]), "fv-luck", m[1]) : "";
   };
   $("favList").innerHTML = favs.length ? list.map(([p, s]) => `<li class="fv${s.alert ? " is-gone" : ""}">${plateHTML(p, s.type)}<div class="fv-info">${s.html}${luck(p)}</div><button class="fv-rm" type="button" data-remove="${esc(p)}" aria-label="移除 ${esc(p)}">移除</button></li>`).join("") : `<li class="fv-empty">還沒有收藏。點號碼旁的愛心，就會加到這裡。</li>`;
   $("favActions").hidden = !favs.length;
@@ -1527,7 +1735,7 @@ function setGroup(g) {
   ensureGroup(g);
 }
 
-const SORTS = ["num-asc", "num-desc", "office", "new", "luck"];
+const SORTS = ["num-asc", "num-desc", "office", "new", "luck", "birth"];
 
 function stateToQuery() {
   const q = new URLSearchParams;
@@ -1632,7 +1840,7 @@ async function shareCurrent() {
 }
 
 function resetFilters() {
-  Object.assign(state, { place: "", q: "", starts: "", ends: "", pattern: "", luck: [], favOnly: false, newOnly: false, removedOnly: false });
+  Object.assign(state, { place: "", q: "", starts: "", ends: "", pattern: "", luck: [], birthOnly: false, favOnly: false, newOnly: false, removedOnly: false });
   ["q", "starts", "ends"].forEach(id => $(id).value = "");
   $("place").value = "";
   render();
@@ -1664,6 +1872,103 @@ function openHow() {
     $("starList").innerHTML = STARS.map(([n, p]) => `<dt class="v-${GOOD_STARS.has(n) ? "g" : "b"}">${n}</dt><dd>${p}</dd>`).join("");
   }
   openSheet($("howSheet"));
+}
+
+const PILLAR_NAMES = ["年柱", "月柱", "日柱", "時柱"];
+const XI_LABEL = x => x > 0 ? "喜" : x < 0 ? "忌" : "不論";
+
+function setXI(xi) {
+  XI = xi ? xi.slice() : null;
+  birthCache.clear();
+  $("sortBirth").hidden = !XI;
+  $("sortBirth").disabled = !XI;
+  if (!XI) {
+    state.birthOnly = false;
+    if (state.sort === "birth") {
+      state.sort = "num-asc";
+      $("sort").value = state.sort;
+    }
+  }
+}
+
+function saveBirth() {
+  try {
+    if (birth && birth.keep) localStorage.setItem(BIRTH_KEY, JSON.stringify({ date: birth.date, time: birth.time, xi: birth.xi }));
+    else localStorage.removeItem(BIRTH_KEY);
+  } catch (e) {}
+}
+
+function loadBirth() {
+  try {
+    const b = JSON.parse(localStorage.getItem(BIRTH_KEY) || "null");
+    if (!b || !b.date) return;
+    const r = bazi(b.date, b.time);
+    if (r.error) return;
+    const ok = Array.isArray(b.xi) && b.xi.length === 5 && b.xi.every(x => x === 1 || x === -1 || x === 0);
+    birth = { date: b.date, time: b.time || "", keep: true, r: r, xi: (ok ? b.xi : r.xi).slice() };
+    setXI(birth.xi);
+  } catch (e) {}
+}
+
+function renderBirthOut() {
+  const out = $("birthOut");
+  $("birthClear").hidden = !birth;
+  if (!birth) {
+    out.hidden = true;
+    out.innerHTML = "";
+    return;
+  }
+  const r = birth.r;
+  const col = (x, i) => x ? `<div class="bz-col${i === 2 ? " me" : ""}"><span>${PILLAR_NAMES[i]}</span><b>${STEMS[x[0]]}</b><b>${BRANCHES[x[1]]}</b><small>${ELEMENTS[STEM_EL[x[0]]]} ${ELEMENTS[BRANCH_EL[x[1]]]}</small></div>` : `<div class="bz-col none"><span>${PILLAR_NAMES[i]}</span><b>－</b><b>－</b><small>沒有時間</small></div>`;
+  const miss = [...ELEMENTS].filter((e, i) => !r.count[i]);
+  const custom = birth.xi.some((x, i) => x !== r.xi[i]);
+  const els = [0, 1, 2, 3, 4].map(e => {
+    const v = birth.xi[e];
+    return `<button class="bz-el is-${v > 0 ? "g" : v < 0 ? "b" : "n"}" type="button" data-el="${e}" aria-label="${ELEMENTS[e]}，${XI_LABEL(v)}，點一下切換"><b>${ELEMENTS[e]}</b><span>${EL_DIGITS[e]}</span><em>${XI_LABEL(v)}</em></button>`;
+  }).join("");
+  const nFit = items.filter(it => matchesBase(it) && matchesPattern(it) && luckOk(it, state.luck, true)).length;
+  const md4 = r.birthday;
+  const nDay = md4.includes("4") ? -1 : items.filter(it => it.type === state.type && inPlace(it, state.place) && it.digits.includes(md4)).length;
+  const where = (state.place ? state.place.slice(2) + " " : "") + state.type;
+  out.innerHTML = `<div class="bz-pillars">${[r.y, r.m, r.d, r.h].map(col).join("")}</div>` +
+    `<p class="bz-sum">屬${r.zodiac}，日主${STEMS[r.d[0]]}${ELEMENTS[r.dm]}，${r.strong ? "身強" : "身弱"}</p>` +
+    `<div class="bz-meter" role="img" aria-label="同類 ${r.pct}%，異類 ${100 - r.pct}%"><i style="width:${r.pct}%"></i></div>` +
+    `<p class="bz-meter-l"><span>同類（${ELEMENTS[r.dm]}、${ELEMENTS[(r.dm + 4) % 5]}）${r.pct}%</span><span>異類 ${100 - r.pct}%</span></p>` +
+    `<p class="bz-count">八個字的五行：${[...ELEMENTS].map((e, i) => `${e} ${r.count[i]}`).join("、")}${miss.length ? `，缺${miss.join("、")}` : ""}</p>` +
+    [r.shift, r.edge].filter(Boolean).map(t => `<p class="bz-note">${t}</p>`).join("") +
+    `<h3>喜忌五行</h3><div class="bz-els">${els}</div>` +
+    `<p class="bz-hint">點五行可以切換喜、忌、不論。${custom ? `<button class="bz-reset" id="bzReset" type="button">還原成算出來的</button>` : ""}</p>` +
+    `<div class="bz-acts"><button class="btn primary" id="birthApply" type="button">只看合生辰的號碼<small>${esc(where)} ${fmtN(nFit)} 面</small></button>` +
+    (nDay < 0 ? `<p class="bz-day">生日 ${md4} 有 4，新式車牌沒有這組數字</p>` : `<button class="btn" id="birthDay" type="button"${nDay ? "" : " disabled"}>號碼含生日 ${md4}<small>${fmtN(nDay)} 面</small></button>`) +
+    `</div>`;
+  out.hidden = false;
+}
+
+function openBirth() {
+  if (birth) {
+    $("bDate").value = birth.date;
+    $("bTime").value = birth.time;
+    $("bNoTime").checked = !birth.time;
+    $("bKeep").checked = birth.keep;
+  }
+  $("bTime").disabled = $("bNoTime").checked;
+  $("bErr").hidden = true;
+  renderBirthOut();
+  openSheet($("birthSheet"));
+}
+
+function showResults() {
+  closeSheet($("birthSheet"));
+  render();
+  const v = $("pickView");
+  if (v.scrollIntoView) v.scrollIntoView({ block: "start" });
+}
+
+function changeBirth() {
+  setXI(birth ? birth.xi : null);
+  saveBirth();
+  render();
+  renderBirthOut();
 }
 
 async function refreshData(force, quiet) {
@@ -1890,6 +2195,64 @@ $("luckShow").addEventListener("click", () => {
   applyLuckShow();
 });
 $("luckHow").addEventListener("click", openHow);
+$("birthOpen").addEventListener("click", openBirth);
+$("birthOnly").addEventListener("click", () => {
+  state.birthOnly = !state.birthOnly;
+  render();
+});
+$("birthClose").addEventListener("click", () => closeSheet($("birthSheet")));
+$("birthSheet").addEventListener("click", e => {
+  if (e.target === e.currentTarget) closeSheet($("birthSheet"));
+});
+$("birthSheet").addEventListener("close", () => document.documentElement.classList.remove("lock"));
+$("bNoTime").addEventListener("change", () => $("bTime").disabled = $("bNoTime").checked);
+$("bKeep").addEventListener("change", () => {
+  if (birth) {
+    birth.keep = $("bKeep").checked;
+    saveBirth();
+  }
+});
+$("birthForm").addEventListener("submit", e => {
+  e.preventDefault();
+  if (!$("bTime").value) $("bNoTime").checked = true;
+  $("bTime").disabled = $("bNoTime").checked;
+  const date = $("bDate").value, time = $("bNoTime").checked ? "" : $("bTime").value;
+  const r = bazi(date, time);
+  $("bErr").textContent = r.error || "";
+  $("bErr").hidden = !r.error;
+  if (r.error) return;
+  birth = { date: date, time: time, keep: $("bKeep").checked, r: r, xi: r.xi.slice() };
+  changeBirth();
+  const o = $("birthOut");
+  if (o.scrollIntoView) o.scrollIntoView({ block: "start", behavior: "smooth" });
+});
+$("birthOut").addEventListener("click", e => {
+  const el = e.target.closest("[data-el]");
+  if (el) {
+    const i = +el.dataset.el;
+    birth.xi[i] = birth.xi[i] > 0 ? -1 : birth.xi[i] < 0 ? 0 : 1;
+    changeBirth();
+    document.querySelector(`#birthOut [data-el="${i}"]`).focus();
+  } else if (e.target.closest("#bzReset")) {
+    birth.xi = birth.r.xi.slice();
+    changeBirth();
+  } else if (e.target.closest("#birthApply")) {
+    state.birthOnly = true;
+    state.sort = "birth";
+    $("sort").value = "birth";
+    showResults();
+  } else if (e.target.closest("#birthDay")) {
+    state.q = birth.r.birthday;
+    $("q").value = state.q;
+    showResults();
+  }
+});
+$("birthClear").addEventListener("click", () => {
+  birth = null;
+  $("birthForm").reset();
+  $("bTime").disabled = false;
+  changeBirth();
+});
 $("howClose").addEventListener("click", () => closeSheet($("howSheet")));
 $("howSheet").addEventListener("click", e => {
   if (e.target === e.currentTarget) closeSheet($("howSheet"));
@@ -1946,7 +2309,10 @@ document.addEventListener("visibilitychange", () => {
 window.addEventListener("online", () => refreshData(true));
 setInterval(() => refreshData(false), CHECK_EVERY + 5000);
 
+loadBirth();
 readUrl();
+if (state.sort === "birth" && !XI) state.sort = "num-asc";
+$("sort").value = state.sort;
 applyLuckShow();
 render();
 ensureGroup(state.group);
