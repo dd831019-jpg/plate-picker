@@ -186,6 +186,109 @@ def fetch_auctions(now):
     return out
 
 
+PLATEBID_URL = "https://platebid.tw/data.json"
+
+# platebid 的車種名稱對應到本站的 14 種；沒對應到的（例如遊覽大客車、電動大營客車）本站沒有，跳過。
+PLATEBID_TYPE_MAP = {
+    "電動自小客": "電動自小客",
+    "電動租賃車": "電動租賃車",
+    "電動租賃小客車": "電動租賃車",
+    "自用小客貨車": "自用小客貨車",
+    "租賃小客貨車": "租賃小客貨車",
+    "營業小客車": "營業小客車",
+    "營業小貨車": "營業小貨車",
+    "自用大貨車": "自用大貨車",
+    "營業大貨車": "營業大貨車",
+    "普通重型機車": "普通重型機車",
+    "大型重機車(550cc以下)": "550cc以下重機",
+    "大型重機車(550cc以上)": "550cc以上重機",
+    "電動普通重型機車": "電動普通重型機車",
+    "電動普通輕型機車": "電動普通輕型機車",
+    "微型電動二輪車": "微型電動二輪車",
+}
+
+
+def parse_tw_time(s):
+    """platebid 的時間是台灣當地時間，格式像 '2026-12-01 11:00'。"""
+    return datetime.strptime(str(s).strip(), "%Y-%m-%d %H:%M").replace(tzinfo=TPE)
+
+
+def parse_platebid(data, now):
+    """把 platebid 的 records 轉成本站的標牌格式，只留還沒結束的。回傳（公告清單, 沒對應到的車種集合）。"""
+    out, skipped = [], set()
+    for a in data.get("records", []):
+        src_type = str(a.get("plate_type", "")).strip()
+        t = PLATEBID_TYPE_MAP.get(src_type)
+        if not t:
+            if src_type:
+                skipped.add(src_type)
+            continue
+        try:
+            start = parse_tw_time(a["bid_start"]["iso"])
+            end = parse_tw_time(a["bid_decide"]["iso"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        if end <= now:
+            continue
+        ps = str(a.get("plate_start", "")).strip().upper()
+        pe = str(a.get("plate_end", "")).strip().upper()
+        if not ps:
+            continue
+        plates = ps if (not pe or ps == pe) else f"{ps}~{pe}"
+        td = None
+        iso = (a.get("transfer_deadline") or {}).get("iso")
+        if iso:
+            try:
+                td = parse_tw_time(iso).isoformat()
+            except (TypeError, ValueError):
+                td = None
+        out.append({
+            "type": t,
+            "office": normalize_office(a.get("office", "")),
+            "plates": plates,
+            "start": start.isoformat(),
+            "end": end.isoformat(),
+            "transferDeadline": td,
+        })
+    return out, skipped
+
+
+def fetch_platebid_auctions(now):
+    """從 platebid.tw 取得標牌公告（來源同為監理服務網）。失敗時丟出例外，由呼叫端決定要不要忽略。"""
+    req = urllib.request.Request(
+        PLATEBID_URL,
+        headers={"User-Agent": "plate-picker/1.0", "Accept": "application/json"},
+    )
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=60, context=CTX) as r:
+                data = json.load(r)
+            break
+        except Exception:
+            if attempt == 2:
+                raise
+            time.sleep(2)
+    return parse_platebid(data, now)
+
+
+def merge_auctions(primary, extra):
+    """把 extra 的公告併進 primary，去掉重複（同車種、同監理站、同競標期間、同號碼範圍）。primary 優先。
+    回傳（合併後清單, 實際補進來的筆數）。"""
+    def key(a):
+        return (a["type"], a["office"], a["plates"].replace(" ", "").upper(), a["start"], a["end"])
+    seen = {key(a) for a in primary}
+    merged, added = list(primary), 0
+    for a in extra:
+        k = key(a)
+        if k in seen:
+            continue
+        seen.add(k)
+        merged.append(a)
+        added += 1
+    merged.sort(key=lambda a: (a["start"], a["office"], a["plates"]))
+    return merged, added
+
+
 def source_signature():
     """用兩次小查詢取得 car16 選牌和標牌的更新時間，判斷要不要重抓。"""
     d = post(finder_body(TYPES[0], 1, 1))
@@ -374,6 +477,17 @@ def main():
         kept = [a for a in (prev["auctions"] if prev else []) if parse_time(a["end"]) > now]
         warnings.append(f"標牌資料抓取失敗，沿用前一份還沒結束的 {len(kept)} 筆公告：{e}")
         auctions = kept
+
+    # 標牌再從 platebid 補充（同樣來自監理服務網）；失敗只記 warning，不影響其他資料。
+    try:
+        pb, pb_skipped = fetch_platebid_auctions(now)
+        auctions, added = merge_auctions(auctions, pb)
+        if added:
+            warnings.append(f"標牌另從 platebid 補了 {added} 筆公告")
+        if pb_skipped:
+            warnings.append("platebid 有本站沒有的車種，略過：" + "、".join(sorted(pb_skipped)))
+    except Exception as e:
+        warnings.append(f"platebid 標牌補充失敗，忽略：{e}")
 
     source_updated = max(src_times) if src_times else None
     source_date = taipei_date(source_updated) if source_updated else now.astimezone(TPE).date().isoformat()
