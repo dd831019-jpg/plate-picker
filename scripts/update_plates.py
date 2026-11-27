@@ -13,6 +13,7 @@ car16 沒有更新時（更新時間和前一份相同）不會重抓，也不�
 選牌資料有問題時以非 0 結束，不會寫出檔案，舊資料會保留。
 標牌資料抓不到時沿用前一份還沒結束的公告，並在 warnings 裡說明。
 """
+import hashlib
 import json
 import os
 import re
@@ -253,8 +254,8 @@ def parse_platebid(data, now):
     return out, skipped
 
 
-def fetch_platebid_auctions(now):
-    """從 platebid.tw 取得標牌公告（來源同為監理服務網）。失敗時丟出例外，由呼叫端決定要不要忽略。"""
+def fetch_platebid_data():
+    """抓 platebid 的 data.json（重試 3 次），回傳原始 dict。"""
     req = urllib.request.Request(
         PLATEBID_URL,
         headers={"User-Agent": "plate-picker/1.0", "Accept": "application/json"},
@@ -262,13 +263,31 @@ def fetch_platebid_auctions(now):
     for attempt in range(3):
         try:
             with urllib.request.urlopen(req, timeout=60, context=CTX) as r:
-                data = json.load(r)
-            break
+                return json.load(r)
         except Exception:
             if attempt == 2:
                 raise
             time.sleep(2)
-    return parse_platebid(data, now)
+
+
+def platebid_sig(data):
+    """platebid 的內容指紋：只看公告本身（不看 updated_at、不看現在時間），公告有變才會變。
+    用來判斷要不要同步更新——platebid 只是重貼同樣內容時不會觸發重建。"""
+    rows = sorted(
+        "|".join([
+            str(r.get("plate_type", "")), str(r.get("office", "")),
+            str(r.get("plate_start", "")), str(r.get("plate_end", "")),
+            str((r.get("bid_start") or {}).get("iso", "")),
+            str((r.get("bid_decide") or {}).get("iso", "")),
+        ])
+        for r in data.get("records", [])
+    )
+    return hashlib.md5("\n".join(rows).encode("utf-8")).hexdigest()[:12]
+
+
+def fetch_platebid_auctions(now):
+    """從 platebid.tw 取得標牌公告（來源同為監理服務網）。失敗時丟出例外，由呼叫端決定要不要忽略。"""
+    return parse_platebid(fetch_platebid_data(), now)
 
 
 def merge_auctions(primary, extra):
@@ -290,10 +309,16 @@ def merge_auctions(primary, extra):
 
 
 def source_signature():
-    """用兩次小查詢取得 car16 選牌和標牌的更新時間，判斷要不要重抓。"""
+    """car16 選牌、標牌的更新時間，再加上 platebid 的公告內容指紋，判斷要不要重抓。
+    platebid 公告一變就會觸發重建（標牌同步更新，不用等 car16）；platebid 連不到時以空字串表示，
+    連續失敗都是同一個空字串，不會一直來回觸發重建。"""
     d = post(finder_body(TYPES[0], 1, 1))
     a = post({"car_type": TYPES[0], "motor_vehicles_office": "", "page": 1, "page_size": 1}, AUCTION_API)
-    return f'{d["data"].get("updatedTime")}|{a["data"].get("updatedTime")}'
+    try:
+        pb = platebid_sig(fetch_platebid_data())
+    except Exception:
+        pb = ""
+    return f'{d["data"].get("updatedTime")}|{a["data"].get("updatedTime")}|{pb}'
 
 
 def taipei_date(iso):
